@@ -1,0 +1,5 @@
+salt-formula-kubernetes (2016.8.1-1) unstable; urgency=medium
+
+  * Initial release (Closes: #833762)
+
+ -- Filip Pytloun <filip@pytloun.cz>  Mon, 08 Aug 2016 11:03:20 +0200
