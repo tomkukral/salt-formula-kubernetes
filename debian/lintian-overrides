@@ -1,2 +1,0 @@
-salt-formula-kubernetes binary: script-not-executable usr/share/salt-formulas/env/kubernetes/files/kube-addons/kube-addons.sh
-salt-formula-kubernetes binary: script-not-executable usr/share/salt-formulas/env/kubernetes/files/kube-addons/kube-addon-update.sh
