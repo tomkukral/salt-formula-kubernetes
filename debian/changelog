@@ -1,3 +1,9 @@
+salt-formula-kubernetes (2016.8.3-1) unstable; urgency=medium
+
+  * New upstream version
+
+ -- Filip Pytloun <filip@pytloun.cz>  Fri, 12 Aug 2016 16:17:27 +0200
+
 salt-formula-kubernetes (2016.8.2-1) unstable; urgency=medium
 
   * Initial release (Closes: #833762)
