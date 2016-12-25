@@ -57,12 +57,6 @@ Master definition
               enabled: true
               replicas: 1
               server: 10.254.0.10
-            heapster_influxdb:
-              enabled: true
-              public_ip: 185.22.97.132
-            ui:
-              enabled: true
-              public_ip: 185.22.97.131
           admin:
             password: password
             username: admin
@@ -430,6 +424,164 @@ Deployment manifest
                 mount: /certs
                 path: /etc/certs
 
+PetSet manifest
+---------------------
+
+.. code-block:: yaml
+
+  service:
+    memcached:
+      apiVersion: apps/v1alpha1
+      kind: PetSet
+      service_name: 'memcached'
+      container:
+        memcached:
+      ...
+
+
+Configmap
+---------
+
+You are able to create configmaps using support layer between formulas.
+It works simple, eg. in nova formula there's file ``meta/config.yml`` which
+defines config files used by that service and roles.
+
+Kubernetes formula is able to generate these files using custom pillar and
+grains structure. This way you are able to run docker images built by any way
+while still re-using your configuration management.
+
+Example pillar:
+
+.. code-block:: bash
+
+    kubernetes:
+      control:
+        config_type: default|kubernetes # Output is yaml k8s or default single files
+        configmap:
+          nova-control:
+            grains:
+              # Alternate grains as OS running in container may differ from
+              # salt minion OS. Needed only if grains matters for config
+              # generation.
+              os_family: Debian
+            pillar:
+              # Generic pillar for nova controller
+              nova:
+                controller:
+                  enabled: true
+                  versionn: liberty
+                  ...
+
+To tell which services supports config generation, you need to ensure pillar
+structure like this to determine support:
+
+.. code-block:: yaml
+
+    nova:
+      _support:
+        config:
+          enabled: true
+
+initContainers
+--------------
+
+Example pillar:
+
+.. code-block:: bash
+
+    kubernetes:
+      control:
+      service:
+        memcached:
+          init_containers:
+          - name: test-mysql
+            image: busybox
+            command:
+            - sleep
+            - 3600
+            volumes:
+            - name: config
+              mount: /test
+          - name: test-memcached
+            image: busybox
+            command:
+            - sleep
+            - 3600
+            volumes:
+            - name: config
+              mount: /test
+
+Affinity
+--------
+
+podAffinity
+===========
+
+Example pillar:
+
+.. code-block:: bash
+
+    kubernetes:
+      control:
+      service:
+        memcached:
+          affinity:
+            pod_affinity:
+              name: podAffinity
+              expression:
+                label_selector:
+                  name: labelSelector
+                  selectors:
+                  - key: app
+                    value: memcached
+              topology_key: kubernetes.io/hostname
+
+podAntiAffinity
+===============
+
+Example pillar:
+
+.. code-block:: bash
+
+    kubernetes:
+      control:
+      service:
+        memcached:
+          affinity:
+            anti_affinity:
+              name: podAntiAffinity
+              expression:
+                label_selector:
+                  name: labelSelector
+                  selectors:
+                  - key: app
+                    value: opencontrail-control
+              topology_key: kubernetes.io/hostname
+
+nodeAffinity
+===============
+
+Example pillar:
+
+.. code-block:: bash
+
+    kubernetes:
+      control:
+      service:
+        memcached:
+          affinity:
+            node_affinity:
+              name: nodeAffinity
+              expression:
+                match_expressions:
+                  name: matchExpressions
+                  selectors:
+                  - key: key
+                    operator: In
+                    values:
+                    - value1
+                    - value2
+
 Volumes
 -------
 
@@ -438,27 +590,117 @@ hostPath
 
 .. code-block:: yaml
 
-  container:
+  service:
     memcached:
+      container:
+        memcached:
+          volumes:
+            - name: volume1
+              mountPath: /volume
+              readOnly: True
       ...
-      volumes:
-      - name: /etc/certs
-        mount: /certs
-        type: hostPath
-        path: /etc/certs
+      volume:
+        volume1:
+          name: /etc/certs
+          type: hostPath
+          path: /etc/certs
 
 emptyDir
 ========
 
 .. code-block:: yaml
 
-  container:
+  service:
     memcached:
+      container:
+        memcached:
+          volumes:
+            - name: volume1
+              mountPath: /volume
+              readOnly: True
       ...
-      volumes:
-      - name: /etc/certs
-        mount: /certs
-        type: emptyDir
+      volume:
+        volume1:
+          name: /etc/certs
+          type: emptyDir
+
+configMap
+=========
+
+.. code-block:: yaml
+
+  service:
+    memcached:
+      container:
+        memcached:
+          volumes:
+            - name: volume1
+              mountPath: /volume
+              readOnly: True
+      ...
+      volume:
+        volume1:
+          type: config_map
+          item:
+            configMap1:
+              key: config.conf
+              path: config.conf
+            configMap2:
+              key: policy.json
+              path: policy.json
+
+To mount single configuration file instead of whole directory:
+
+.. code-block:: yaml
+
+  service:
+    memcached:
+      container:
+        memcached:
+          volumes:
+            - name: volume1
+              mountPath: /volume/config.conf
+              sub_path: config.conf
+
+Generating Jobs
+===============
+
+Example pillar:
+
+.. code-block:: yaml
+
+  kubernetes:
+    control:
+      job:
+        sleep:
+          job: sleep
+          restart_policy: Never
+          container:
+            sleep:
+              image: busybox
+              tag: latest
+              command:
+              - sleep
+              - "3600"
+
+Volumes and Variables can be used as the same way as during Deployment generation.
+
+Custom params:
+
+.. code-block:: yaml
+
+  kubernetes:
+    control:
+      job:
+        host_network: True
+        host_pid: True
+        container:
+          sleep:
+            privileged: True
+        node_selector:
+          key: node
+          value: one
+        image_pull_secretes: password
 
 Documentation and Bugs
 ======================

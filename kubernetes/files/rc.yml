@@ -8,13 +8,85 @@ metadata:
     app: {{ service.service }}-{{ service.role }}
 spec:
   replicas: {{ service.replicas }}
+  {%- if service.kind == 'PetSet' %}
+  serviceName: {{ service.service_name }}
+  {%- endif %}
   template:
     metadata:
       labels:
         app: {{ service.service }}-{{ service.role }}
-      {%- if service.hostname is defined %}
       annotations:
+      {%- if service.hostname is defined %}
         pod.beta.kubernetes.io/hostname: {{ service.hostname }}
+      {%- endif %}
+      {%- if service.init_containers is defined %}
+        pod.alpha.kubernetes.io/init-containers: '[
+        {%- for container in service.init_containers %}
+          {
+            "name": "{{ container.name }}",
+            "image": "{% if container.registry is defined %}{{ container.registry }}/{%- endif %}{{ container.image }}{%- if container.tag is defined %}:{{ container.tag }}{%- endif %}",
+            "command": [{%- for command in container.command %}"{{ command }}"{% if not loop.last %},{% endif %}{%- endfor %}]
+            {%- if container.volumes is defined -%}
+            ,
+            "volumeMounts": [
+            {%- for volume in container.volumes %}
+                {
+                    "name": "{{ volume.name }}",
+                    {%- if volume.sub_path is defined %}
+                    "subPath": "{{ volume.sub_path }}",
+                    {%- endif %}
+                    "mountPath": "{{ volume.mount }}"
+                }
+            {%- if not loop.last %},{% endif %}{%- endfor %}
+            ]
+            {%- endif %}
+          }
+        {%- if not loop.last %},{% endif %}{% endfor %}
+        ]'
+      {%- endif %}
+      {%- if service.affinity is defined %}
+        scheduler.alpha.kubernetes.io/affinity: >
+          {
+          {%- for affinity_name, affinity in service.affinity.iteritems() %}
+            "{{ affinity.name }}": {
+              {%- for expression_name, expression in affinity.expression.iteritems() %}
+              {%- if expression.name ==  'matchExpressions' %}
+              "{{ affinity.get('type','required') }}DuringSchedulingIgnoredDuringExecution": {
+                "nodeSelectorTerms": [
+                  {
+                    "matchExpressions": [
+                    {%- for selector in expression.selectors %}
+                      {
+                        "key": "{{ selector.key }}",
+                        "operator": "{{ selector.operator }}",
+                        "values": [{%- for value in selector['values'] %}"{{ value }}"{%- if not loop.last %},{% endif %}{%- endfor %}]
+                      }{%- if not loop.last %},{% endif %}
+                    {% endfor %}
+                    ]
+                  }
+                ]
+              }
+              {%- elif expression.name == 'labelSelector'  %}
+              "{{ affinity.get('type','required') }}DuringSchedulingIgnoredDuringExecution": [
+                {
+                  "labelSelector": {
+                    "matchLabels": {
+                      {%- for selector in expression.selectors %}
+                      "{{ selector.key }}": "{{ selector.value }}"
+                    {%- if not loop.last %},{% endif %}{%- endfor %}
+                    }
+                  },
+                  {%- if affinity.name == 'podAntiAffinity' or affinity.name == 'podAffinity' %}
+                  "topologyKey": "{{ affinity.topology_key }}"
+                  {%- endif %}
+                }
+              ]
+              {%- endif %}
+              {%- endfor %}
+          {%- if not loop.last %}},{% endif %}
+          {%- endfor %}
+            }
+          }
       {%- endif %}
     spec:
       {%- if service.hostNetwork is defined %}
@@ -27,7 +99,7 @@ spec:
       {%- for container_name, container in service.container.iteritems() %}
         - name: {{ container_name }}
           image: {% if container.registry is defined %}{{ container.registry }}/{%- endif %}{{ container.image }}{%- if container.tag is defined %}:{{ container.tag }}{%- endif %}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ container.get('image_pull_policy','IfNotPresent') }}
           {%- if container.privileged is defined %}
           securityContext:
             privileged: True
@@ -63,7 +135,10 @@ spec:
           {%- for volume in container.volumes %}
             - name:  {{ volume.name }}
               mountPath: {{ volume.mount }}
-              readOnly: {{ volume.read_only }}
+              readOnly: {{ volume.get('read_only', 'False') }}
+              {%- if volume.sub_path is defined %}
+              subPath: {{ volume.sub_path }}
+              {%- endif %}
           {%- endfor %}
           {%- endif %}
           {%- if container.liveness_probe is defined %}
@@ -91,7 +166,7 @@ spec:
             {%- elif container.readiness_probe.type == 'exec' %}
             exec:
               command:
-                {%- for command in container.liveness_probe.command %}
+                {%- for command in container.readiness_probe.command %}
                 - {{ command }}
                 {%- endfor %}
             {%- endif %}
@@ -113,6 +188,14 @@ spec:
             endpoints: {{ volume.endpoints }}
             path: {{ volume.path }}
             readOnly: {{ volume.read_only }}
+          {%- elif volume.type == 'config_map' %}
+          configMap:
+            name: {{ volume_name }}-{{ volume.get('version', '1') }}
+            items:
+              {%- for name, item in volume.item.iteritems() %}
+              - key: {{ item.key }}
+                path: {{ item.path }}
+              {%- endfor %}
           {%- endif %}
       {%- endfor %}
       {%- endif %}

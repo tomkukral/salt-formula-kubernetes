@@ -12,7 +12,7 @@ kubernetes:
       heapster_influxdb:
         enabled: true
         public_ip: 185.22.97.132
-      ui:
+      dashboard:
         enabled: true
         public_ip: 185.22.97.131
     admin:
@@ -26,12 +26,9 @@ kubernetes:
     ca: kubernetes
     enabled: true
     etcd:
-      host: 127.0.0.1
       members:
       - host: 10.0.175.100
         name: node040
-      name: node040
-      token: ca939ec9c2a17b0786f6d411fe019e9b
     kubelet:
       allow_privileged: true
     network:
@@ -63,3 +60,5 @@ kubernetes:
     namespace:
       kube-system:
         enabled: True
+    hyperkube:
+      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
