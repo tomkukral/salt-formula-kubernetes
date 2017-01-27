@@ -138,7 +138,6 @@ master_services:
     - file: /etc/default/kube-scheduler
     - file: /etc/default/kube-controller-manager
     - file: /usr/bin/hyperkube
-    - file: /etc/kubernetes/ssl/ca-kubernetes.crt
 
 {%- endif %}
 
