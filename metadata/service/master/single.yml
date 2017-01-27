@@ -17,7 +17,7 @@ parameters:
         allow_privileged: True
       apiserver:
         address: ${_param:single_address}
-        insecure_address: 0.0.0.0
+        insecure_address: 127.0.0.1
       etcd:
         members:
           - host: ${_param:single_address}

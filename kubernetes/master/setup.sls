@@ -12,4 +12,32 @@ kubernetes_addons_{{ addon_name }}:
 
 {%- endif %}
 {%- endfor %}
+
+{%- if master.label is defined %}
+
+{%- for name,label in master.label.iteritems() %}
+
+{%- if label.enabled %}
+
+{{ name }}_{{ label.node }}:
+  k8s.label_present:
+    - name: {{ label.key }}
+    - value: {{ label.value }}
+    - node: {{ label.node }}
+    - apiserver: http://{{ master.apiserver.insecure_address }}:8080
+
+{%- else %}
+
+{{ name }}_{{ label.node }}:
+  k8s.label_absent:
+    - name: {{ label.key }}
+    - node: {{ label.node }}
+    - apiserver: http://{{ master.apiserver.insecure_address }}:8080
+
+{%- endif %}
+
+{%- endfor %}
+
+{%- endif %}
+
 {%- endif %}

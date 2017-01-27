@@ -347,23 +347,19 @@ Create namespace:
 Kubernetes labels
 -----------------
 
-Create namespace:
+Label node:
 
 .. code-block:: yaml
 
-    kubernetes:
-      pool
+  kubernetes:
+    master:
+      label:
+        label01:
+          value: value01
+          node: node01
+          enabled: true
+          key: key01
         ...
-        host:
-          label:
-            key01:
-              value: value01
-              enable: True
-            key02:
-              value: value02
-              enable: False
-          name: ${linux:system:name}
-         ...
 
 Pull images from private registries
 -----------------------------------

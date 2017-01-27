@@ -5,7 +5,6 @@ include:
 - kubernetes.pool.calico
 {%- endif %}
 - kubernetes.pool.service
-- kubernetes.pool.kubelet
 {%- if pool.network.engine == "flannel" %}
 - kubernetes.pool.flannel
 {%- endif %}

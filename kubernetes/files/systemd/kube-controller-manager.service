@@ -5,7 +5,6 @@ Documentation=man:kube-controller-manager
 After=network.target
 
 [Service]
-Environment=KUBE_MASTER=--master=127.0.0.1:8080
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root
