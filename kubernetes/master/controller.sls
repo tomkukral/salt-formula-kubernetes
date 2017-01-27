@@ -147,9 +147,11 @@ master_services:
 
 {%- if namespace.enabled %}
 
+{%- set date = salt['cmd.run']('date "+%FT%TZ"') %}
+
 /registry/namespaces/{{ name }}:
   etcd.set:
-    - value: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"{{ name }}"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}'
+    - value: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"{{ name }}","creationTimestamp":"{{ date }}"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}'
 
 {%- else %}
 
