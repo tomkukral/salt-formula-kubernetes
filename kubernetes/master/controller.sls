@@ -120,7 +120,7 @@
 
 /etc/kubernetes/ssl/{{ filename }}:
   file.managed:
-    - source: salt://_certs/kubernetes/{{ filename }}
+    - source: salt://{{ master.get('cert_source','_certs/kubernetes') }}/{{ filename }}
     - user: root
     - group: haproxy
     - mode: 640
