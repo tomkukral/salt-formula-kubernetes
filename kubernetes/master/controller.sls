@@ -83,14 +83,14 @@
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --master={{ master.apiserver.insecure_address }}:8080 --cluster-name=kubernetes --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key --v=2 --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt --leader-elect=true"
+    - contents: DAEMON_ARGS=" --cluster-name=kubernetes --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key --v=2 --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt --leader-elect=true"
 
 /etc/default/kube-scheduler:
   file.managed:
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --master={{ master.apiserver.insecure_address }}:8080 --v=2 --leader-elect=true"
+    - contents: DAEMON_ARGS=" --v=2 --leader-elect=true"
 
 /etc/systemd/system/kube-apiserver.service:
   file.managed:
