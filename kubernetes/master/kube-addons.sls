@@ -10,17 +10,17 @@ addon-dir-create:
 
 {%- if master.addons.dns.enabled %}
 
-/etc/kubernetes/addons/dns/skydns-svc.yaml:
+/etc/kubernetes/addons/dns/kubedns-svc.yaml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/dns/skydns-svc.yaml
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-svc.yaml
     - template: jinja
     - group: root
     - dir_mode: 755
     - makedirs: True
 
-/etc/kubernetes/addons/dns/skydns-rc.yaml:
+/etc/kubernetes/addons/dns/kubedns-rc.yaml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/dns/skydns-rc.yaml
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-rc.yaml
     - template: jinja
     - group: root
     - dir_mode: 755
