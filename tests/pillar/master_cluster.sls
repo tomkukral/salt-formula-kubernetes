@@ -11,6 +11,7 @@ kubernetes:
         enabled: true
         replicas: 1
         server: 10.254.0.10
+        autoscaler: True
       heapster_influxdb:
         enabled: true
         public_ip: 185.22.97.132

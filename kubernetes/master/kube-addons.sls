@@ -26,6 +26,18 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
+{% if master.addons.dns.get('autoscaler', True) %}
+
+/etc/kubernetes/addons/dns/kubedns-autoscaler.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-autoscaler.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{% endif %}
+
 {% endif %}
 
 {%- if master.addons.dashboard.enabled %}
