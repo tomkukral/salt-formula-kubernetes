@@ -32,6 +32,24 @@ Sample pillars
             cni:
               image: calico/cni
 
+Pass aditional parameters to daemons:
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          apiserver:
+            daemon_opts:
+              storage-backend: pigeon
+          controller_manager:
+            daemon_opts:
+              log-dir: /dev/nulL
+        pool:
+          kubelet:
+            daemon_opts:
+              max-pods: "6"
+
 
 Containers on pool definitions in pool.service.local
 
