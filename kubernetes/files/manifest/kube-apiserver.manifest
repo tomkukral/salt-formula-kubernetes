@@ -30,6 +30,12 @@ spec:
       --etcd-quorum-read=true
       --v=2
       --allow-privileged=True
+{%- if master.apiserver.node_port_range is defined %}
+      --service-node-port-range {{ master.apiserver.node_port_range }}
+{%- endif %}
+{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %}
+      --{{ key }}={{ value }}
+{% endfor %}
       1>>/var/log/kube-apiserver.log 2>&1
     imagePullPolicy: IfNotPresent
     livenessProbe:
@@ -58,8 +64,8 @@ spec:
       readOnly: true
     - mountPath: /var/log/kube-apiserver.log
       name: logfile
-    - mountPath: /etc/kubernetes/ssl
-      name: etcssl
+    - mountPath: /etc/kubernetes/
+      name: etckube
       readOnly: true
     - mountPath: /usr/share/ca-certificates
       name: usrsharecacerts
@@ -74,8 +80,8 @@ spec:
       path: /var/log/kube-apiserver.log
     name: logfile
   - hostPath:
-      path: /etc/kubernetes/ssl
-    name: etcssl
+      path: /etc/kubernetes/
+    name: etckube
   - hostPath:
       path: /usr/share/ca-certificates
     name: usrsharecacerts

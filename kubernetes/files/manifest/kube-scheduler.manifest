@@ -18,9 +18,12 @@ spec:
     command:
     - hyperkube
     - scheduler
-      --master={{ master.apiserver.insecure_address }}:8080
+      --kubeconfig /etc/kubernetes/scheduler.kubeconfig
       --v=2
       --leader-elect=true
+{%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %}
+      --{{ key }}={{ value }}
+{%- endfor %}
       1>>/var/log/kube-scheduler.log 2>&1
     livenessProbe:
       httpGet:
@@ -36,7 +39,12 @@ spec:
     volumeMounts:
     - mountPath: /var/log/kube-scheduler.log
       name: logfile
+    - mountPath: /etc/kubernetes/
+      name: etckube
   volumes:
   - hostPath:
       path: /var/log/kube-scheduler.log
     name: logfile
+  - hostPath:
+      path: /etc/kubernetes/
+    name: etckube

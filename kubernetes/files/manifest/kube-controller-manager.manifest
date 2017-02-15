@@ -16,12 +16,15 @@ spec:
     command:
     - /hyperkube
     - controller-manager
-      --master={{ master.apiserver.insecure_address }}:8080
+      --kubeconfig /etc/kubernetes/controller-manager.kubeconfig
       --cluster-name=kubernetes
       --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
       --v=2
       --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
       --leader-elect=true
+{%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
+      --{{ key }}={{ value }}
+{%- endfor %}
       1>>/var/log/kube-controller-manager.log 2>&1
     imagePullPolicy: IfNotPresent
     livenessProbe:
@@ -43,8 +46,8 @@ spec:
       readOnly: true
     - mountPath: /var/log/kube-controller-manager.log
       name: logfile
-    - mountPath: /etc/kubernetes/ssl
-      name: etcssl
+    - mountPath: /etc/kubernetes/
+      name: etckube
       readOnly: true
     - mountPath: /usr/share/ca-certificates
       name: usrsharecacerts
@@ -57,8 +60,8 @@ spec:
       path: /var/log/kube-controller-manager.log
     name: logfile
   - hostPath:
-      path: /etc/kubernetes/ssl
-    name: etcssl
+      path: /etc/kubernetes/
+    name: etckube
   - hostPath:
       path: /usr/share/ca-certificates
     name: usrsharecacerts

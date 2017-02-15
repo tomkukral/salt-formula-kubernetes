@@ -20,13 +20,18 @@ spec:
       --v=2
       --kubeconfig=/etc/kubernetes/proxy.kubeconfig
       --master={%- if pool.apiserver.insecure.enabled %}http://{{ pool.apiserver.host }}:8080{%- else %}https://{{ pool.apiserver.host }}{%- endif %}
-      {%- if pool.network.engine == 'calico' %} --proxy-mode=iptables{% endif %}
+{%- if pool.network.engine == 'calico' %}
+      --proxy-mode=iptables
+{%- endif %}
+{%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).iteritems() %}
+      --{{ key }}={{ value }}
+{%- endfor %}
       1>>/var/log/kube-proxy.log 2>&1
     securityContext:
       privileged: true
     volumeMounts:
-    - mountPath: /etc/kuberbetes/ssl
-      name: ssl-certs-host
+    - mountPath: /etc/kubernetes/
+      name: etckube
       readOnly: true
     - mountPath: /var/log
       name: varlog
@@ -39,8 +44,8 @@ spec:
       readOnly: false
   volumes:
   - hostPath:
-      path: /etc/kubernetes/ssl
-    name: ssl-certs-host
+      path: /etc/kubernetes/
+    name: etckube
   - hostPath:
       path: /etc/kubernetes/proxy.kubeconfig
     name: kubeconfig
