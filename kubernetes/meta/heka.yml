@@ -1,0 +1,140 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import pool with context %}
+
+{% set kube_services = ('apiserver', 'scheduler', 'controller-manager') %}
+
+{%- if master.get('enabled', False) or pool.get('enabled', False) %}
+metric_collector:
+  trigger:
+{%- if master.get('enabled', False) %}
+{% for kube_service in kube_services  %}
+    k8s-{{ kube_service }}_local_endpoint:
+      description: 'K8s {{ kube_service }} is locally down'
+      severity: down
+      rules:
+      - metric: http_check
+        field:
+          service: k8s-{{ kube_service }}
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endfor %}
+{%- endif %}
+{%- if pool.get('enabled', False) %}
+    k8s-kubelet_local_endpoint:
+      description: 'K8s kubelet is locally down'
+      severity: down
+      rules:
+      - metric: http_check
+        field:
+          service: k8s-kubelet
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    k8s-proxy_local_endpoint:
+      description: 'K8s proxy is locally down'
+      severity: down
+      rules:
+      - metric: http_check
+        field:
+          service: k8s-proxy
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+
+  alarm:
+{%- if master.get('enabled', False) %}
+   {%- for kube_service in kube_services %}
+    k8s-{{ kube_service }}_endpoint:
+      alerting: enabled
+      triggers:
+      - k8s-{{ kube_service }}_local_endpoint
+      dimension:
+        service: k8s-{{ kube_service }}-endpoint
+    {%- endfor %}
+{%- endif %}
+{%- if pool.get('enabled', False) %}
+    k8s-kubelet_endpoint:
+      alerting: enabled
+      triggers:
+      - k8s-kubelet_local_endpoint
+      dimension:
+        service: k8s-kubelet-endpoint
+    k8s-proxy_endpoint:
+      alerting: enabled
+      triggers:
+      - k8s-proxy_local_endpoint
+      dimension:
+        service: k8s-proxy-endpoint
+{%- endif %}
+{%- endif %}
+
+{%- if master.get('enabled', False) %}
+aggregator:
+  alarm_cluster:
+    {%- for kube_service in kube_services %}
+    k8s-{{ kube_service }}_endpoint:
+      policy: availability_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        service: k8s-{{ kube_service }}-endpoint
+      members:
+      - k8s-{{ kube_service }}_endpoint
+      dimension:
+        service: k8s-master
+        nagios_host: 01-service-clusters
+    {%- endfor %}
+    k8s-kubelet_endpoint:
+      policy: status_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        service: k8s-kubelet-endpoint
+      members:
+      - k8s-kubelet_endpoint
+      dimension:
+        service: k8s-pool
+        nagios_host: 01-service-clusters
+    k8s-proxy_endpoint:
+      policy: status_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        service: k8s-proxy-endpoint
+      members:
+      - k8s-proxy_endpoint
+      dimension:
+        service: k8s-pool
+        nagios_host: 01-service-clusters
+    kube_compute:
+      policy: highest_severity
+      alerting: enabled_with_notification
+      match:
+        service: k8s-pool
+      members:
+      - k8s-kubelet_endpoint
+      - k8s-proxy_endpoint
+      dimension:
+        cluster_name: k8s-master
+        nagios_host: 00-top-clusters
+    kube_control:
+      policy: highest_severity
+      alerting: enabled_with_notification
+      match:
+        service: k8s-master
+      members:
+      - k8s-apiserver_endpoint
+      - k8s-scheduler_endpoint
+      - k8s-controller-manager_endpoint
+      dimension:
+        cluster_name: k8s-master
+        nagios_host: 00-top-clusters
+{%- endif %}

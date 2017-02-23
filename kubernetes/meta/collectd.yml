@@ -1,0 +1,33 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import pool with context %}
+
+{%- if master.get('enabled', False) or pool.get('enabled', False) %}
+local_plugin:
+  collectd_http_check:
+   interval: 30
+   url:
+{%- if master.get('enabled', False) %}
+     k8s-apiserver:
+       expected_code: 200
+       expected_content: ok
+       url: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}/healthz
+     k8s-scheduler:
+       expected_code: 200
+       expected_content: ok
+       url: http://127.0.0.1:10251/healthz
+     k8s-controller-manager:
+       expected_code: 200
+       expected_content: ok
+       url: http://127.0.0.1:10252/healthz
+{%- endif %}
+{%- if pool.get('enabled', False) %}
+     k8s-kubelet:
+       expected_code: 200
+       expected_content: ok
+       url: http://127.0.0.1:10248/healthz
+     k8s-proxy:
+       expected_code: 200
+       expected_content: ok
+       url: http://127.0.0.1:10249/healthz
+{%- endif %}
+{%- endif %}
