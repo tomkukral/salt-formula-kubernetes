@@ -30,4 +30,21 @@ local_plugin:
        expected_content: ok
        url: http://127.0.0.1:10249/healthz
 {%- endif %}
+
+  collectd_processes:
+    process:
+{%- if master.get('enabled', False) %}
+      k8s-apiserver:
+        match: hyperkube.*apiserver
+      k8s-scheduler:
+        match: hyperkube.*scheduler
+      k8s-controller-manager:
+        match: hyperkube.*controller-manager
+{%- endif %}
+{%- if pool.get('enabled', False) %}
+      k8s-kubelet:
+        match: hyperkube.*kubelet
+      k8s-proxy:
+        match: hyperkube.*proxy
+{%- endif %}
 {%- endif %}
