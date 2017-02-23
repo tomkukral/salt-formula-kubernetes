@@ -24,7 +24,7 @@ kubernetes_addons_{{ addon_name }}:
     - name: {{ label.key }}
     - value: {{ label.value }}
     - node: {{ label.node }}
-    - apiserver: http://{{ master.apiserver.insecure_address }}:8080
+    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
 
 {%- else %}
 
@@ -32,7 +32,7 @@ kubernetes_addons_{{ addon_name }}:
   k8s.label_absent:
     - name: {{ label.key }}
     - node: {{ label.node }}
-    - apiserver: http://{{ master.apiserver.insecure_address }}:8080
+    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
 
 {%- endif %}
 

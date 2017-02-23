@@ -18,6 +18,7 @@ parameters:
       apiserver:
         address: ${_param:cluster_local_address}
         insecure_address: 127.0.0.1
+        insecure_port: 8080
       etcd:
         members:
           - host: ${_param:cluster_node01_address}

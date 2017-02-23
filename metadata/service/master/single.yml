@@ -18,6 +18,7 @@ parameters:
       apiserver:
         address: ${_param:single_address}
         insecure_address: 127.0.0.1
+        insecure_port: 8080
       etcd:
         members:
           - host: ${_param:single_address}

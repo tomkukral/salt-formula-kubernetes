@@ -97,7 +97,9 @@ Master definition
             username: admin
           apiserver:
             address: 10.0.175.100
-            port: 8080
+            secure_port: 443
+            insecure_address: 127.0.0.1
+            insecure_port: 8080
           ca: kubernetes
           enabled: true
           etcd:

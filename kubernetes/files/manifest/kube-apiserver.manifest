@@ -42,7 +42,7 @@ spec:
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: 8080
+        port: {{ master.apiserver.get('insecure_port', '8080') }}
         scheme: HTTP
       initialDelaySeconds: 15
       timeoutSeconds: 15
@@ -51,8 +51,8 @@ spec:
       hostPort: {{ master.apiserver.get('secure_port', '443') }}
       name: https
       protocol: TCP
-    - containerPort: 8080
-      hostPort: 8080
+    - containerPort: {{ master.apiserver.get('insecure_port', '8080') }}
+      hostPort: {{ master.apiserver.get('insecure_port', '8080') }}
       name: local
       protocol: TCP
     resources:
