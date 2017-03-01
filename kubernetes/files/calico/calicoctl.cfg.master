@@ -4,4 +4,9 @@ kind: calicoApiConfig
 metadata:
 spec:
   datastoreType: "etcdv2"
-  etcdEndpoints: {% for member in master.network.etcd.members %}http://{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}
+  etcdEndpoints: {% for member in master.network.etcd.members %}http{% if pool.network.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}
+{%- if pool.network.etcd.get('ssl', {}).get('enabled') %}
+  etcdKeyFile: /var/lib/etcd/etcd-client.pem
+  etcdCertFile: /var/lib/etcd/etcd-client.pem
+  etcdCACertFile: /var/lib/etcd/ca.pem
+{%- endif %}

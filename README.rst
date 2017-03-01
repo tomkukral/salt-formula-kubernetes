@@ -311,6 +311,24 @@ On pools:
               - host: 10.0.175.103
                 port: 4001
 
+Running with secured etcd:
+
+.. code-block:: yaml
+
+    kubernetes:
+      pool:
+        network:
+          engine: calico
+          etcd:
+            ssl:
+              enabled: true
+      master:
+        network:
+          engine: calico
+          etcd:
+            ssl:
+              enabled: true
+
 Post deployment configuration
 
 .. code-block:: bash
