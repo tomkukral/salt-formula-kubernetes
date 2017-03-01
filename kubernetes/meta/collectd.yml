@@ -1,6 +1,14 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- from "kubernetes/map.jinja" import pool with context %}
 
+{%- if pool.get('enabled', False) %}
+{% set network = pool.get('network', []) %}
+{%- else %}
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
+{% endif %}
+
 {%- if master.get('enabled', False) or pool.get('enabled', False) %}
 local_plugin:
   collectd_http_check:
@@ -46,5 +54,15 @@ local_plugin:
         match: hyperkube.*kubelet
       k8s-proxy:
         match: hyperkube.*proxy
+{%- endif %}
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+      calico-docker:
+        match: docker run .*projectcalico/calico/node
+      calico-felix:
+        match: calico-felix$
+      calico-bird6:
+        match: bird6 .*/etc/calico/.*/bird6.cfg
+      calico-confd:
+        match: confd .*/etc/calico/confd
 {%- endif %}
 {%- endif %}

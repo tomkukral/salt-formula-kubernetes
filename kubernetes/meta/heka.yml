@@ -106,6 +106,56 @@ metric_collector:
         periods: 0
         function: last
 {%- endif %}
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+    calico_docker:
+      description: "There is no docker calico-node process running"
+      severity: down
+      rules:
+      - metric: lma_components_processes
+        field:
+          service: calico-docker
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    calico_felix:
+      description: "There is no calico-felix process running"
+      severity: down
+      rules:
+      - metric: lma_components_processes
+        field:
+          service: calico-felix
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    calico_bird6:
+      description: "There is no calico-bird6 process running"
+      severity: down
+      rules:
+      - metric: lma_components_processes
+        field:
+          service: calico-bird6
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    calico_confd:
+      description: "There is no calico-confd process running"
+      severity: down
+      rules:
+      - metric: lma_components_processes
+        field:
+          service: calico-confd
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
 
   alarm:
 {%- if master.get('enabled', False) %}
@@ -131,6 +181,32 @@ metric_collector:
       - k8s-proxy_local_endpoint
       dimension:
         service: k8s-proxy-endpoint
+{%- endif %}
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+    calico_docker:
+      alerting: enabled
+      triggers:
+      - calico_docker
+      dimension:
+        process: calico-docker
+    calico_felix:
+      alerting: enabled
+      triggers:
+      - calico_felix
+      dimension:
+        process: calico-felix
+    calico_bird6:
+      alerting: enabled
+      triggers:
+      - calico_bird6
+      dimension:
+        process: calico-bird6
+    calico_confd:
+      alerting: enabled
+      triggers:
+      - calico_confd
+      dimension:
+        process: calico-confd
 {%- endif %}
 {%- endif %}
 
@@ -195,4 +271,63 @@ aggregator:
       dimension:
         cluster_name: k8s-master
         nagios_host: 00-top-clusters
+{%- if master.get('network', []).get('engine', None) == 'calico' %}
+    calico_docker:
+      policy: availability_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        process: calico-docker
+      members:
+      - calico_docker
+      dimension:
+        service: calico
+        nagios_host: 01-service-clusters
+    calico_felix:
+      policy: availability_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        process: calico-felix
+      members:
+      - calico_felix
+      dimension:
+        service: calico
+        nagios_host: 01-service-clusters
+    calico_bird6:
+      policy: availability_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        process: calico-bird6
+      members:
+      - calico_bird6
+      dimension:
+        service: calico
+        nagios_host: 01-service-clusters
+    calico_confd:
+      policy: availability_of_members
+      alerting: enabled
+      group_by: hostname
+      match:
+        process: calico-confd
+      members:
+      - calico_confd
+      dimension:
+        service: calico
+        nagios_host: 01-service-clusters
+    calico:
+      policy: highest_severity
+      alerting: enabled_with_notification
+      match:
+        service: calico
+      members:
+      - calico_docker
+      - calico_felix
+      - calico_bird6
+      - calico_confd
+      dimension:
+        cluster_name: calico
+        nagios_host: 00-top-clusters
+{%- endif %}
 {%- endif %}
