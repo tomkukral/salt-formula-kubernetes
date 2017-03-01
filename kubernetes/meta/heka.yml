@@ -3,6 +3,64 @@
 
 {% set kube_services = ('apiserver', 'scheduler', 'controller-manager') %}
 
+{%- if pool.get('enabled', False) %}
+{% set network = pool.get('network', []) %}
+{%- else %}
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
+{% endif %}
+
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+log_collector:
+  decoder:
+    calico_felix:
+      engine: sandbox
+      module_file: /usr/share/lma_collector/decoders/calico.lua
+      module_dir: /usr/share/lma_collector/common;/usr/share/heka/lua_modules
+      adjust_timezone: true
+      config:
+        calico_service: 'felix'
+    calico_bird:
+      engine: sandbox
+      module_file: /usr/share/lma_collector/decoders/calico.lua
+      module_dir: /usr/share/lma_collector/common;/usr/share/heka/lua_modules
+      adjust_timezone: true
+      config:
+        calico_service: 'bird'
+    calico_confd:
+      engine: sandbox
+      module_file: /usr/share/lma_collector/decoders/calico.lua
+      module_dir: /usr/share/lma_collector/common;/usr/share/heka/lua_modules
+      adjust_timezone: true
+      config:
+        calico_service: 'confd'
+  input:
+    calico_felix:
+      engine: logstreamer
+      log_directory: "/var/log"
+      file_match: 'calico/felix/(current|@(?P<Seq>[0-9a-f][0-9a-f]*)\.[su])$'
+      differentiator: ['calico', '.', 'felix']
+      priority: ["^Seq"]
+      decoder: "calico_felix_decoder"
+      splitter: "TokenSplitter"
+    calico_bird:
+      engine: logstreamer
+      log_directory: "/var/log"
+      file_match: 'calico/bird(?P<Service>6*)/(current|@(?P<Seq>[0-9a-f][0-9a-f]*)\.[su])$'
+      differentiator: ['calico', '.', 'bird', 'Service']
+      priority: ["^Seq"]
+      decoder: "calico_bird_decoder"
+      splitter: "TokenSplitter"
+    calico_confd:
+      engine: logstreamer
+      log_directory: "/var/log"
+      file_match: 'calico/confd/(current|@(?P<Seq>[0-9a-f][0-9a-f]*)\.[su])$'
+      differentiator: ['calico', '.', 'confd']
+      priority: ["^Seq"]
+      decoder: "calico_confd_decoder"
+      splitter: "TokenSplitter"
+{%- endif %}
 {%- if master.get('enabled', False) or pool.get('enabled', False) %}
 metric_collector:
   trigger:
