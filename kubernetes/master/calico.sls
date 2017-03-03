@@ -11,6 +11,16 @@
     - dir_mode: 755
     - template: jinja
 
+/etc/calico/calicoctl.cfg:
+  file.managed:
+    - source: salt://kubernetes/files/calico/calicoctl.cfg.master
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: true
+    - dir_mode: 755
+    - template: jinja
+
 /usr/bin/calicoctl:
   file.managed:
      - source: {{ master.network.get('source', 'https://github.com/projectcalico/calico-containers/releases/download/') }}{{ master.network.version }}/calicoctl
