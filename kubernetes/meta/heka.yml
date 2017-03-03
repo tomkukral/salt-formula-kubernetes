@@ -79,6 +79,43 @@ metric_collector:
         periods: 0
         function: last
 {%- endfor %}
+    k8s_node_some_not_ready:
+      description: 'Some k8s nodes are not ready'
+      severity: warning
+      logical_operator: and
+      rules:
+      - metric: k8s_nodes
+        field:
+          status: not_ready
+        relational_operator: '>'
+        threshold: 0
+        window: 120
+        periods: 0
+        function: last
+    k8s_node_majority_not_ready:
+      description: 'Majority of k8s nodes are not ready'
+      severity: critical
+      rules:
+      - metric: k8s_nodes_percent
+        field:
+          status: not_ready
+        relational_operator: '>'
+        threshold: 50
+        window: 120
+        periods: 0
+        function: last
+    k8s_node_all_not_ready:
+      description: 'All k8s node are not ready'
+      severity: down
+      rules:
+      - metric: k8s_nodes_percent
+        field:
+          status: not_ready
+        relational_operator: '=='
+        threshold: 100
+        window: 60
+        periods: 0
+        function: last
 {%- endif %}
 {%- if pool.get('enabled', False) %}
     k8s-kubelet_local_endpoint:
@@ -179,6 +216,14 @@ metric_collector:
       dimension:
         service: k8s-{{ kube_service }}-endpoint
     {%- endfor %}
+    k8s-nodes-not-ready:
+      alerting: enabled
+      triggers:
+        - k8s_node_all_not_ready
+        - k8s_node_majority_not_ready
+        - k8s_node_some_not_ready
+      dimension:
+        service: k8s-nodes
 {%- endif %}
 {%- if pool.get('enabled', False) %}
     k8s-kubelet_endpoint:
@@ -266,6 +311,17 @@ aggregator:
       dimension:
         service: k8s-pool
         nagios_host: 01-service-clusters
+    k8s-nodes:
+      policy: highest_severity
+      alerting: enabled
+      group_by: hostname
+      match:
+        service: k8s-nodes
+      members:
+      - k8s-nodes-not-ready
+      dimension:
+        service: k8s-pool
+        nagios_host: 01-service-clusters
     k8s_pool:
       policy: highest_severity
       alerting: enabled_with_notification
@@ -274,6 +330,7 @@ aggregator:
       members:
       - k8s-kubelet_endpoint
       - k8s-proxy_endpoint
+      - k8s-nodes
       dimension:
         cluster_name: k8s-pool
         nagios_host: 00-top-clusters

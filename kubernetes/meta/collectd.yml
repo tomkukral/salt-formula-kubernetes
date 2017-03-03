@@ -43,6 +43,14 @@ local_plugin:
        expected_content: ok
        url: http://127.0.0.1:10249/healthz
 {%- endif %}
+{%- if master.get('enabled', False) %}
+  collectd_kubectl_get:
+   plugin: python
+   template: kubernetes/files/collectd_kubectl_get.conf
+   polling_interval: 60
+   interval: 30
+   get_nodes: true
+{%- endif %}
 
   collectd_processes:
     process:
