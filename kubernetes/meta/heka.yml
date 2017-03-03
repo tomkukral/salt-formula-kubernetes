@@ -266,7 +266,7 @@ aggregator:
       dimension:
         service: k8s-pool
         nagios_host: 01-service-clusters
-    kube_compute:
+    k8s_pool:
       policy: highest_severity
       alerting: enabled_with_notification
       match:
@@ -275,9 +275,9 @@ aggregator:
       - k8s-kubelet_endpoint
       - k8s-proxy_endpoint
       dimension:
-        cluster_name: k8s-master
+        cluster_name: k8s-pool
         nagios_host: 00-top-clusters
-    kube_control:
+    k8s_master:
       policy: highest_severity
       alerting: enabled_with_notification
       match:
