@@ -68,6 +68,16 @@ copy-calico-cni:
     - dir_mode: 755
     - template: jinja
 
+/etc/calico/calicoctl.cfg:
+  file.managed:
+    - source: salt://kubernetes/files/calico/calicoctl.cfg.pool
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: true
+    - dir_mode: 755
+    - template: jinja
+
 {%- if pool.network.get('systemd', true) %}
 
 /etc/systemd/system/calico-node.service:
