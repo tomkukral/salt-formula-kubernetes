@@ -60,6 +60,8 @@ local_plugin:
         match: docker run .*projectcalico/calico/node
       calico-felix:
         match: calico-felix$
+      calico-bird:
+        match: bird .*/etc/calico/.*/bird.cfg
       calico-bird6:
         match: bird6 .*/etc/calico/.*/bird6.cfg
       calico-confd:
