@@ -111,7 +111,7 @@ metric_collector:
       description: "There is no docker calico-node process running"
       severity: down
       rules:
-      - metric: lma_components_processes
+      - metric: process_processes
         field:
           service: calico-docker
         relational_operator: '=='
@@ -123,7 +123,7 @@ metric_collector:
       description: "There is no calico-felix process running"
       severity: down
       rules:
-      - metric: lma_components_processes
+      - metric: process_processes
         field:
           service: calico-felix
         relational_operator: '=='
@@ -135,7 +135,7 @@ metric_collector:
       description: "There is no calico-bird process running"
       severity: down
       rules:
-      - metric: lma_components_processes
+      - metric: process_processes
         field:
           service: calico-bird
         relational_operator: '=='
@@ -147,7 +147,7 @@ metric_collector:
       description: "There is no calico-bird6 process running"
       severity: down
       rules:
-      - metric: lma_components_processes
+      - metric: process_processes
         field:
           service: calico-bird6
         relational_operator: '=='
@@ -159,7 +159,7 @@ metric_collector:
       description: "There is no calico-confd process running"
       severity: down
       rules:
-      - metric: lma_components_processes
+      - metric: process_processes
         field:
           service: calico-confd
         relational_operator: '=='
