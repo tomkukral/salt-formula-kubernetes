@@ -70,9 +70,9 @@ metric_collector:
       description: 'K8s {{ kube_service }} is locally down'
       severity: down
       rules:
-      - metric: http_check
+      - metric: k8s_service_health
         field:
-          service: k8s-{{ kube_service }}
+          service: {{ kube_service }}
         relational_operator: '=='
         threshold: 0
         window: 60
@@ -122,9 +122,9 @@ metric_collector:
       description: 'K8s kubelet is locally down'
       severity: down
       rules:
-      - metric: http_check
+      - metric: k8s_service_health
         field:
-          service: k8s-kubelet
+          service: kubelet
         relational_operator: '=='
         threshold: 0
         window: 60
@@ -134,9 +134,9 @@ metric_collector:
       description: 'K8s proxy is locally down'
       severity: down
       rules:
-      - metric: http_check
+      - metric: k8s_service_health
         field:
-          service: k8s-proxy
+          service: proxy
         relational_operator: '=='
         threshold: 0
         window: 60

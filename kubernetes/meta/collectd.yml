@@ -20,28 +20,33 @@ local_plugin:
    interval: 30
    url:
 {%- if master.get('enabled', False) %}
-     k8s-apiserver:
+     apiserver:
        expected_code: 200
        expected_content: ok
        url: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}/healthz
-     k8s-scheduler:
+       metric_name: k8s_service_health
+     scheduler:
        expected_code: 200
        expected_content: ok
        url: http://127.0.0.1:10251/healthz
-     k8s-controller-manager:
+       metric_name: k8s_service_health
+     controller-manager:
        expected_code: 200
        expected_content: ok
        url: http://127.0.0.1:10252/healthz
+       metric_name: k8s_service_health
 {%- endif %}
 {%- if pool.get('enabled', False) %}
-     k8s-kubelet:
+     kubelet:
        expected_code: 200
        expected_content: ok
        url: http://127.0.0.1:10248/healthz
-     k8s-proxy:
+       metric_name: k8s_service_health
+     proxy:
        expected_code: 200
        expected_content: ok
        url: http://127.0.0.1:10249/healthz
+       metric_name: k8s_service_health
 {%- endif %}
 {%- if master.get('enabled', False) %}
   collectd_kubectl_get:
