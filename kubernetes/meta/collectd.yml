@@ -92,3 +92,21 @@ local_plugin:
         match: confd .*/etc/calico/confd
 {%- endif %}
 {%- endif %}
+
+{%- if pool.get('enabled', False) %}
+remote_plugin:
+  collectd_http_check:
+   polling_interval: 30
+   url:
+     apiserver:
+       expected_code: 200
+       expected_content: ok
+       # Do not verify the certificate because urllib3 doesn't check for IP addresses in
+       # alternative names DNS entries.
+       # https://github.com/shazow/urllib3/issues/258
+       verify: false
+       client_cert: /etc/kubernetes/ssl/kubelet-client.crt
+       client_key: /etc/kubernetes/ssl/kubelet-client.key
+       url: https://{{ pool.apiserver.host }}:{{ pool.apiserver.port|default('443') }}/healthz
+       metric_name: k8s_service_health_vip
+{%- endif %}

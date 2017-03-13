@@ -274,8 +274,42 @@ metric_collector:
 {%- endif %}
 
 {%- if master.get('enabled', False) %}
+remote_collector:
+  trigger:
+    k8s-apiserver_vip:
+      description: 'K8s apiserver is down'
+      severity: down
+      rules:
+      - metric: k8s_service_health_vip
+        field:
+          service: apiserver
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+  alarm:
+    k8s-apiserver-vip:
+      alerting: enabled
+      triggers:
+      - k8s-apiserver_vip
+      dimension:
+        service: k8s-apiserver-vip
+{%- endif %}
+
+{%- if master.get('enabled', False) %}
 aggregator:
   alarm_cluster:
+    k8s-apiserver_vip:
+      policy: highest_severity
+      alerting: enabled
+      match:
+        service: k8s-apiserver-vip
+      members:
+      - k8s-apiserver-vip
+      dimension:
+        service: k8s-master
+        nagios_host: 01-service-clusters
     {%- for kube_service in kube_services %}
     k8s-{{ kube_service }}_endpoint:
       policy: availability_of_members
@@ -343,6 +377,7 @@ aggregator:
       - k8s-apiserver_endpoint
       - k8s-scheduler_endpoint
       - k8s-controller-manager_endpoint
+      - k8s-apiserver_vip
       dimension:
         cluster_name: k8s-master
         nagios_host: 00-top-clusters
