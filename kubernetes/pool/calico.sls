@@ -25,6 +25,25 @@ copy-calico-ctl-cmd:
      - require:
        - cmd: copy-calico-ctl-cmd
 
+copy-calico-node:
+  dockerng.running:
+    - image: {{ pool.network.get('image', 'calico/node') }}
+
+copy-bird-cl-cmd:
+  cmd.run:
+    - name: docker cp copy-calico-node:/bin/birdcl /tmp/calico/
+    - require:
+      - dockerng: copy-calico-node
+
+/usr/bin/birdcl:
+  file.managed:
+     - source: /tmp/calico/birdcl
+     - mode: 751
+     - user: root
+     - group: root
+     - require:
+       - cmd: copy-bird-cl-cmd
+
 copy-calico-cni:
   dockerng.running:
     - image: {{ pool.network.cni.image }}
