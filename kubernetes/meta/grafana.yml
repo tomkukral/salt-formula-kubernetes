@@ -1,0 +1,33 @@
+dashboard:
+  kubernetes:
+    format: json
+    template: kubernetes/files/grafana_dashboards/kubernetes_influxdb.json
+  main:
+    row:
+      kubernetes-control-plane:
+        title: Kubernetes Control Plane
+        panel:
+          kubernetes:
+            title: Kubernetes
+            links:
+            - dashboard: Kubernetes
+              title: Kubernetes
+              type: dashboard
+            target:
+              cluster_status:
+                rawQuery: true
+                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s_master' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+      kubernetes-data-plane:
+        title: Kubernetes Data Plane
+        panel:
+          kubernetes:
+            title: Kubernetes
+            links:
+            - dashboard: Kubernetes
+              title: Kubernetes
+              type: dashboard
+            target:
+              cluster_status:
+                rawQuery: true
+                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s_pool' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+
