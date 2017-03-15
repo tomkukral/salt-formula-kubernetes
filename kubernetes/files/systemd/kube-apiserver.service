@@ -7,6 +7,7 @@ After=etcd.service
 Wants=etcd.service
 
 [Service]
+SyslogIdentifier=kube-apiserver
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root

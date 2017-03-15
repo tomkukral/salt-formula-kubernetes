@@ -5,6 +5,7 @@ Documentation=man:kube-controller-manager
 After=network.target
 
 [Service]
+SyslogIdentifier=kube-controller-manager
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root

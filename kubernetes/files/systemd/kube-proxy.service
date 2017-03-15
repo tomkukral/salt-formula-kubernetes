@@ -5,6 +5,7 @@ Documentation=man:kube-proxy
 After=network.target
 
 [Service]
+SyslogIdentifier=kube-proxy
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root

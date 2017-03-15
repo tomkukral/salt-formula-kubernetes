@@ -5,6 +5,7 @@ Documentation=man:kube-scheduler
 After=network.target
 
 [Service]
+SyslogIdentifier=kube-scheduler
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root

@@ -8,6 +8,7 @@ Requires=docker.service
 Conflicts=cadvisor.service
 
 [Service]
+SyslogIdentifier=kubelet
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root
