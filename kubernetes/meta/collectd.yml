@@ -15,6 +15,12 @@ local_plugin:
    plugin: python
    template: kubernetes/files/collectd_calico_felix.conf
    url: http://localhost:9091/metrics
+  collectd_calico_bird:
+   plugin: python
+   template: kubernetes/files/collectd_calico_bird.conf
+   endpoints:
+     ipv4_socket: /var/run/calico/bird.ctl
+     ipv6_socket: /var/run/calico/bird6.ctl
 
   collectd_http_check:
    interval: 30
