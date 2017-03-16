@@ -18,7 +18,7 @@ flannel-tar:
     - if_missing: /usr/local/src/flannel/flannel-0.5.5/
 {%- endif %}
 
-{%- if common.hyperkube %}
+{%- if common.hyperkube is defined %}
 /tmp/hyperkube:
   file.directory:
     - user: root
@@ -115,4 +115,17 @@ kubelet_service:
     - file: /etc/kubernetes/kubelet.kubeconfig
     - file: manifest_dir_create
 
+{%- if common.logrotate is defined %}
+/etc/logrotate.d/kubernetes:
+  file.managed:
+    - source: salt://kubernetes/files/logrotate
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: true
+    - defaults:
+      logfile: {{ common.logrotate }}
+
+{% endif %}
 {% endif %}
