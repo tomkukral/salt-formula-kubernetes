@@ -11,6 +11,11 @@
 
 {%- if master.get('enabled', False) or pool.get('enabled', False) %}
 local_plugin:
+  collectd_calico_felix:
+   plugin: python
+   template: kubernetes/files/collectd_calico_felix.conf
+   url: http://localhost:9091/metrics
+
   collectd_http_check:
    interval: 30
    url:
