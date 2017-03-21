@@ -76,7 +76,37 @@
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --insecure-bind-address={{ master.apiserver.insecure_address }} --insecure-port={{ master.apiserver.get('insecure_port', '8080') }} --etcd-servers={% for member in master.etcd.members %}http{% if master.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:4001{% if not loop.last %},{% endif %}{% endfor %}{% if master.etcd.get('ssl', {}).get('enabled') %} --etcd-cafile /var/lib/etcd/ca.pem --etcd-certfile /var/lib/etcd/etcd-client.crt --etcd-keyfile /var/lib/etcd/etcd-client.key {% endif %}--admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota --service-cluster-ip-range={{ master.service_addresses }} --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt --basic-auth-file=/srv/kubernetes/basic_auth.csv --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key --secure-port={{ master.apiserver.get('secure_port', '443') }} --bind-address={{ master.apiserver.address }} --token-auth-file=/srv/kubernetes/known_tokens.csv --v=2 --allow-privileged=True --etcd-quorum-read=true {%- if master.apiserver.node_port_range is defined %} --service-node-port-range {{ master.apiserver.node_port_range }} {%- endif %}{% for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %} --{{ key }}={{ value }}{% endfor %}"
+    - contents: >-
+        DAEMON_ARGS="
+        --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
+        --allow-privileged=True
+        --basic-auth-file=/srv/kubernetes/basic_auth.csv
+        --bind-address={{ master.apiserver.address }}
+        --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
+        --etcd-quorum-read=true
+        --insecure-bind-address={{ master.apiserver.insecure_address }}
+        --insecure-port={{ master.apiserver.get('insecure_port', '8080') }}
+        --secure-port={{ master.apiserver.get('secure_port', '443') }}
+        --service-cluster-ip-range={{ master.service_addresses }}
+        --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
+        --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
+        --token-auth-file=/srv/kubernetes/known_tokens.csv
+        --v=2
+        --etcd-servers=
+{%- for member in master.etcd.members -%}
+          http{% if master.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.get('port', 4001) }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+{%- if master.etcd.get('ssl', {}).get('enabled') %}
+        --etcd-cafile /var/lib/etcd/ca.pem
+        --etcd-certfile /var/lib/etcd/etcd-client.crt
+        --etcd-keyfile /var/lib/etcd/etcd-client.key
+{%- endif %}
+{%- if master.apiserver.node_port_range is defined %} 
+        --service-node-port-range {{ master.apiserver.node_port_range }}
+{%- endif %}
+{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %} 
+        --{{ key }}={{ value }}
+{%- endfor %}"
 
 {% for component in ['scheduler', 'controller-manager'] %}
 
@@ -98,14 +128,31 @@
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --kubeconfig /etc/kubernetes/controller-manager.kubeconfig --cluster-name=kubernetes --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key --v=2 --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt --leader-elect=true{% for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %} --{{ key }}={{ value }}{% endfor %}"
+    - contents: >-
+        DAEMON_ARGS="
+        --cluster-name=kubernetes
+        --kubeconfig /etc/kubernetes/controller-manager.kubeconfig
+        --leader-elect=true
+        --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
+        --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
+        --v=2
+{%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
+        --{{ key }}={{ value }}
+{% endfor %}"
 
 /etc/default/kube-scheduler:
   file.managed:
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --kubeconfig /etc/kubernetes/scheduler.kubeconfig --v=2 --leader-elect=true{% for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %} --{{ key }}={{ value }}{% endfor %}"
+    - contents: >-
+        DAEMON_ARGS="
+        --kubeconfig /etc/kubernetes/scheduler.kubeconfig
+        --leader-elect=true
+        --v=2
+{%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %}
+        --{{ key }}={{ value }}
+{% endfor %}"
 
 /etc/systemd/system/kube-apiserver.service:
   file.managed:
