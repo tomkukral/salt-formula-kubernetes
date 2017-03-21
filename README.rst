@@ -349,7 +349,7 @@ Kubernetes with GlusterFS for storage
 .. code-block:: yaml
 
     kubernetes:
-      master
+      master:
         ...
         storage:
           engine: glusterfs
@@ -371,7 +371,7 @@ Create namespace:
 .. code-block:: yaml
 
     kubernetes:
-      master
+      master:
         ...
         namespace:
           kube-system:
@@ -405,7 +405,7 @@ Pull images from private registries
 .. code-block:: yaml
 
     kubernetes:
-      master
+      master:
         ...
         registry:
           secret:
