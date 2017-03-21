@@ -2,6 +2,9 @@ dashboard:
   kubernetes:
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_influxdb.json
+  calico:
+    format: json
+    template: kubernetes/files/grafana_dashboards/calico_influxdb.json
   main:
     row:
       kubernetes-control-plane:
