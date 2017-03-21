@@ -24,7 +24,7 @@ Sample pillars
       kubernetes:
         common:
           hyperkube:
-            image: gcr.io/google_containers/hyperkube:v1.4.6
+            image: gcr.io/google_containers/hyperkube:v1.5.2
         pool:
           network:
             calicoctl:
