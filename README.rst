@@ -193,8 +193,6 @@ Master definition
             kubelet: 7bN5hJ9JD4fKjnFTkUKsvVNfuyEddw3r
           version: v1.2.4
 
-
-
 Kubernetes with OpenContrail network plugin
 ------------------------------------------------
 
@@ -353,6 +351,20 @@ Running with secured etcd:
           etcd:
             ssl:
               enabled: true
+
+Enable Prometheus metrics in Felix
+
+.. code-block:: yaml
+
+    kubernetes:
+      pool:
+        network:
+          prometheus:
+            enabled: true
+      master:
+        network:
+          prometheus:
+            enabled: true
 
 Post deployment configuration
 
