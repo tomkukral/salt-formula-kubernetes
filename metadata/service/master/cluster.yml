@@ -46,6 +46,13 @@ parameters:
         helm:
           enabled: False
           tiller_image: gcr.io/kubernetes-helm/tiller:v2.2.3
+        netchecker:
+          enabled: False
+          interval: 60
+          namespace: netchecker
+          port: 80
+          agent_image: quay.io/l23network/k8s-netchecker-agent:v1.0
+          server_image: quay.io/l23network/k8s-netchecker-server:v1.0
       token:
         admin: ${_param:kubernetes_admin_token}
         kubelet: ${_param:kubernetes_kubelet_token}

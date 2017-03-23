@@ -1,0 +1,28 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: netchecker-agent
+  name: netchecker-agent
+  namespace: {{ master.addons.netchecker.namespace }}
+spec:
+  template:
+    metadata:
+      name: netchecker-agent
+      labels:
+        app: netchecker-agent
+    spec:
+      containers:
+        - name: netchecker-agent
+          image: {{ master.addons.netchecker.agent_image }}
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          args:
+            - "-v=5"
+            - "-alsologtostderr=true"
+            - "-serverendpoint=netchecker:{{ master.addons.netchecker.port }}"
+            - "-reportinterval={{ master.addons.netchecker.interval }}"

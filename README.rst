@@ -32,7 +32,7 @@ Sample pillars
             cni:
               image: calico/cni
 
-Enable helm-tiller addons
+Enable helm-tiller addon
 
 .. code-block:: yaml
 
@@ -43,6 +43,19 @@ Enable helm-tiller addons
             helm:
               enabled: true
 
+Enable netchecker addon
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          namespace:
+            netchecker:
+              enabled: true
+          addons:
+            netchecker:
+              enabled: true
 
 Pass aditional parameters to daemons:
 

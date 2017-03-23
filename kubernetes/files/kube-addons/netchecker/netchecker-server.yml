@@ -1,0 +1,23 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: netchecker-server
+  namespace: {{ master.addons.netchecker.namespace }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: netchecker-server
+    spec:
+      containers:
+        - name: netchecker-server
+          image: {{ master.addons.netchecker.server_image }}
+          ports:
+            - containerPort: {{ master.addons.netchecker.port }}
+          args:
+            - "-v=5"
+            - "-logtostderr"
+            - "-kubeproxyinit"
+            - "-endpoint=0.0.0.0:{{ master.addons.netchecker.port }}"

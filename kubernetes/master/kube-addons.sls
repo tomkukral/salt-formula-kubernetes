@@ -19,6 +19,23 @@ addon-dir-create:
 
 {% endif %}
 
+{%- if master.addons.netchecker.enabled %}
+
+{%- for resource in ['svc', 'server', 'agent'] %}
+
+/etc/kubernetes/addons/netchecker/netchecker-{{ resource }}.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/netchecker/netchecker-{{ resource }}.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{%- endfor %}
+
+{% endif %}
+
+
 {%- if master.addons.dns.enabled %}
 
 /etc/kubernetes/addons/dns/kubedns-svc.yaml:
