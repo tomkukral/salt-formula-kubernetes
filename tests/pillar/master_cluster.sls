@@ -18,6 +18,9 @@ kubernetes:
       dashboard:
         enabled: true
         public_ip: 185.22.97.131
+      helm:
+        enabled: False
+        tiller_image: gcr.io/kubernetes-helm/tiller:v2.2.3
     admin:
       password: password
       username: admin

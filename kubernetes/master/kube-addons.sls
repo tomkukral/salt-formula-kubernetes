@@ -8,6 +8,17 @@ addon-dir-create:
     - group: root
     - mode: 0755
 
+{%- if master.addons.helm.enabled %}
+/etc/kubernetes/addons/helm/helm-tiller-deploy.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/helm/helm-tiller-deploy.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{% endif %}
+
 {%- if master.addons.dns.enabled %}
 
 /etc/kubernetes/addons/dns/kubedns-svc.yaml:

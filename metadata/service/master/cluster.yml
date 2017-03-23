@@ -43,6 +43,9 @@ parameters:
           enabled: True
         heapster_influxdb:
           enabled: False
+        helm:
+          enabled: False
+          tiller_image: gcr.io/kubernetes-helm/tiller:v2.2.3
       token:
         admin: ${_param:kubernetes_admin_token}
         kubelet: ${_param:kubernetes_kubelet_token}

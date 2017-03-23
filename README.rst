@@ -32,6 +32,18 @@ Sample pillars
             cni:
               image: calico/cni
 
+Enable helm-tiller addons
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          addons:
+            helm:
+              enabled: true
+
+
 Pass aditional parameters to daemons:
 
 .. code-block:: yaml
