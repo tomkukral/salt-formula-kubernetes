@@ -40,4 +40,17 @@ kubernetes_addons_{{ addon_name }}:
 
 {%- endif %}
 
+
+{%- for name, service in master.get('services', {}).items() %}
+{%- if service.get('enabled') %}
+{%- for file in service.get('files', {}) %}
+
+kubernetes_service_{{ name }}_{{ file }}:
+  cmd.run:
+    - name: kubectl apply -f {{ file }}
+
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+
 {%- endif %}

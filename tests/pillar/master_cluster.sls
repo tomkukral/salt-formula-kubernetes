@@ -79,3 +79,10 @@ kubernetes:
         enabled: true
     hyperkube:
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
+    services:
+      myservice:
+        enabled: true
+        files:
+          - /srv/kubernetes/myservice-svc.yml
+          - /srv/kubernetes/myservice-pvc.yml
+          - /srv/kubernetes/myservice-deploy.yml
