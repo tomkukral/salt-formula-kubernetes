@@ -4,7 +4,7 @@
 DAEMON_ARGS="\
 --require-kubeconfig \
 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
---config=/etc/kubernetes/manifests \
+--pod-manifest-path=/etc/kubernetes/manifests \
 --allow-privileged={{ pool.kubelet.allow_privileged }} \
 --cluster_dns={{ pool.cluster_dns }} \
 --cluster_domain={{ pool.cluster_domain }} \

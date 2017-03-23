@@ -2,7 +2,7 @@
 
 # test_args has to be kept at the end, so they'll overwrite any prior configuration
 DAEMON_ARGS="\
---config=/etc/kubernetes/manifests \
+--pod-manifest-path=/etc/kubernetes/manifests \
 --allow-privileged={{ master.kubelet.allow_privileged }} \
 --cluster_dns={{ master.addons.dns.server }} \
 --register-node=false \
