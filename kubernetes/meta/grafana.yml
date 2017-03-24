@@ -19,7 +19,7 @@ dashboard:
             target:
               cluster_status:
                 rawQuery: true
-                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s_master' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s-master' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
       kubernetes-data-plane:
         title: Kubernetes Data Plane
         panel:
@@ -32,5 +32,5 @@ dashboard:
             target:
               cluster_status:
                 rawQuery: true
-                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s_pool' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s-pool' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
 
