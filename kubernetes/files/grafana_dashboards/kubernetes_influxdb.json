@@ -1698,7 +1698,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "alias": "rss",
+              "alias": "rss $tag_service",
               "dsType": "influxdb",
               "groupBy": [
                 {
