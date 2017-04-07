@@ -45,7 +45,7 @@ parameters:
           enabled: False
         helm:
           enabled: False
-          tiller_image: gcr.io/kubernetes-helm/tiller:v2.2.3
+          tiller_image: gcr.io/kubernetes-helm/tiller:v2.3.0
         netchecker:
           enabled: False
           interval: 60
