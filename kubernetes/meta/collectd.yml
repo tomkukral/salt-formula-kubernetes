@@ -54,14 +54,6 @@ local_plugin:
        url: http://127.0.0.1:10249/healthz
        metric_name: k8s_service_health
 {%- endif %}
-{%- if master.get('enabled', False) %}
-  collectd_kubectl_get:
-   plugin: python
-   template: kubernetes/files/collectd_kubectl_get.conf
-   polling_interval: 60
-   interval: 30
-   get_nodes: true
-{%- endif %}
 
   collectd_processes:
     process:
@@ -109,4 +101,13 @@ remote_plugin:
        client_key: /etc/kubernetes/ssl/kubelet-client.key
        url: https://{{ pool.apiserver.host }}:{{ pool.apiserver.port|default('443') }}/healthz
        metric_name: k8s_service_health_vip
+  collectd_k8s_get:
+   plugin: python
+   template: kubernetes/files/collectd_k8s_get.conf
+   polling_interval: 60
+   interval: 30
+   verify: false
+   client_cert: /etc/kubernetes/ssl/kubelet-client.crt
+   client_key: /etc/kubernetes/ssl/kubelet-client.key
+   endpoint: https://{{ pool.apiserver.host }}:{{ pool.apiserver.port|default('443') }}
 {%- endif %}
