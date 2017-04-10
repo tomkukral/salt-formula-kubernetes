@@ -7,6 +7,7 @@ DAEMON_ARGS="\
 --cluster_dns={{ master.addons.dns.server }} \
 --register-node=false \
 --cluster_domain={{ master.addons.dns.domain }} \
+--cni-bin-dir={{ master.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
 --v=2 \
 {%- for key, value in master.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
 --{{ key }}="{{ value }}" \

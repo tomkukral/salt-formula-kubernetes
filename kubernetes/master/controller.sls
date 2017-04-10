@@ -84,9 +84,6 @@
         --basic-auth-file=/srv/kubernetes/basic_auth.csv
         --bind-address={{ master.apiserver.address }}
         --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
-        {%- if common.version >= 1.6 %}
-        --cni-bin-dir={{ master.apiserver.get('cni_bin_dir', '/opt/cni/bin') }}
-        {%- endif %}
         --etcd-quorum-read=true
         --insecure-bind-address={{ master.apiserver.insecure_address }}
         --insecure-port={{ master.apiserver.get('insecure_port', '8080') }}
