@@ -78,7 +78,7 @@
     - mode: 644
     - contents: >-
         DAEMON_ARGS="
-        --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
+        --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
         --allow-privileged=True
         --basic-auth-file=/srv/kubernetes/basic_auth.csv
         --bind-address={{ master.apiserver.address }}
