@@ -1,0 +1,31 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import pool with context %}
+
+{%- if pool.get('enabled', False) %}
+{% set network = pool.get('network', []) %}
+{%- else %}
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
+{% endif %}
+
+{%- if master.get('enabled', False) or pool.get('enabled', False) %}
+agent:
+  input:
+    procstat:
+{%- if master.get('enabled', False) %}
+      - pattern: "hyperkube.*apiserver"
+      - pattern: "hyperkube.*scheduler"
+      - pattern: "hyperkube.*controller-manager"
+{%- endif %}
+{%- if pool.get('enabled', False) %}
+      - pattern: "hyperkube.*kubelet"
+      - pattern: "hyperkube.*proxy"
+{%- endif %}
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+      - exe: calico-felix
+      - pattern: "bird .*/etc/calico/.*/bird.cfg"
+      - pattern: "bird6 .*/etc/calico/.*/bird6.cfg"
+      - pattern: "confd .*/etc/calico/confd"
+{%- endif %}
+{%- endif %}
