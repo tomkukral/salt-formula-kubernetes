@@ -1,0 +1,121 @@
+{% raw %}
+server:
+  recording:
+    - name: cluster_namespace_controller_pod_container:spec_memory_limit_bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_spec_memory_limit_bytes{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:spec_cpu_shares
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_spec_cpu_shares{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:cpu_usage:rate
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            irate(
+              container_cpu_usage_seconds_total{container_name!=""}[5m]
+            ),
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_usage:bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_memory_usage_bytes{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_working_set:bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_memory_working_set_bytes{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_rss:bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_memory_rss{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_cache:bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_memory_cache{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:disk_usage:bytes
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name) (
+          label_replace(
+            container_fs_usage_bytes{container_name!=""},
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_pagefaults:rate
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name,scope,type) (
+          label_replace(
+            irate(
+              container_memory_failures_total{container_name!=""}[5m]
+            ),
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster_namespace_controller_pod_container:memory_oom:rate
+      query: >-
+        sum by (cluster,namespace,controller,pod_name,container_name,scope,type) (
+          label_replace(
+            irate(
+              container_memory_failcnt{container_name!=""}[5m]
+            ),
+            "controller", "$1",
+            "pod_name", "^(.*)-[a-z0-9]+"
+          )
+        )
+    - name: cluster:memory_allocation:percent
+      query: >-
+        100 * sum by (cluster) (
+          container_spec_memory_limit_bytes{pod_name!=""}
+        ) / sum by (cluster) (
+          machine_memory_bytes
+        )
+    - name: cluster:memory_used:percent
+      query: >-
+        100 * sum by (cluster) (
+          container_memory_usage_bytes{pod_name!=""}
+        ) / sum by (cluster) (
+          machine_memory_bytes
+        )
+    - name: cluster:cpu_allocation:percent
+      query: >-
+        100 * sum by (cluster) (
+          container_spec_cpu_shares{pod_name!=""}
+        ) / sum by (cluster) (
+          container_spec_cpu_shares{id="/"} * on(cluster,instance) machine_cpu_cores
+        )
+{% endraw %}
