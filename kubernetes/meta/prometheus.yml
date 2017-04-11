@@ -1,3 +1,14 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import pool with context %}
+
+{%- if pool.get('enabled', False) %}
+{% set network = pool.get('network', []) %}
+{%- else %}
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
+{% endif %}
+
 {% raw %}
 server:
   recording:
@@ -118,4 +129,77 @@ server:
         ) / sum by (cluster) (
           container_spec_cpu_shares{id="/"} * on(cluster,instance) machine_cpu_cores
         )
+  alert:
+    AvgKubeletRunningContainerCountLow:
+      if: >-
+        avg_over_time(kubelet_running_container_count[2m]) * 1.3 <
+        avg_over_time(kubelet_running_container_count[10m])
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: 'Container count is low'
+        description: 'Container count from last 2m is lower than avarage from 10m'
+    AvgKubeletRunningPODCountLow:
+      if: >-
+        avg_over_time(kubelet_running_pod_count[2m]) * 1.3 <
+        avg_over_time(kubelet_running_pod_count[10m])
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: 'POD count is low'
+        description: 'POD count from last 2m is lower than avarage from 10m'
+    ContainerScrapeError:
+      if: 'container_scrape_error != 0'
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: 'Fail to scrape container'
+        description: 'Prometheus was not able to scrape metrics from container on {{ $labels.instance }}'
 {% endraw %}
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+{% raw %}
+    ProcstatPidBird:
+      if: >-
+        absent(procstat_pid{process_name="bird"}) OR
+        count(procstat_pid{process_name="bird"}) < count(up{job="kubernetes-node"} == 1)
+      labels:
+        severity: warning
+        service: bird
+      annotations:
+        summary: 'Bird process is missing'
+        description: 'Bird process is not running on all k8s nodes'
+    ProcstatPidBird6:
+      if: >-
+        absent(procstat_pid{process_name="bird6"}) OR
+        count(procstat_pid{process_name="bird6"}) < count(up{job="kubernetes-node"} == 1)
+      labels:
+        severity: warning
+        service: bird6
+      annotations:
+        summary: 'Bird6 process is missing'
+        description: 'Bird6 process is not running on all k8s nodes'
+    ProcstatPidConfd:
+      if: >-
+        absent(procstat_pid{process_name="confd"}) OR
+        count(procstat_pid{process_name="confd"}) < count(up{job="kubernetes-node"} == 1)
+      labels:
+        severity: warning
+        service: confd
+      annotations:
+        summary: 'Confd process is missing'
+        description: 'Confd process is not running on all k8s nodes'
+    ProcstatPidCalicoFelix:
+      if: >-
+        absent(procstat_pid{process_name="calico-felix"}) OR
+        count(procstat_pid{process_name="calico-felix"}) < count(up{job="kubernetes-node"} == 1)
+      labels:
+        severity: warning
+        service: calico-felix
+      annotations:
+        summary: 'Calico-felix process is missing'
+        description: 'Calico-felix process is not running on all k8s nodes'
+{% endraw %}
+{% endif %}
