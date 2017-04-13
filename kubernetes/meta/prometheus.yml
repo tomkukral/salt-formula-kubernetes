@@ -9,8 +9,23 @@
 {% endif %}
 {% endif %}
 
-{% raw %}
 server:
+{%- if network is defined and network.get('engine', None) == 'calico' %}
+  target:
+    static:
+      calico:
+        endpoint:
+         {%- if pool.get('enabled', False) and pool.network.get('prometheus', {}).get('enabled') %}
+          - address: {{ pool.network.prometheus.get('address', pool.address) }}
+            port: {{ pool.network.prometheus.get('port', 9091) }}
+         {%- else %}
+           {%- if master.get('enabled', False) and master.network.get('prometheus', {}).get('enabled') %}
+          - address: {{ master.network.prometheus.get('address', master.address) }}
+            port: {{ master.network.prometheus.get('port', 9091) }}
+           {%- endif %}
+         {%- endif %}
+{%- endif %}
+{% raw %}
   recording:
     - name: cluster_namespace_controller_pod_container:spec_memory_limit_bytes
       query: >-
@@ -158,9 +173,27 @@ server:
       annotations:
         summary: 'Fail to scrape container'
         description: 'Prometheus was not able to scrape metrics from container on {{ $labels.instance }}'
+    ContainerLastSeenKubernetes:
+      if: >-
+        time() - container_last_seen{id=~"/system.slice/kube-.*.service"} > 60
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: 'Kubernetes service {{ $labels.id }} is down'
+        description: 'Kubernetes service {{ $labels.id }} is down on node {{ $labels.instance }}'
 {% endraw %}
 {%- if network is defined and network.get('engine', None) == 'calico' %}
 {% raw %}
+    ContainerLastSeenCalicoFelix:
+      if: >-
+        time() - container_last_seen{id="/system.slice/calico-node.service"} > 60
+      labels:
+        severity: warning
+        service: calico-felix
+      annotations:
+        summary: 'Calico service {{ $labels.id }} is down'
+        description: 'Calico service {{ $labels.id }} is down on node {{ $labels.instance }}'
     ProcstatPidBird:
       if: >-
         absent(procstat_pid{process_name="bird"}) OR
