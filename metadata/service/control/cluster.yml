@@ -1,7 +1,5 @@
 applications:
 - kubernetes
-classes:
-- service.kubernetes.logging
 parameters:
   kubernetes:
     control:

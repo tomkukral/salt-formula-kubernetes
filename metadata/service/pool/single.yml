@@ -1,7 +1,6 @@
 applications:
 - kubernetes
 classes:
-- service.kubernetes.logging
 - service.kubernetes.support
 - service.kubernetes.common
 parameters:
