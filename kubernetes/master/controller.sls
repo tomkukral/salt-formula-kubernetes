@@ -92,6 +92,7 @@
         --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
         --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
         --token-auth-file=/srv/kubernetes/known_tokens.csv
+        --apiserver-count={{ master.apiserver.get('count', 1) }}
         --v=2
         --etcd-servers=
 {%- for member in master.etcd.members -%}
