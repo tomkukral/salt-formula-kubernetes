@@ -54,7 +54,7 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
-{% if master.addons.dns.get('autoscaler', True) %}
+{% if master.addons.dns.get('autoscaler', {}).get('enabled', True) %}
 
 /etc/kubernetes/addons/dns/kubedns-autoscaler.yaml:
   file.managed:

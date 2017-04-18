@@ -57,6 +57,23 @@ Enable netchecker addon
             netchecker:
               enabled: true
 
+Enable autoscaler for dns addon. Poll period can be skipped.
+
+.. code-block:: yaml
+
+    kubernetes:
+        master:
+          addons:
+            dns:
+              domain: cluster.local
+              enabled: true
+              replicas: 1
+              server: 10.254.0.10
+              autoscaler:
+                enabled: true
+                poll-period-seconds: 60
+
+
 Pass aditional parameters to daemons:
 
 .. code-block:: yaml

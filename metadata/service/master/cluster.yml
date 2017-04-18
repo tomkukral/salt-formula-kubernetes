@@ -32,7 +32,8 @@ parameters:
         dns:
           enabled: true
           replicas: 1
-          autoscaler: True
+          autoscaler:
+            enabled: true
           domain: cluster.local
           server: 10.254.0.10
           dnsmasq:
