@@ -19,7 +19,7 @@ spec:
     - hyperkube
     - scheduler
       --kubeconfig /etc/kubernetes/scheduler.kubeconfig
-      --v=2
+      --v={{ master.get('verbosity', 2) }}
       --leader-elect=true
 {%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %}
       --{{ key }}={{ value }}

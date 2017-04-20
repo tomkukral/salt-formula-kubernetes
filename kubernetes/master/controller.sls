@@ -93,7 +93,7 @@
         --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
         --token-auth-file=/srv/kubernetes/known_tokens.csv
         --apiserver-count={{ master.apiserver.get('count', 1) }}
-        --v=2
+        --v={{ master.get('verbosity', 2) }}
         --etcd-servers=
 {%- for member in master.etcd.members -%}
           http{% if master.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.get('port', 4001) }}{% if not loop.last %},{% endif %}
@@ -137,7 +137,7 @@
         --leader-elect=true
         --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
         --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
-        --v=2
+        --v={{ master.get('verbosity', 2) }}
 {%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
         --{{ key }}={{ value }}
 {% endfor %}"
@@ -151,7 +151,7 @@
         DAEMON_ARGS="
         --kubeconfig /etc/kubernetes/scheduler.kubeconfig
         --leader-elect=true
-        --v=2
+        --v={{ master.get('verbosity', 2) }}
 {%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %}
         --{{ key }}={{ value }}
 {% endfor %}"

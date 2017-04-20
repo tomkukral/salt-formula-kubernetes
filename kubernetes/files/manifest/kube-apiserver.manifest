@@ -29,7 +29,7 @@ spec:
       --token-auth-file=/srv/kubernetes/known_tokens.csv
       --apiserver-count={{ master.apiserver.get('count', 1) }}
       --etcd-quorum-read=true
-      --v=2
+      --v={{ master.get('verbosity', 2) }}
       --allow-privileged=True
 {%- if master.apiserver.node_port_range is defined %}
       --service-node-port-range {{ master.apiserver.node_port_range }}

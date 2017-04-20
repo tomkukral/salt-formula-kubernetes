@@ -57,6 +57,17 @@ Enable netchecker addon
             netchecker:
               enabled: true
 
+Configure service verbosity
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          verbosity: 2
+        pool:
+          verbosity: 2
+
 Enable autoscaler for dns addon. Poll period can be skipped.
 
 .. code-block:: yaml
