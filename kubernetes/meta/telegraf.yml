@@ -13,19 +13,31 @@
 agent:
   input:
     procstat:
-{%- if master.get('enabled', False) %}
-      - pattern: "hyperkube.*apiserver"
-      - pattern: "hyperkube.*scheduler"
-      - pattern: "hyperkube.*controller-manager"
-{%- endif %}
-{%- if pool.get('enabled', False) %}
-      - pattern: "hyperkube.*kubelet"
-      - pattern: "hyperkube.*proxy"
-{%- endif %}
-{%- if network is defined and network.get('engine', None) == 'calico' %}
-      - exe: calico-felix
-      - pattern: "bird .*/etc/calico/.*/bird.cfg"
-      - pattern: "bird6 .*/etc/calico/.*/bird6.cfg"
-      - pattern: "confd .*/etc/calico/confd"
-{%- endif %}
+      process:
+        keepalived:
+          exe: keepalived
+  {%- if master.get('enabled', False) %}
+        hypercube-apiserver:
+          pattern: "hyperkube.*apiserver"
+        hypercube-scheduler:
+          pattern: "hyperkube.*scheduler"
+        hypercube-controller-manager:
+          pattern: "hyperkube.*controller-manager"
+  {%- endif %}
+  {%- if pool.get('enabled', False) %}
+        hypercube-kubelet:
+          pattern: "hyperkube.*kubelet"
+        hypercube-proxy:
+          pattern: "hyperkube.*proxy"
+  {%- endif %}
+  {%- if network is defined and network.get('engine', None) == 'calico' %}
+        calico-felix:
+          exe: calico-felix
+        bird:
+          pattern: "bird .*/etc/calico/.*/bird.cfg"
+        bird6:
+          pattern: "bird6 .*/etc/calico/.*/bird6.cfg"
+        confd:
+          pattern: "confd .*/etc/calico/confd"
+  {%- endif %}
 {%- endif %}
