@@ -27,7 +27,7 @@ server:
 {%- endif %}
 {% raw %}
   recording:
-    - name: cluster_namespace_controller_pod_container:spec_memory_limit_bytes
+    cluster_namespace_controller_pod_container:spec_memory_limit_bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -36,7 +36,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:spec_cpu_shares
+    cluster_namespace_controller_pod_container:spec_cpu_shares:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -45,7 +45,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:cpu_usage:rate
+    cluster_namespace_controller_pod_container:cpu_usage:rate:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -56,7 +56,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_usage:bytes
+    cluster_namespace_controller_pod_container:memory_usage:bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -65,7 +65,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_working_set:bytes
+    cluster_namespace_controller_pod_container:memory_working_set:bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -74,7 +74,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_rss:bytes
+    cluster_namespace_controller_pod_container:memory_rss:bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -83,7 +83,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_cache:bytes
+    cluster_namespace_controller_pod_container:memory_cache:bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -92,7 +92,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:disk_usage:bytes
+    cluster_namespace_controller_pod_container:disk_usage:bytes:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name) (
           label_replace(
@@ -101,7 +101,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_pagefaults:rate
+    cluster_namespace_controller_pod_container:memory_pagefaults:rate:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name,scope,type) (
           label_replace(
@@ -112,7 +112,7 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster_namespace_controller_pod_container:memory_oom:rate
+    cluster_namespace_controller_pod_container:memory_oom:rate:
       query: >-
         sum by (cluster,namespace,controller,pod_name,container_name,scope,type) (
           label_replace(
@@ -123,21 +123,21 @@ server:
             "pod_name", "^(.*)-[a-z0-9]+"
           )
         )
-    - name: cluster:memory_allocation:percent
+    cluster:memory_allocation:percent:
       query: >-
         100 * sum by (cluster) (
           container_spec_memory_limit_bytes{pod_name!=""}
         ) / sum by (cluster) (
           machine_memory_bytes
         )
-    - name: cluster:memory_used:percent
+    cluster:memory_used:percent:
       query: >-
         100 * sum by (cluster) (
           container_memory_usage_bytes{pod_name!=""}
         ) / sum by (cluster) (
           machine_memory_bytes
         )
-    - name: cluster:cpu_allocation:percent
+    cluster:cpu_allocation:percent:
       query: >-
         100 * sum by (cluster) (
           container_spec_cpu_shares{pod_name!=""}
@@ -173,66 +173,26 @@ server:
       annotations:
         summary: 'Fail to scrape container'
         description: 'Prometheus was not able to scrape metrics from container on {{ $labels.instance }}'
-    ContainerLastSeenKubernetes:
+    ProcstatRunningKubernetes:
       if: >-
-        time() - container_last_seen{id=~"/system.slice/kube-.*.service"} > 60
+        procstat_running{process_name=~"hypercube-.*"} == 0
       labels:
         severity: warning
         service: kubernetes
       annotations:
-        summary: 'Kubernetes service {{ $labels.id }} is down'
-        description: 'Kubernetes service {{ $labels.id }} is down on node {{ $labels.instance }}'
+        summary: 'Kubernetes service {{ $labels.process_name }} is down'
+        description: 'Kubernetes service {{ $labels.process_name }} is down on node {{ $labels.host }}'
 {% endraw %}
 {%- if network is defined and network.get('engine', None) == 'calico' %}
 {% raw %}
-    ContainerLastSeenCalicoFelix:
+    ProcstatRunningCalico:
       if: >-
-        time() - container_last_seen{id="/system.slice/calico-node.service"} > 60
+        procstat_running{process_name=~"calico-felix|bird|bird6|confd"} == 0
       labels:
         severity: warning
-        service: calico-felix
+        service: calico
       annotations:
-        summary: 'Calico service {{ $labels.id }} is down'
-        description: 'Calico service {{ $labels.id }} is down on node {{ $labels.instance }}'
-    ProcstatPidBird:
-      if: >-
-        absent(procstat_pid{process_name="bird"}) OR
-        count(procstat_pid{process_name="bird"}) < count(up{job="kubernetes-node"} == 1)
-      labels:
-        severity: warning
-        service: bird
-      annotations:
-        summary: 'Bird process is missing'
-        description: 'Bird process is not running on all k8s nodes'
-    ProcstatPidBird6:
-      if: >-
-        absent(procstat_pid{process_name="bird6"}) OR
-        count(procstat_pid{process_name="bird6"}) < count(up{job="kubernetes-node"} == 1)
-      labels:
-        severity: warning
-        service: bird6
-      annotations:
-        summary: 'Bird6 process is missing'
-        description: 'Bird6 process is not running on all k8s nodes'
-    ProcstatPidConfd:
-      if: >-
-        absent(procstat_pid{process_name="confd"}) OR
-        count(procstat_pid{process_name="confd"}) < count(up{job="kubernetes-node"} == 1)
-      labels:
-        severity: warning
-        service: confd
-      annotations:
-        summary: 'Confd process is missing'
-        description: 'Confd process is not running on all k8s nodes'
-    ProcstatPidCalicoFelix:
-      if: >-
-        absent(procstat_pid{process_name="calico-felix"}) OR
-        count(procstat_pid{process_name="calico-felix"}) < count(up{job="kubernetes-node"} == 1)
-      labels:
-        severity: warning
-        service: calico-felix
-      annotations:
-        summary: 'Calico-felix process is missing'
-        description: 'Calico-felix process is not running on all k8s nodes'
+        summary: 'Calico service {{ $labels.process_name }} is down'
+        description: 'Calico service {{ $labels.process_name }} is down on node {{ $labels.host }}'
 {% endraw %}
 {% endif %}

@@ -14,8 +14,6 @@ agent:
   input:
     procstat:
       process:
-        keepalived:
-          exe: keepalived
   {%- if master.get('enabled', False) %}
         hypercube-apiserver:
           pattern: "hyperkube.*apiserver"
