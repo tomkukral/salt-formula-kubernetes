@@ -1,29 +1,25 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- from "kubernetes/map.jinja" import pool with context %}
 
+{%- set network = {} %}
 {%- if pool.get('enabled', False) %}
-{% set network = pool.get('network', []) %}
-{%- else %}
-{%- if master.get('enabled', False) %}
-{% set network = master.get('network', []) %}
-{% endif %}
-{% endif %}
+{%- set network = pool.get('network', {}) %}
+{%- else if master.get('enabled', False) %}
+{%- set network = master.get('network', {}) %}
+{%- endif %}
 
 server:
-{%- if network is defined and network.get('engine', None) == 'calico' %}
+{%- if network.get('engine', '') == 'calico' and network.get('prometheus', {}).get('enabled', False) %}
   target:
     static:
       calico:
         endpoint:
-         {%- if pool.get('enabled', False) and pool.network.get('prometheus', {}).get('enabled') %}
-          - address: {{ pool.network.prometheus.get('address', pool.address) }}
-            port: {{ pool.network.prometheus.get('port', 9091) }}
-         {%- else %}
-           {%- if master.get('enabled', False) and master.network.get('prometheus', {}).get('enabled') %}
-          - address: {{ master.network.prometheus.get('address', master.address) }}
-            port: {{ master.network.prometheus.get('port', 9091) }}
-           {%- endif %}
-         {%- endif %}
+{%- if pool.get('enabled', False) %}
+          - address: {{ network.prometheus.get('address', pool.address) }}
+{%- else %}
+          - address: {{ network.prometheus.get('address', master.address) }}
+{%- endif %}
+            port: {{ network.prometheus.get('port', 9091) }}
 {%- endif %}
   recording:
     cluster_namespace_controller_pod_container:spec_memory_limit_bytes:
@@ -189,7 +185,7 @@ server:
         summary: 'Kubernetes service {{ $labels.process_name }} is down'
         description: 'Kubernetes service {{ $labels.process_name }} is down on node {{ $labels.host }}'
       {% endraw %}
-{%- if network is defined and network.get('engine', None) == 'calico' %}
+{%- if network.get('engine', '') == 'calico' %}
     ProcstatRunningCalico:
       if: >-
         procstat_running{process_name=~"calico-felix|bird|bird6|confd"} == 0
