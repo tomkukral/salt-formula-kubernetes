@@ -2,12 +2,12 @@
 
 {% set common = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['curl', 'git', 'apt-transport-https', 'python-apt', 'nfs-common', 'socat', 'netcat-traditional', 'openssl'],
+        'pkgs': ['curl', 'git', 'apt-transport-https', 'python-apt', 'socat', 'openssl'],
         'services': [],
         'version': _version|float,
     },
     'RedHat': {
-        'pkgs': ['curl', 'git', 'apt-transport-https', 'python-apt', 'nfs-common', 'socat', 'netcat-traditional', 'python'],
+        'pkgs': ['curl', 'git', 'socat', 'python', 'openssl'],
         'services': [],
         'version': _version|float,
     },
@@ -20,7 +20,7 @@
     },
     'RedHat': {
         'pkgs': [],
-        'services': [],
+        'services': ['kube-apiserver','kube-scheduler','kube-controller-manager'],
     },
 }, merge=salt['pillar.get']('kubernetes:master')) %}
 
@@ -31,18 +31,18 @@
     },
     'RedHat': {
         'pkgs': [],
-        'services': [],
+        'services': ['kube-proxy'],
     },
 }, merge=salt['pillar.get']('kubernetes:pool')) %}
 
 {% set control = salt['grains.filter_by']({
     'Debian': {
         'service': {},
-        'config_type': "default",
+        'config_type': 'default',
     },
     'RedHat': {
         'service': {},
-        'config_type': "default",
+        'config_type': 'default',
     },
 }, merge=salt['pillar.get']('kubernetes:control')) %}
 
