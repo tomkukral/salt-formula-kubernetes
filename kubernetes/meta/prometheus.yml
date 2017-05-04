@@ -4,7 +4,7 @@
 {%- set network = {} %}
 {%- if pool.get('enabled', False) %}
 {%- set network = pool.get('network', {}) %}
-{%- else if master.get('enabled', False) %}
+{%- elif master.get('enabled', False) %}
 {%- set network = master.get('network', {}) %}
 {%- endif %}
 
