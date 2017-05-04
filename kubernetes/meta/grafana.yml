@@ -12,6 +12,9 @@ dashboard:
 {%- endif %}
 
 {%- if 'prometheus' in backend %}
+  kubernetes-cluster-prometheus:
+    format: json
+    template: kubernetes/files/grafana_dashboards/kubernetes_cluster_prometheus.json
   kubernetes-application-prometheus:
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_app_prometheus.json
