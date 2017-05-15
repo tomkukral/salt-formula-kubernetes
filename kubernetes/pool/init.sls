@@ -4,6 +4,9 @@ include:
 {%- if pool.network.engine == "calico" %}
 - kubernetes.pool.calico
 {%- endif %}
+{%- if pool.network.engine == "opencontrail" %}
+- kubernetes.pool.opencontrail
+{%- endif %}
 - kubernetes.pool.service
 {%- if pool.network.engine == "flannel" %}
 - kubernetes.pool.flannel

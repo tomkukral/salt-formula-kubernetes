@@ -1,6 +1,6 @@
 grain:
   kubernetes:
-    {%- if pillar.kubernetes.pool is defined %}
+    {%- if pillar.get('kubernetes', {}).get('pool') %}
       {%- from "kubernetes/map.jinja" import pool with context %}
       {%- if pool.get('service', {})|length > 0 %}
         {%- set service_grains = {'kubernetes': {'service': pool.get('service', {}).get('local', {})}} -%}
