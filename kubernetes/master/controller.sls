@@ -212,14 +212,16 @@ master_services:
 
 {%- set date = salt['cmd.run']('date "+%FT%TZ"') %}
 
-/registry/namespaces/{{ name }}:
-  etcd.set:
-    - value: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"{{ name }}","creationTimestamp":"{{ date }}"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}'
+kubernetes_namespace_create_{{ name }}:
+  cmd.run:
+    - name: kubectl create ns "{{ name }}"
+    - name: kubectl get ns -o=custom-columns=NAME:.metadata.name | grep -v NAME | grep "{{ name }}" > /dev/null || kubectl create ns "{{ name }}"
 
 {%- else %}
 
-/registry/namespaces/{{ name }}:
-  etcd.rm
+kubernetes_namespace_delete_{{ name }}:
+  cmd.run:
+    - name: kubectl get ns -o=custom-columns=NAME:.metadata.name | grep -v NAME | grep "{{ name }}" > /dev/null && kubectl delete ns "{{ name }}"
 
 {%- endif %}
 
