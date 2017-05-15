@@ -1,4 +1,9 @@
 {%- from "kubernetes/map.jinja" import common with context %}
+{%- from "kubernetes/map.jinja" import master with context %}
+
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
 
 dashboard:
 {%- if common.monitoring is defined %}
@@ -18,14 +23,21 @@ dashboard:
   kubernetes-application-prometheus:
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_app_prometheus.json
+{%- if network is defined and network.get('engine') == 'calico' %}
+  calico-prometheus:
+    format: json
+    template: kubernetes/files/grafana_dashboards/calico_prometheus.json
+{%- endif %}
 {%- endif %}
 {%- if 'influxdb' in backend %}
   kubernetes:
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_influxdb.json
+{%- if network is defined and network.get('engine') == 'calico' %}
   calico:
     format: json
     template: kubernetes/files/grafana_dashboards/calico_influxdb.json
+{%- endif %}
   main:
     row:
       kubernetes-control-plane:
