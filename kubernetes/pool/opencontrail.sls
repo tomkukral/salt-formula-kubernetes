@@ -11,5 +11,14 @@
     - dir_mode: 755
     - template: jinja
 
-
+/opt/cni/bin/opencontrail:
+  file.managed:
+    - source: http://apt.tcpcloud.eu/kubernetes/bin/opencontrail
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: true
+    - dir_mode: 755
+    - template: jinja
+    - source_hash: md5={{ pool.network.hash }}
 {%- endif %}
