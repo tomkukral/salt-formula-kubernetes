@@ -29,6 +29,8 @@ agent:
           pattern: "hyperkube.*proxy"
   {%- endif %}
   {%- if network is defined and network.get('engine', None) == 'calico' %}
+        calico-docker:
+          pattern: "docker run .*projectcalico/calico/node"
         calico-felix:
           exe: calico-felix
         bird:
