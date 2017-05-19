@@ -12,6 +12,9 @@ spec:
       labels:
         k8s-app: kube-dns-autoscaler
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
       - name: autoscaler
         image: gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.0.0

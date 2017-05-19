@@ -20,6 +20,9 @@ spec:
         version: v0
         kubernetes.io/cluster-service: "true"
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
       - name: registry
         image: registry:2.5.1

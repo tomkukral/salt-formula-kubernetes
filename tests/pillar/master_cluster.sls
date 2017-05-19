@@ -31,12 +31,15 @@ kubernetes:
       username: admin
     registry:
         host: tcpcloud
+    host:
+      name: node040
     apiserver:
       address: 10.0.175.100
       insecure_address: 127.0.0.1
       insecure_port: 8080
     ca: kubernetes
     enabled: true
+    unschedulable: true
     etcd:
       members:
       - host: 10.0.175.100

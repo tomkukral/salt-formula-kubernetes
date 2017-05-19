@@ -227,6 +227,13 @@ kubernetes_namespace_delete_{{ name }}:
 
 {%- endfor %}
 
+{%- if master.get('unschedulable', 'false') %}
+kubernetes_taint_master_{{ master.host.name }}:
+  cmd.run:
+    - name: kubectl taint --overwrite nodes {{ master.host.name }} node-role.kubernetes.io/master=:NoSchedule
+
+{%- endif %}
+
 {%- if master.registry.secret is defined %}
 
 {%- for name,registry in master.registry.secret.iteritems() %}

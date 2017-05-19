@@ -7,8 +7,11 @@ parameters:
   kubernetes:
     master:
       enabled: true
+      unschedulable: false
       registry:
         host: tcpcloud
+      host:
+        name: ${linux:system:name}
       service_addresses: 10.254.0.0/16
       admin:
         username: ${_param:kubernetes_admin_user}

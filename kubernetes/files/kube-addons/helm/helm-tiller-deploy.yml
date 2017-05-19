@@ -20,6 +20,9 @@ spec:
         app: helm
         name: tiller
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
       - image: {{ master.addons.helm.tiller_image }}
         imagePullPolicy: IfNotPresent

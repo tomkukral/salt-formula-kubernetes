@@ -23,6 +23,9 @@ spec:
         k8s-app: calico-policy
     spec:
       hostNetwork: true
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
         - name: calico-policy-controller
           image: {{ master.addons.calico_policy.image }}

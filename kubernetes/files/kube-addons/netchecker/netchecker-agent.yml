@@ -13,6 +13,9 @@ spec:
       labels:
         app: netchecker-agent
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
         - name: netchecker-agent
           image: {{ master.addons.netchecker.agent_image }}

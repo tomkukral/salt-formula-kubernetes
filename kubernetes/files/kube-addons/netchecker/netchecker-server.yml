@@ -11,6 +11,9 @@ spec:
       labels:
         app: netchecker-server
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
         - name: netchecker-server
           image: {{ master.addons.netchecker.server_image }}
