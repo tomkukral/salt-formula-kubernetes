@@ -18,6 +18,9 @@ spec:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
       - name: kubernetes-dashboard
         image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.5.1
