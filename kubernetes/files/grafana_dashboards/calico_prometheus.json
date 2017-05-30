@@ -961,10 +961,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_active_local_endpoints) by (instance)",
+              "expr": "sum by (host) (felix_active_local_endpoints * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1039,10 +1039,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_active_local_policies) by (instance)",
+              "expr": "sum by (host) (felix_active_local_policies * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1117,10 +1117,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_active_local_selectors) by (instance)",
+              "expr": "sum by (host) (felix_active_local_selectors * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1195,10 +1195,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_active_local_tags) by (instance)",
+              "expr": "sum by (host) (felix_active_local_tags * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1273,10 +1273,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_cluster_num_host_endpoints) by (instance)",
+              "expr": "sum by (host) (felix_cluster_num_host_endpoints * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1351,10 +1351,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_cluster_num_workload_endpoints) by (instance)",
+              "expr": "sum by (host) (felix_cluster_num_workload_endpoints * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1429,10 +1429,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (felix_cluster_num_hosts) by (instance)",
+              "expr": "sum by (host) (felix_cluster_num_hosts * on (job, instance) group_left(host) felix_host)",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "-> {{ instance }}",
+              "legendFormat": "-> {{ host }}",
               "refId": "A",
               "step": 20
             }
@@ -1543,5 +1543,5 @@
   },
   "timezone": "browser",
   "title": "Calico cluster monitoring (via Prometheus)",
-  "version": 3
+  "version": 4
 }{% endraw %}
