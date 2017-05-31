@@ -6,35 +6,27 @@
 {% endif %}
 
 dashboard:
-{%- if common.monitoring is defined %}
-  {%- set backend = common.monitoring.get('backend') %}
-  {%- if backend is string %}
-    {%- set backend = [backend] %}
-  {%- endif %}
-{%- else %}
-{# legacy StackLight behavior #}
-{% set backend = ['influxdb'] %}
-{%- endif %}
-
-{%- if 'prometheus' in backend %}
   kubernetes-cluster-prometheus:
+    datasource: prometheus
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_cluster_prometheus.json
   kubernetes-application-prometheus:
+    datasource: prometheus
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_app_prometheus.json
 {%- if network is defined and network.get('engine') == 'calico' %}
   calico-prometheus:
+    datasource: prometheus
     format: json
     template: kubernetes/files/grafana_dashboards/calico_prometheus.json
 {%- endif %}
-{%- endif %}
-{%- if 'influxdb' in backend %}
   kubernetes:
+    datasource: influxdb
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_influxdb.json
 {%- if network is defined and network.get('engine') == 'calico' %}
   calico:
+    datasource: influxdb
     format: json
     template: kubernetes/files/grafana_dashboards/calico_influxdb.json
 {%- endif %}
@@ -66,4 +58,3 @@ dashboard:
               cluster_status:
                 rawQuery: true
                 query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'k8s-pool' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
-{%- endif %}
