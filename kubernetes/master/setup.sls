@@ -41,7 +41,7 @@ kubernetes_addons_{{ addon_name }}:
 {%- endif %}
 
 
-{%- for name, service in master.get('services', {}).items() %}
+{%- for name, service in master.get('services', {}).iteritems() %}
 {%- if service.get('enabled') %}
 {%- for file in service.get('files', {}) %}
 
