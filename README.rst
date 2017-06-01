@@ -232,19 +232,6 @@ Master definition
             kubelet: 7bN5hJ9JD4fKjnFTkUKsvVNfuyEddw3r
           version: v1.2.4
 
-Apply custom yaml files
-
-.. code-block:: yaml
-
-    kubernetes:
-      master:
-        services:
-          myservice:
-            enabled: true
-            files:
-              - /srv/kubernetes/myservice-svc.yml
-              - /srv/kubernetes/myservice-pvc.yml
-              - /srv/kubernetes/myservice-deploy.yml
 
 Kubernetes with OpenContrail network plugin
 ------------------------------------------------
