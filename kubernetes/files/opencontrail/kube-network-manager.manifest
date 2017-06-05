@@ -33,7 +33,7 @@ spec:
   hostNetwork: true
   containers:
     - name: contrail-kube-manager
-      image: {{ master.network.get('image', 'yashulyak/contrail-controller' }}:{{ master.network.get('image', 'test') }}
+      image: {{ master.network.get('image', 'yashulyak/contrail-controller') }}:{{ master.network.get('image', 'test') }}
       imagePullPolicy: Always
       args: ["--config-file", "/etc/kube-manager/contrail.conf", "--alsologtostderr"]
       volumeMounts:
