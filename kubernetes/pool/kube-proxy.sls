@@ -1,5 +1,5 @@
 {%- from "kubernetes/map.jinja" import pool with context %}
-{%- if pool.enabled %}
+{%- if pool.enabled and pool.network.engine != 'opencontrail' %}
 
 {%- if pool.get('container', 'true') %}
 
