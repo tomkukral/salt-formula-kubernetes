@@ -228,10 +228,16 @@ kubernetes_namespace_delete_{{ name }}:
 {%- endfor %}
 
 {%- if master.get('unschedulable', 'false') %}
+kubelet_ready:
+  http.wait_for_successful_query:
+    - name: "http://localhost:10248/healthz"
+    - status: 200
+
 kubernetes_taint_master_{{ master.host.name }}:
   cmd.run:
     - name: kubectl taint --overwrite nodes {{ master.host.name }} node-role.kubernetes.io/master=:NoSchedule
-
+    - require:
+      - http: kubelet_ready
 {%- endif %}
 
 {%- if master.registry.secret is defined %}
