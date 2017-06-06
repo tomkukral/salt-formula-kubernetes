@@ -177,6 +177,7 @@ Master definition
             allow_privileged: true
           network:
             engine: calico
+            mtu: 1500
             hash: fb5e30ebe6154911a66ec3fb5f1195b2
             private_ip_range: 10.150.0.0/16
             version: v0.19.0
@@ -225,6 +226,7 @@ Master definition
             host: 10.0.175.100
           network:
             engine: calico
+            mtu: 1500
             hash: fb5e30ebe6154911a66ec3fb5f1195b2
             version: v0.19.0
           token:
@@ -347,6 +349,7 @@ On Master:
       master:
         network:
           engine: calico
+          mtu: 1500
     # If you don't register master as node:
           etcd:
             members:
@@ -365,6 +368,7 @@ On pools:
       pool:
         network:
           engine: calico
+          mtu: 1500
           etcd:
             members:
               - host: 10.0.175.101
@@ -382,6 +386,7 @@ Running with secured etcd:
       pool:
         network:
           engine: calico
+          mtu: 1500
           etcd:
             ssl:
               enabled: true
@@ -400,6 +405,7 @@ Running with calico-policy controller:
       pool:
         network:
           engine: calico
+          mtu: 1500
           addons:
             calico_policy:
               enabled: true
@@ -407,6 +413,7 @@ Running with calico-policy controller:
       master:
         network:
           engine: calico
+          mtu: 1500
           addons:
             calico_policy:
               enabled: true

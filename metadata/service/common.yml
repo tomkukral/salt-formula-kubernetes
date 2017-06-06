@@ -6,3 +6,4 @@ parameters:
     common:
       network:
         engine: none
+        mtu: 1500
