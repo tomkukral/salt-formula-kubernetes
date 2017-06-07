@@ -17,7 +17,7 @@ spec:
     - /hyperkube
     - proxy
       --logtostderr=true
-      --v={{ master.get('verbosity', 2) }}
+      --v={{ pool.get('verbosity', 2) }}
       --kubeconfig=/etc/kubernetes/proxy.kubeconfig
       --master={%- if pool.apiserver.insecure.enabled %}http://{{ pool.apiserver.host }}:8080{%- else %}https://{{ pool.apiserver.host }}{%- endif %}
 {%- if pool.network.engine == 'calico' %}

@@ -8,7 +8,7 @@ kubernetes:
     addons:
       dns:
         domain: cluster.local
-        enabled: true
+        enabled: false
         replicas: 1
         server: 10.254.0.10
         autoscaler:
@@ -24,8 +24,15 @@ kubernetes:
         tiller_image: gcr.io/kubernetes-helm/tiller:v2.2.3
       netchecker:
         enabled: true
+        namespace: netchecker
+        port: 80
+        interval: 60
+        server_image: image
+        agent_image: image
       calico_policy:
         enabled: true
+        namespace: kube-system
+        image: image
     admin:
       password: password
       username: admin
@@ -51,6 +58,14 @@ kubernetes:
       hash: fb5e30ebe6154911a66ec3fb5f1195b2
       private_ip_range: 10.150.0.0/16
       version: v0.19.0
+      etcd:
+        members:
+        - host: 127.0.0.1
+          port: 4001
+        - host: 127.0.0.1
+          port: 4001
+        - host: 127.0.0.1
+          port: 4001
     service_addresses: 10.254.0.0/16
     storage:
       engine: glusterfs
@@ -81,7 +96,7 @@ kubernetes:
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
     services:
       myservice:
-        enabled: true
+        enabled: false
         files:
           - /srv/kubernetes/myservice-svc.yml
           - /srv/kubernetes/myservice-pvc.yml

@@ -9,40 +9,58 @@
 copy-calico-ctl:
   dockerng.running:
     - image: {{ pool.network.calicoctl.image }}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 copy-calico-ctl-cmd:
   cmd.run:
     - name: docker cp copy-calico-ctl:calicoctl /tmp/calico/
     - require:
       - dockerng: copy-calico-ctl
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 /usr/bin/calicoctl:
   file.managed:
-     - source: /tmp/calico/calicoctl
-     - mode: 751
-     - user: root
-     - group: root
-     - require:
-       - cmd: copy-calico-ctl-cmd
+    - source: /tmp/calico/calicoctl
+    - mode: 751
+    - user: root
+    - group: root
+    - require:
+      - cmd: copy-calico-ctl-cmd
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 copy-calico-node:
   dockerng.running:
     - image: {{ pool.network.get('image', 'calico/node') }}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 copy-bird-cl-cmd:
   cmd.run:
     - name: docker cp copy-calico-node:/bin/birdcl /tmp/calico/
     - require:
       - dockerng: copy-calico-node
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 /usr/bin/birdcl:
   file.managed:
-     - source: /tmp/calico/birdcl
-     - mode: 751
-     - user: root
-     - group: root
-     - require:
-       - cmd: copy-bird-cl-cmd
+    - source: /tmp/calico/birdcl
+    - mode: 751
+    - user: root
+    - group: root
+    - require:
+      - cmd: copy-bird-cl-cmd
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 copy-calico-cni:
   dockerng.running:
@@ -51,20 +69,27 @@ copy-calico-cni:
     - binds:
       - /tmp/calico/:/tmp/calico/
     - force: True
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- for filename in ['calico', 'calico-ipam'] %}
 
 /opt/cni/bin/{{ filename }}:
   file.managed:
-     - source: /tmp/calico/bin/{{ filename }}
-     - mode: 751
-     - makedirs: true
-     - user: root
-     - group: root
-     - require:
-       - dockerng: copy-calico-cni
-     - require_in:
-       - service: calico_node
+    - source: /tmp/calico/bin/{{ filename }}
+    - mode: 751
+    - makedirs: true
+    - user: root
+    - group: root
+    - require:
+      - dockerng: copy-calico-cni
+    - require_in:
+      - service: calico_node
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
 {%- endfor %}
 
 /etc/cni/net.d/10-calico.conf:
@@ -112,6 +137,10 @@ calico_node:
     - enable: True
     - watch:
       - file: /etc/systemd/system/calico-node.service
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
 {%- endif %}
 
 {%- endif %}

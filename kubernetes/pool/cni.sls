@@ -18,6 +18,9 @@ copy-network-cni:
     - force: True
     - require:
         - file: /tmp/cni/
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- for filename in ['cnitool', 'flannel', 'tuning', 'bridge', 'ipvlan', 'loopback', 'macvlan', 'ptp', 'dhcp', 'host-local', 'noop'] %}
 /opt/cni/bin/{{ filename }}:
@@ -31,6 +34,9 @@ copy-network-cni:
       - service: kubelet_service
     - require:
       - dockerng: copy-network-cni
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- endfor %}
 

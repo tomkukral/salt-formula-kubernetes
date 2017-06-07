@@ -33,22 +33,31 @@ hyperkube-copy:
     - force: True
     - require:
       - file: /tmp/hyperkube
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 /usr/bin/hyperkube:
   file.managed:
-     - source: /tmp/hyperkube/hyperkube
-     - mode: 751
-     - makedirs: true
-     - user: root
-     - group: root
-     - require:
-       - dockerng: hyperkube-copy
+    - source: /tmp/hyperkube/hyperkube
+    - mode: 751
+    - makedirs: true
+    - user: root
+    - group: root
+    - require:
+      - dockerng: hyperkube-copy
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 /usr/bin/kubectl:
   file.symlink:
     - target: /usr/bin/hyperkube
     - require:
       - file: /usr/bin/hyperkube
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 /etc/systemd/system/kubelet.service:
   file.managed:
@@ -61,12 +70,6 @@ hyperkube-copy:
 /etc/kubernetes/config:
   file.absent
 
-/etc/kubernetes/manifests:
-  file.directory:
-    - user: root
-    - group: root
-    - mode: 0751
-
 {%- if not pillar.kubernetes.pool is defined %}
 
 /etc/default/kubelet:
@@ -76,6 +79,15 @@ hyperkube-copy:
   - user: root
   - group: root
   - mode: 644
+
+/etc/kubernetes/kubelet.kubeconfig:
+  file.managed:
+    - source: salt://kubernetes/files/kubelet/kubelet.kubeconfig.master
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: true
 
 {%- else %}
 
@@ -87,23 +99,24 @@ hyperkube-copy:
   - group: root
   - mode: 644
 
-{%- endif %}
-
-manifest_dir_create:
-  file.directory:
-    - name: /etc/kubernetes/manifests
-    - user: root
-    - group: root
-    - mode: 0751
-
 /etc/kubernetes/kubelet.kubeconfig:
   file.managed:
-    - source: salt://kubernetes/files/kubelet/kubelet.kubeconfig
+    - source: salt://kubernetes/files/kubelet/kubelet.kubeconfig.pool
     - template: jinja
     - user: root
     - group: root
     - mode: 644
     - makedirs: true
+
+{%- endif %}
+
+manifest_dir_create:
+  file.directory:
+    - makedirs: true
+    - name: /etc/kubernetes/manifests
+    - user: root
+    - group: root
+    - mode: 0751
 
 kubelet_service:
   service.running:
@@ -114,6 +127,9 @@ kubelet_service:
     - file: /usr/bin/hyperkube
     - file: /etc/kubernetes/kubelet.kubeconfig
     - file: manifest_dir_create
+  {% if grains.noservices is defined %}
+  - onlyif: {% if grains.get('noservices', "True") %}"True"{% else %}False{% endif %}
+  {% endif %}
 
 {%- if common.logrotate is defined %}
 /etc/logrotate.d/kubernetes:

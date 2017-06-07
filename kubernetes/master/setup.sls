@@ -9,7 +9,10 @@ kubernetes_addons_{{ addon_name }}:
     - name: |
         hyperkube kubectl apply -f /etc/kubernetes/addons/{{ addon_name }}
     - unless: "hyperkube kubectl get svc kube-{{ addon.get('name', addon_name) }} --namespace={{ addon.get('namespace', 'kube-system') }}"
-
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+    
 {%- endif %}
 {%- endfor %}
 
@@ -25,6 +28,9 @@ kubernetes_addons_{{ addon_name }}:
     - value: {{ label.value }}
     - node: {{ label.node }}
     - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- else %}
 
@@ -33,6 +39,9 @@ kubernetes_addons_{{ addon_name }}:
     - name: {{ label.key }}
     - node: {{ label.node }}
     - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- endif %}
 

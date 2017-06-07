@@ -216,6 +216,9 @@ kubernetes_namespace_create_{{ name }}:
   cmd.run:
     - name: kubectl create ns "{{ name }}"
     - name: kubectl get ns -o=custom-columns=NAME:.metadata.name | grep -v NAME | grep "{{ name }}" > /dev/null || kubectl create ns "{{ name }}"
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- else %}
 
@@ -232,12 +235,19 @@ kubernetes_node_ready_{{ master.host.name}}:
   cmd.run:
     - name: bash -c 'while ! kubectl get nodes {{ master.host.name }}; do sleep 5; done'
     - timeout: 180
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 kubernetes_taint_master_{{ master.host.name }}:
   cmd.run:
     - name: kubectl taint --overwrite nodes {{ master.host.name }} node-role.kubernetes.io/master=:NoSchedule
     - require:
       - cmd: kubernetes_node_ready_{{ master.host.name}}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
 {%- endif %}
 
 {%- if master.registry.secret is defined %}
@@ -249,6 +259,9 @@ kubernetes_taint_master_{{ master.host.name }}:
 /registry/secrets/{{ registry.namespace }}/{{ name }}:
   etcd.set:
     - value: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"{{ name }}","namespace":"{{ registry.namespace }}"},"data":{".dockerconfigjson":"{{ registry.key }}"},"type":"kubernetes.io/dockerconfigjson"}'
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- else %}
 

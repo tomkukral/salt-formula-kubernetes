@@ -33,7 +33,7 @@
 
 /etc/systemd/system/calico-node.service:
   file.managed:
-    - source: salt://kubernetes/files/calico/calico-node.service.pool.master
+    - source: salt://kubernetes/files/calico/calico-node.service.master
     - user: root
     - group: root
     - template: jinja
@@ -44,7 +44,10 @@ calico_node:
     - enable: True
     - watch:
       - file: /etc/systemd/system/calico-node.service
-
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+    
 {%- endif %}
 
 {%- endif %}
