@@ -8,6 +8,25 @@ addon-dir-create:
     - group: root
     - mode: 0755
 
+{%- if master.addons.get('kube_network_manager', {}).get('enabled', False) and master.network.engine == "opencontrail" %}
+/etc/kubernetes/addons/kube_network_manager/kube-network-manager-configmap.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/kube-network-manager/kube-network-manager-configmap.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+/etc/kubernetes/addons/kube_network_manager/kube-network-manager-deploy.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/kube-network-manager/kube-network-manager-deploy.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{% endif %}
+
 {%- if master.addons.get('calico_policy', {}).get('enabled', False) and master.network.engine == "calico" %}
 /etc/kubernetes/addons/calico_policy/calico-policy-controller.yml:
   file.managed:

@@ -6,13 +6,12 @@
 
 kubernetes_addons_{{ addon_name }}:
   cmd.run:
-    - name: |
-        hyperkube kubectl apply -f /etc/kubernetes/addons/{{ addon_name }}
-    - unless: "hyperkube kubectl get svc kube-{{ addon.get('name', addon_name) }} --namespace={{ addon.get('namespace', 'kube-system') }}"
+    - name: "hyperkube kubectl apply -f /etc/kubernetes/addons/{{ addon_name }}"
+    - unless: "hyperkube kubectl get {{ addon.get('creates', 'service') }} kube-{{ addon.get('name', addon_name) }} --namespace={{ addon.get('namespace', 'kube-system') }}"
     {%- if grains.get('noservices') %}
     - onlyif: /bin/false
     {%- endif %}
-    
+
 {%- endif %}
 {%- endfor %}
 

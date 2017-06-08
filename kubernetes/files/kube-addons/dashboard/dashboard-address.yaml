@@ -10,7 +10,7 @@ metadata:
 spec:
   selector:
     k8s-app: kubernetes-dashboard
-  deprecatedPublicIPs: ["{{ master.addons.ui.public_ip }}"]
+  deprecatedPublicIPs: ["{{ master.addons.dashboard.public_ip }}"]
   type: LoadBalancer
   ports:
   - port: 80

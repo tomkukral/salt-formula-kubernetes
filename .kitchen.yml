@@ -59,4 +59,10 @@ suites:
       pillars-from-files:
         kubernetes.sls: tests/pillar/pool_cluster.sls
 
+  - name: master_contrail
+    provisioner:
+      pillars-from-files:
+        kubernetes.sls: tests/pillar/master_contrail.sls
+
+
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

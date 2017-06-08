@@ -9,7 +9,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
 subsets:
   - addresses:
-    - ip: {{ master.addons.ui.public_ip }}
+    - ip: {{ master.addons.dashboard.public_ip }}
 
     ports:
     - port: 9090

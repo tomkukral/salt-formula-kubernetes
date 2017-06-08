@@ -2,9 +2,6 @@
 include:
 - kubernetes.master.service
 - kubernetes.master.kube-addons
-{%- if master.network.engine == "opencontrail" %}
-- kubernetes.master.opencontrail
-{%- endif %}
 {%- if master.network.engine == "flannel" %}
 - kubernetes.master.flannel
 {%- endif %}

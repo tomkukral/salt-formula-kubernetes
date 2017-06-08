@@ -239,6 +239,10 @@ On Master:
 
     kubernetes:
       master:
+        addons:
+          kube_network_manager:
+            enabled: true
+            namespace: kube-system
         network:
           engine: opencontrail
           host: 10.0.170.70
@@ -252,10 +256,7 @@ On Master:
           network_label: name
           service_label: uses
           cluster_service: kube-system/default
-          network_manager:
-            image: pupapaik/opencontrail-kube-network-manager
-            tag: release-1.1-jpa-final-1
-
+          image: yashulyak/contrail-controller:latest
 On pools:
 
 .. code-block:: yaml
@@ -264,6 +265,16 @@ On pools:
       pool:
         network:
           engine: opencontrail
+
+
+Dashboard public IP must be configured when Contrail network is used:
+
+.. code-block:: yaml
+
+    kubernetes:
+      master:
+        addons:
+          public_ip: 1.1.1.1
 
 Kubernetes control plane running in systemd
 -------------------------------------------

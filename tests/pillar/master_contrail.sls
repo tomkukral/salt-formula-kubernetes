@@ -1,7 +1,7 @@
 kubernetes:
   common:
     network:
-      engine: none
+      engine: opencontrail
     hyperkube:
       image: hyperkube-amd64:v1.5.0-beta.3-1
   master:
@@ -33,6 +33,9 @@ kubernetes:
         enabled: true
         namespace: kube-system
         image: image
+      kube_network_manager:
+        enabled: true
+        namespace: kube-system
     admin:
       password: password
       username: admin
@@ -54,18 +57,19 @@ kubernetes:
     kubelet:
       allow_privileged: true
     network:
-      engine: calico
-      hash: fb5e30ebe6154911a66ec3fb5f1195b2
+      engine: opencontrail
+      host: 10.0.170.70
+      port: 8082
+      default_domain: default-domain
+      default_project: default-domain:default-project
+      public_network: default-domain:default-project:Public
+      public_ip_range: 185.22.97.128/26
       private_ip_range: 10.150.0.0/16
-      version: v0.19.0
-      etcd:
-        members:
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
+      service_cluster_ip_range: 10.254.0.0/16
+      network_label: name
+      service_label: uses
+      cluster_service: kube-system/default
+      image: tianon/true
     service_addresses: 10.254.0.0/16
     storage:
       engine: glusterfs

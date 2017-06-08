@@ -64,6 +64,10 @@ parameters:
           enabled: False
           image: calico/kube-policy-controller:v0.5.4
           namespace: kube-system
+        kube_network_manager:
+          enabled: False
+          name: network-manager
+          creates: deployment
       token:
         admin: ${_param:kubernetes_admin_token}
         kubelet: ${_param:kubernetes_kubelet_token}
