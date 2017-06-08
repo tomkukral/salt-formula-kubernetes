@@ -228,16 +228,16 @@ kubernetes_namespace_delete_{{ name }}:
 {%- endfor %}
 
 {%- if master.get('unschedulable', 'false') %}
-kubelet_ready:
+kubernetes_node_ready_{{ master.host.name}}:
   cmd.run:
-    - name: bash -c 'while [[ "$(curl -sS -o /dev/null -w ''%{http_code}'' http://127.0.0.1:10248/healthz)" != "200" ]]; do sleep 5; done'
+    - name: bash -c 'while ! kubectl get nodes {{ master.host.name }}; do sleep 5; done'
     - timeout: 180
 
 kubernetes_taint_master_{{ master.host.name }}:
   cmd.run:
     - name: kubectl taint --overwrite nodes {{ master.host.name }} node-role.kubernetes.io/master=:NoSchedule
     - require:
-      - cmd: kubelet_ready
+      - cmd: kubernetes_node_ready_{{ master.host.name}}
 {%- endif %}
 
 {%- if master.registry.secret is defined %}
