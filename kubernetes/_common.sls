@@ -127,9 +127,9 @@ kubelet_service:
     - file: /usr/bin/hyperkube
     - file: /etc/kubernetes/kubelet.kubeconfig
     - file: manifest_dir_create
-  {% if grains.noservices is defined %}
-  - onlyif: {% if grains.get('noservices', "True") %}"True"{% else %}False{% endif %}
-  {% endif %}
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
 
 {%- if common.logrotate is defined %}
 /etc/logrotate.d/kubernetes:
