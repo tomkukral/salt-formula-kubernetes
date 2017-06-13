@@ -47,9 +47,9 @@ pool_services:
     - file: /etc/default/kube-proxy
     - file: /usr/bin/hyperkube
     - file: /etc/kubernetes/proxy.kubeconfig
-  {% if grains.noservices is defined %}
-  - onlyif: {% if grains.get('noservices', "True") %}"True"{% else %}False{% endif %}
-  {% endif %}
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
 
 {%- endif %}
 
