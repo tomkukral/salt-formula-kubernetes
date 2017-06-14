@@ -1,5 +1,5 @@
 {% raw %}{
-  "description": "Monitors Calico cluster using Prometheus. Shows overall cluster processes and usage>",
+  "description": "Monitors Calico cluster using Prometheus. Shows overall cluster processes and usage.",
   "editable": true,
   "gnetId": 315,
   "graphTooltip": 0,
@@ -1542,6 +1542,6 @@
     ]
   },
   "timezone": "browser",
-  "title": "Calico cluster monitoring (via Prometheus)",
-  "version": 4
+  "title": "Calico",
+  "version": 5
 }{% endraw %}
