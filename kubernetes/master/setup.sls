@@ -1,6 +1,21 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- if master.enabled %}
 
+/etc/kubernetes/kubeconfig.sh:
+  file.managed:
+    - source: salt://kubernetes/files/kubeconfig.sh
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+generate_admin_kube_config:
+  cmd.run:
+    - name: /etc/kubernetes/kubeconfig.sh > /etc/kubernetes/admin-kube-config
+    - watch:
+      - file: /etc/kubernetes/kubeconfig.sh
+
 {%- for addon_name, addon in master.addons.iteritems() %}
 {%- if addon.enabled %}
 

@@ -5,8 +5,20 @@ Kubernetes Formula
 
 Kubernetes is an open-source system for automating deployment, scaling, and
 management of containerized applications. This formula deploys production
-ready Kubernetes and generate Kubernetes manifests as well. 
+ready Kubernetes and generate Kubernetes manifests as well.
 
+You can download `kubectl` configuration and connect to your cluster. However,
+keep in mind `kubernetes_control_address` needs to be accessible from your computer:
+
+.. code-block:: yaml
+
+  mkdir -p ~/.kube
+  [ -f ~/.kube/config ] && cp -v ~/.kube/config ~/.kube/config-backup
+  ssh cfg01 "sudo ssh ctl01 /etc/kubenetes/kubeconfig.sh" > ~/.kube/config
+  kubectl get no
+
+
+`cfg01` is Salt master node and `ctl01` is one of Kubernetes masters
 
 Sample Pillars
 ==============
