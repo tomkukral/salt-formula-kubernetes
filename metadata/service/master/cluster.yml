@@ -20,6 +20,7 @@ parameters:
         allow_privileged: True
       apiserver:
         address: ${_param:cluster_local_address}
+        internal_address: ${_param:kubernetes_internal_api_address}
         insecure_address: 127.0.0.1
         insecure_port: 8080
         count: 3
@@ -47,7 +48,7 @@ parameters:
             server: 127.0.0.1#10053
             log-facility: "-"
         dashboard:
-          enabled: True
+          enabled: False
         heapster_influxdb:
           enabled: False
         helm:
@@ -68,6 +69,11 @@ parameters:
           enabled: False
           name: network-manager
           creates: deployment
+        virtlet:
+          enabled: False
+          hosts: ${_param:kubernetes_virtlet_hosts}
+          namespace: kube-system
+          image: Mirantis/virtlet:latest
       token:
         admin: ${_param:kubernetes_admin_token}
         kubelet: ${_param:kubernetes_kubelet_token}

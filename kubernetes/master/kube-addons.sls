@@ -117,25 +117,6 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
-{%- if master.network.engine == "opencontrail" %}
-
-/etc/kubernetes/addons/dashboard/dashboard-address.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/dashboard/dashboard-address.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/dashboard/dashboard-endpoint.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/dashboard/dashboard-endpoint.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-{% endif %}
-
 {% endif %}
 
 {%- if master.addons.heapster_influxdb.enabled %}

@@ -18,6 +18,9 @@ provisioner:
     - name: linux
       repo: git
       source: https://github.com/salt-formulas/salt-formula-linux
+    - name: contrail
+      repo: git
+      source: https://github.com/salt-formulas/salt-formula-opencontrail
 
   state_top:
     base:
