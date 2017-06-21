@@ -10,6 +10,9 @@ spec:
     metadata:
       labels:
         app: netchecker-server
+      annotations:
+        prometheus.io/scrape: true
+        prometheus.io/port: {{ master.addons.netchecker.port }}
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
