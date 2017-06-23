@@ -1,4 +1,4 @@
-{% from "kubernetes/map.jinja" import common with context %}
+{%- from "kubernetes/map.jinja" import common with context %}
 
 kubernetes_pkgs:
   pkg.installed:
@@ -55,13 +55,75 @@ hyperkube-copy:
     - onlyif: /bin/false
     {%- endif %}
 
+/tmp/criproxy:
+  file.directory:
+    - user: root
+    - group: root
+
+copy-criproxy-bin:
+  cmd.run:
+    - name: docker run --rm -v /tmp/criproxy/:/tmp/criproxy/ --entrypoint cp mirantis/virtlet -vr /criproxy /tmp/criproxy
+    - require:
+      - file: /tmp/criproxy
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+/usr/bin/criproxy:
+  file.managed:
+    - source: /tmp/criproxy/criproxy
+    - mode: 750
+    - makedirs: true
+    - user: root
+    - group: root
+    - require:
+      - cmd: copy-criproxy-bin
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+/etc/criproxy:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 0750
+
+/etc/criproxy/kubelet.conf:
+  file.managed:
+    - source: salt://kubernetes/files/virtlet/kubelet.conf
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 640
+
+/etc/systemd/system/criproxy.service:
+  file.managed:
+    - source: salt://kubernetes/files/systemd/criproxy.service
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 755
+
+criproxy_service:
+  service.running:
+  - name: criproxy
+  - enable: True
+  - watch:
+    - file: /etc/systemd/system/criproxy.service
+    - file: /etc/criproxy/kubelet.conf
+    - file: /etc/criproxy
+    - file: /usr/bin/criproxy
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
+
 /etc/systemd/system/kubelet.service:
   file.managed:
-  - source: salt://kubernetes/files/systemd/kubelet.service
-  - template: jinja
-  - user: root
-  - group: root
-  - mode: 644
+    - source: salt://kubernetes/files/systemd/kubelet.service
+    - template: jinja
+    - user: root
+    - group: root
+    - mode: 644
 
 /etc/kubernetes/config:
   file.absent

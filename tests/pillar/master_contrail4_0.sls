@@ -31,6 +31,9 @@ kubernetes:
         server_image: image
         agent_image: image
         agent_probeurls: "http://ipinfo.io"
+      kube_network_manager:
+        enabled: true
+        namespace: kube-system
     admin:
       password: password
       username: admin
@@ -53,8 +56,9 @@ kubernetes:
     kubelet:
       allow_privileged: true
     network:
-      version: 4.0
       engine: opencontrail
+      version: 4.0
+      private_ip_range: 10.150.0.0/16
       config:
         api:
           host: 127.0.0.1

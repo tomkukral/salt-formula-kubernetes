@@ -34,6 +34,13 @@ kubernetes:
         enabled: true
         namespace: kube-system
         image: image
+      virtlet:
+        enabled: true
+        namespace: kube-system
+        hosts:
+        - cmp01
+        - cmp02
+        image: mirantis/virtlet:latest
     admin:
       password: password
       username: admin

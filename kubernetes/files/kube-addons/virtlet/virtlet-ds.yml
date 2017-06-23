@@ -1,0 +1,239 @@
+{%- from "kubernetes/map.jinja" import master with context %}
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: virtlet
+  namespace: {{ master.addons.virtlet.namespace }}
+spec:
+  template:
+    metadata:
+      name: virtlet
+      labels:
+        runtime: virtlet
+    spec:
+      hostNetwork: true
+      {%- if master.network.engine != "opencontrail" %}
+      dnsPolicy: ClusterFirstWithHostNet
+      {%- endif %}
+      # hostPID is true to (1) enable VMs to survive virtlet container restart
+      # (to be checked) and (2) to enable the use of nsenter in init container
+      hostPID: true
+      # bootstrap procedure needs to create a configmap in kube-system namespace
+      serviceAccountName: virtlet
+
+      # only run Virtlet pods on the nodes with extraRuntime=virtlet label
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: extraRuntime
+                operator: In
+                values:
+                - virtlet
+
+      initContainers:
+      # The init container first copies virtlet's flexvolume driver
+      # to the default kubelet plugin dir to have it in the proper place by the
+      # time kubelet is restarted by CRI proxy bootstrap procedure.
+      # After that it checks if there's already saved kubelet config
+      # and considers that CRI proxy bootstrap is already done if it exists.
+      # If it doesn't, it drops criproxy binary into /opt/criproxy/bin
+      # if it's not already there and then starts criproxy installation.
+      # The possibility to put criproxy binary in advance into
+      # /opt/criproxy/bin may be helpful for the purpose of
+      # debugging criproxy
+      # At the end it ensures that /var/lib/libvirt/images exists on node.
+      - name: prepare-node
+        image: {{ master.addons.virtlet.image }}
+        imagePullPolicy: IfNotPresent
+        command:
+        - /prepare-node.sh
+        volumeMounts:
+        - name: k8s-flexvolume-plugins-dir
+          mountPath: /kubelet-volume-plugins
+        - name: criproxybin
+          mountPath: /opt/criproxy/bin
+        - name: run
+          mountPath: /run
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+        - name: criproxyconf
+          mountPath: /etc/criproxy
+        - name: log
+          mountPath: /hostlog
+        # for ensuring that /var/lib/libvirt/images exists on node
+        - name: var-lib
+          mountPath: /host-var-lib
+
+      containers:
+      - name: virtlet
+        image: {{ master.addons.virtlet.image }}
+        # In case we inject local virtlet image we want to use it not officially available one
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /sys/fs/cgroup
+          name: cgroup
+        - mountPath: /lib/modules
+          name: modules
+          readOnly: true
+        - mountPath: /boot
+          name: boot
+          readOnly: true
+        - mountPath: /run
+          name: run
+        - mountPath: /var/lib/virtlet
+          name: virtlet
+        - mountPath: /var/lib/libvirt
+          name: libvirt
+        - mountPath: /etc/cni
+          name: cniconf
+        - mountPath: /opt/cni/bin
+          name: cnibin
+        - mountPath: /var/lib/cni
+          name: cnidata
+        - mountPath: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+          name: k8s-flexvolume-plugins-dir
+          # below `:shared` is unofficial way to pass this option docker
+          # which then will allow virtlet to see what kubelet mounts in
+          # underlaying directories, after virtlet container is created
+        - mountPath: /var/lib/kubelet/pods:shared
+          name: k8s-pods-dir
+        - name: vms-log
+          mountPath: /var/log/vms
+        {%- if master.network.engine == "opencontrail" %}
+        - name: contrail-log
+          mountPath: /var/log/contrail
+        - name: contrail-data
+          mountPath: /var/lib/contrail
+        {%- endif %}
+        securityContext:
+          privileged: true
+        env:
+        - name: VIRTLET_LOGLEVEL
+          value: "3"
+        - name: VIRTLET_DOWNLOAD_PROTOCOL
+          value: "https"
+        # Uncomment the following to disable KVM:
+        # - name: VIRTLET_DISABLE_KVM
+        #   value: "y"
+        # Uncomment the following to redirect VM logs to file /var/log/vms/<sandboxId>/<containerId>_<attemptIdx>.log:
+        - name: VIRTLET_VM_LOG_LOCATION
+          value: "/var/log/vms"
+      - name: virtlet-log
+        image: {{ master.addons.virtlet.image }}
+        imagePullPolicy: IfNotPresent
+        command:
+          - /virtlet_log
+        volumeMounts:
+        - name: vms-log
+          mountPath: /virtlet-log
+        - name: pods-log
+          mountPath: /kubernetes-log
+        env:
+        - name: VIRTLET_VM_LOGS
+          value: "/virtlet-log"
+        - name: KUBERNETES_POD_LOGS
+          value: "/kubernetes-log"
+      volumes:
+      - hostPath:
+          path: /sys/fs/cgroup
+        name: cgroup
+      - hostPath:
+          path: /lib/modules
+        name: modules
+      - hostPath:
+          path: /boot
+        name: boot
+      - hostPath:
+          path: /run
+        name: run
+      # TODO: don't hardcode docker socket location here
+      # This will require CRI proxy installation to run
+      # in host mount namespace.
+      - hostPath:
+          path: /var/run/docker.sock
+        name: dockersock
+      - hostPath:
+          path: /var/lib/virtlet
+        name: virtlet
+      - hostPath:
+          path: /var/lib/libvirt
+        name: libvirt
+      - hostPath:
+          path: /etc/cni
+        name: cniconf
+      - hostPath:
+          path: /opt/cni/bin
+        name: cnibin
+      - hostPath:
+          path: /var/lib/cni
+        name: cnidata
+      - hostPath:
+          path: /opt/criproxy/bin
+        name: criproxybin
+      - hostPath:
+          path: /etc/criproxy
+        name: criproxyconf
+      - hostPath:
+          path: /var/log
+        name: log
+      - hostPath:
+          path: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+        name: k8s-flexvolume-plugins-dir
+      - hostPath:
+          path: /var/lib/kubelet/pods
+        name: k8s-pods-dir
+      - hostPath:
+          path: /var/lib
+        name: var-lib
+      - hostPath:
+          path: /var/log/virtlet/vms
+        name: vms-log
+      - hostPath:
+          path: /var/log/pods
+        name: pods-log
+      {%- if master.network.engine == "opencontrail" %}
+      - hostPath:
+          path: /var/log/contrail
+        name: contrail-log
+      - hostPath:
+          path: /var/lib/contrail
+        name: contrail-data
+      - hostPath:
+          path: /virtlet
+        name: virtlet-bin
+      {%- endif %}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: virtlet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: virtlet
+subjects:
+- kind: ServiceAccount
+  name: virtlet
+  namespace: {{ master.addons.virtlet.namespace }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: virtlet
+  namespace: {{ master.addons.virtlet.namespace }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: virtlet
+  namespace: {{ master.addons.virtlet.namespace }}

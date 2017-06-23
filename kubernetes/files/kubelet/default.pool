@@ -16,6 +16,10 @@ DAEMON_ARGS="\
 --network-plugin-dir=/etc/cni/net.d \
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
+--container-runtime=remote \
+--container-runtime-endpoint=/var/run/criproxy.sock \
+--image-service-endpoint=/var/run/criproxy.sock \
+--enable-controller-attach-detach=false \
 {%- for key, value in pool.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
 --{{ key }}="{{ value }}" \
 {% endfor %}

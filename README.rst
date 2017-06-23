@@ -61,6 +61,22 @@ Enable calico-policy addon
             calico_policy:
               enabled: true
 
+Enable virtlet addon
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          addons:
+            virtlet:
+              enabled: true
+              namespace: kube-system
+              hosts:
+              - cmp01
+              - cmp02
+              image: mirantis/virtlet:latest
+
 Enable netchecker addon
 
 .. code-block:: yaml

@@ -63,5 +63,18 @@ kubernetes_addons_{{ addon_name }}:
 
 {%- endif %}
 
+{%- if master.addons.get('virtlet', {}).get('enabled') %}
+{% for host in master.addons.virtlet.hosts %}
+
+label_virtlet_{{ host }}:
+  cmd.run:
+    - name: kubectl label --overwrite node {{ host }} extraRuntime=virtlet
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+{% endfor %}
+
+{%- endif %}
 
 {%- endif %}

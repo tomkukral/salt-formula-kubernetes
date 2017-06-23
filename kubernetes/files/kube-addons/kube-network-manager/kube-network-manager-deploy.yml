@@ -20,7 +20,7 @@ spec:
           imagePullPolicy: Always
           args: ["--config-file", "/etc/kube-manager/contrail.conf", "--alsologtostderr"]
           volumeMounts:
-          - name: kube-manager
+          - name: kube-network-manager
             mountPath: /etc/kube-manager/
       volumes:
         - name: kube-network-manager

@@ -1,17 +1,5 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- if master.enabled %}
-
-linklocal_apiserver:
-  contrail.linklocal_service_present:
-    - name: kube_apiserver
-    - lls_ip: "{{ master.apiserver.internal_address }}"
-    - lls_port: 443
-    - ipf_addresses: "{{ master.apiserver.address }}"
-    - ipf_port: 443
-    {%- if grains.get('noservices') %}
-    - onlyif: /bin/false
-    {%- endif %}
-
 {%- if master.network.get('version', '3.0') != '3.0' %}
 
 opencontrail_kube_manager_package:

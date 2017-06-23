@@ -8,7 +8,7 @@ addon-dir-create:
     - group: root
     - mode: 0755
 
-{%- if master.addons.get('kube_network_manager', {}).get('enabled', False) and master.network.engine == "opencontrail" %}
+{%- if master.network.engine == "opencontrail" %}
 /etc/kubernetes/addons/kube_network_manager/kube-network-manager-configmap.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/kube-network-manager/kube-network-manager-configmap.yml
@@ -20,6 +20,17 @@ addon-dir-create:
 /etc/kubernetes/addons/kube_network_manager/kube-network-manager-deploy.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/kube-network-manager/kube-network-manager-deploy.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{% endif %}
+
+{%- if master.addons.get('virtlet', {}).get('enabled') %}
+/etc/kubernetes/addons/virtlet/virtlet-ds.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/virtlet/virtlet-ds.yml
     - template: jinja
     - group: root
     - dir_mode: 755
