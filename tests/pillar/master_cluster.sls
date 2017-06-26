@@ -43,6 +43,7 @@ kubernetes:
       name: node040
     apiserver:
       address: 10.0.175.100
+      internal_address: 182.22.97.1
       insecure_address: 127.0.0.1
       insecure_port: 8080
     ca: kubernetes
