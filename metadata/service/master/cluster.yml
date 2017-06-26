@@ -71,7 +71,6 @@ parameters:
           creates: deployment
         virtlet:
           enabled: False
-          hosts: ${_param:kubernetes_virtlet_hosts}
           namespace: kube-system
           image: Mirantis/virtlet:latest
       token:
