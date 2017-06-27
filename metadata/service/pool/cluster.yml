@@ -33,6 +33,7 @@ parameters:
         kube_proxy: ${_param:kubernetes_kube-proxy_token}
       ca: kubernetes
       network:
+        hash: 77169cdadb80a5e33e9d9fe093ed0d99
         etcd:
           members:
           - host: ${_param:cluster_node01_address}

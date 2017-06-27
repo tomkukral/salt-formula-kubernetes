@@ -15,7 +15,7 @@
 
 /opt/cni/bin/opencontrail:
   file.managed:
-    - source: http://apt.tcpcloud.eu/kubernetes/bin/opencontrail
+    - source: http://apt-mk.mirantis.com/binaries/contrail_cni/opencontrail
     - user: root
     - group: root
     - mode: 755
