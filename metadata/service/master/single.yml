@@ -43,7 +43,7 @@ parameters:
             server: 127.0.0.1#10053
             log-facility: "-"
         dashboard:
-          enabled: False
+          enabled: True
         heapster_influxdb:
           enabled: False
         helm:
