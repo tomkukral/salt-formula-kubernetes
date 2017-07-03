@@ -65,10 +65,10 @@ parameters:
           enabled: False
           image: calico/kube-policy-controller:v0.5.4
           namespace: kube-system
-        kube_network_manager:
-          enabled: False
-          name: network-manager
-          creates: deployment
+        contrail_network_controller:
+          enabled: true
+          namespace: kube-system
+          image: yashulyak/contrail-controller:latest
         virtlet:
           enabled: False
           namespace: kube-system

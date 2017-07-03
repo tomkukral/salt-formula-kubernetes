@@ -268,9 +268,10 @@ On Master:
     kubernetes:
       master:
         addons:
-          kube_network_manager:
+          contrail_network_controller:
             enabled: true
             namespace: kube-system
+            image: yashulyak/contrail-controller:latest
         network:
           engine: opencontrail
           host: 10.0.170.70
@@ -284,7 +285,6 @@ On Master:
           network_label: name
           service_label: uses
           cluster_service: kube-system/default
-          image: yashulyak/contrail-controller:latest
 On pools:
 
 .. code-block:: yaml

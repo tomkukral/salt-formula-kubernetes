@@ -1,0 +1,29 @@
+{%- from "kubernetes/map.jinja" import master with context -%}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: contrail-network-controller
+  namespace: {{ master.addons.contrail_network_controller.get('namespace', 'kube-system') }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-network-controller
+    spec:
+      hostNetwork: true
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+        - name: contrail-kube-manager
+          image: {{ master.addons.contrail_network_controller.get('image', 'docker-prod-virtual.docker.mirantis.net/mirantis/kubernetes/contrail-integration/contrail-network-controller:v1.0.0') }}
+          imagePullPolicy: Always
+          args: ["--config-file", "/etc/kube-manager/contrail.conf", "--alsologtostderr"]
+          volumeMounts:
+          - name: contrail-kube-manager
+            mountPath: /etc/kube-manager/
+      volumes:
+        - name: contrail-kube-manager
+          configMap:
+            name: contrail-kube-manager
+      restartPolicy: Always

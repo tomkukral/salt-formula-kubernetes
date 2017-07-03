@@ -34,9 +34,10 @@ kubernetes:
         enabled: true
         namespace: kube-system
         image: image
-      kube_network_manager:
+      contrail_network_controller:
         enabled: true
         namespace: kube-system
+        image: yashulyak/contrail-controller:latest
     admin:
       password: password
       username: admin
