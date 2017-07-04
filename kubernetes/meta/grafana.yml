@@ -31,6 +31,7 @@ dashboard:
     template: kubernetes/files/grafana_dashboards/calico_influxdb.json
 {%- endif %}
   main:
+    datasource: influxdb
     row:
       kubernetes-control-plane:
         title: Kubernetes Control Plane
