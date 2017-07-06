@@ -13,16 +13,32 @@
 
 {%- if pool.network.get('version', '3.0') == '3.0' %}
 
-/opt/cni/bin/opencontrail:
-  file.managed:
-    - source: http://apt-mk.mirantis.com/binaries/contrail_cni/opencontrail
+/tmp/opencontrail:
+  file.directory:
     - user: root
     - group: root
+
+copy-contrail-cni:
+  cmd.run:
+    - name: docker cp $(docker create  {{ pool.network.contrail_cni.image }}):/opencontrail /tmp/opencontrail
+    - require:
+      - file: /tmp/opencontrail
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+/opt/cni/bin/opencontrail:
+  file.managed:
+    - source: /tmp/opencontrail/opencontrail
     - mode: 755
     - makedirs: true
-    - dir_mode: 755
-    - template: jinja
-    - source_hash: md5={{ pool.network.hash }}
+    - user: root
+    - group: root
+    - require:
+      - cmd: copy-contrail-cni
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
 
 {%- else %}
 
