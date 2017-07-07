@@ -60,7 +60,9 @@ kubernetes:
       allow_privileged: true
     network:
       engine: opencontrail
-      host: 10.0.170.70
+      config:
+        api:
+          host: 10.0.170.70
       port: 8082
       default_domain: default-domain
       default_project: default-domain:default-project

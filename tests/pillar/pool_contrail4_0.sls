@@ -33,6 +33,6 @@ kubernetes:
       version: 4.0
       config:
         api:
-          address: 127.0.0.1
+          host: 127.0.0.1
     hyperkube:
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
