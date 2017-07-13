@@ -54,7 +54,7 @@ parameters:
           image: calico/kube-policy-controller:v0.5.4
           namespace: kube-system
         contrail_network_controller:
-          enabled: true
+          enabled: False
           namespace: kube-system
           image: yashulyak/contrail-controller:latest
         virtlet:
