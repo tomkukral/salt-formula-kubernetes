@@ -14,6 +14,8 @@ spec:
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io: master
       containers:
         - name: contrail-kube-manager
           image: {{ master.addons.contrail_network_controller.get('image', 'docker-prod-virtual.docker.mirantis.net/mirantis/kubernetes/contrail-integration/contrail-network-controller:v1.0.0') }}
