@@ -1,3 +1,4 @@
+{%- from "kubernetes/map.jinja" import master with context %}
 #!/bin/bash
 
 # server url
@@ -7,6 +8,7 @@ server="$(cat /etc/kubernetes/kubelet.kubeconfig  | grep server | awk '{ print $
 cert="$(cat /etc/kubernetes/ssl/kubelet-client.crt | base64 | sed 's/^/      /g')"
 key="$(cat /etc/kubernetes/ssl/kubelet-client.key | base64 | sed 's/^/      /g')"
 ca="$(cat /etc/kubernetes/ssl/ca-kubernetes.crt | base64 | sed 's/^/      /g')"
+cluster="{{ master.addons.dns.domain }}"
 
 echo "apiVersion: v1
 clusters:
@@ -14,23 +16,23 @@ clusters:
     certificate-authority-data: |
 ${ca}
     server: ${server}
-  name: mycluster
+  name: ${cluster}
 - cluster:
     server: http://localhost:8080
   name: local
 contexts:
 - context:
-    cluster: mycluster
-    user: "cluster-admin"
-  name: mycluster
+    cluster: ${cluster}
+    user: admin-${cluster}
+  name: ${cluster}
 - context:
     cluster: local
     namespace: default
     user: ""
   name: local
-current-context: mycluster
+current-context: ${cluster}
 users:
-- name: cluster-admin
+- name: ${cluster}
   user:
     client-certificate-data: |
 ${cert}
