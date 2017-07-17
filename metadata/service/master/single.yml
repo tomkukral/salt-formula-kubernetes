@@ -80,3 +80,11 @@ parameters:
           members:
             - host: ${_param:single_address}
               port: 4001
+      federation:
+        enabled: False
+        name: federation
+        namespace: federation-system
+        source: https://dl.k8s.io/v1.6.6/kubernetes-client-linux-amd64.tar.gz
+        hash: 94b2c9cd29981a8e150c187193bab0d8c0b6e906260f837367feff99860a6376
+        service_type: NodePort
+        dns_provider: coredns

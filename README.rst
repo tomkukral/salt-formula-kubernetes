@@ -91,6 +91,25 @@ Enable netchecker addon
             netchecker:
               enabled: true
 
+Enable Kubenetes Federation control plane
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        master:
+          federation:
+            enabled: True
+            name: federation
+            namespace: federation-system
+            source: https://dl.k8s.io/v1.6.6/kubernetes-client-linux-amd64.tar.gz
+            hash: 94b2c9cd29981a8e150c187193bab0d8c0b6e906260f837367feff99860a6376
+            service_type: NodePort
+            dns_provider: coredns
+            childclusters:
+              - secondcluster.mydomain
+              - thirdcluster.mydomain
+
 Configure service verbosity
 
 .. code-block:: yaml
@@ -102,7 +121,7 @@ Configure service verbosity
         pool:
           verbosity: 2
 
-Set cluster domain
+Set cluster name and domain
 
 .. code-block:: yaml
 
@@ -110,6 +129,7 @@ Set cluster domain
       kubernetes:
         common:
           kubernetes_cluster_domain: mycluster.domain
+          cluster_name : mycluster
 
 Enable autoscaler for dns addon. Poll period can be skipped.
 
@@ -182,6 +202,7 @@ Master definition
 
     kubernetes:
         common:
+          cluster_name: cluster
           addons:
             dns:
               domain: cluster.local

@@ -20,6 +20,7 @@ parameters:
         allow_privileged: True
       apiserver:
         address: ${_param:cluster_local_address}
+        vip_address: ${_param:cluster_vip_address}
         secure_port: 6443
         internal_address: ${_param:kubernetes_internal_api_address}
         insecure_address: 127.0.0.1
@@ -57,3 +58,11 @@ parameters:
             port: 4001
           - host: ${_param:cluster_node03_address}
             port: 4001
+      federation:
+        enabled: False
+        name: federation
+        namespace: federation-system
+        source: https://dl.k8s.io/v1.6.6/kubernetes-client-linux-amd64.tar.gz
+        hash: 94b2c9cd29981a8e150c187193bab0d8c0b6e906260f837367feff99860a6376
+        service_type: NodePort
+        dns_provider: coredns

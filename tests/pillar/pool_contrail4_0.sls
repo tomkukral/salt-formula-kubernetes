@@ -1,6 +1,7 @@
 kubernetes:
   common:
     cluster_domain: cluster.local
+    cluster_name: cluster
     network:
       engine: none
     hyperkube:
