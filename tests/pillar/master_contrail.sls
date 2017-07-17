@@ -61,7 +61,6 @@ kubernetes:
       allow_privileged: true
     network:
       engine: opencontrail
-      version: 3.0
       config:
         api:
           host: 10.0.170.70
