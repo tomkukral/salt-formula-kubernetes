@@ -248,6 +248,16 @@ kubernetes_taint_master_{{ master.host.name }}:
     - onlyif: /bin/false
     {%- endif %}
 
+kubernetes_label_master_{{ master.host.name }}:
+  cmd.run:
+    - name: kubectl label --overwrite nodes {{ master.host.name }} node-role.kubernetes.io=master
+    - require:
+      - cmd: kubernetes_node_ready_{{ master.host.name}}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+
 {%- endif %}
 
 {%- if master.registry.secret is defined %}
