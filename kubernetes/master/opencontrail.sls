@@ -1,6 +1,6 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- if master.enabled %}
-{%- if master.network.get('version', '3.0') != '3.0' %}
+{%- if master.network.get('version', 3.0) != 3.0 %}
 
 opencontrail_kube_manager_package:
   pkg.installed:

@@ -31,10 +31,6 @@ kubernetes:
         server_image: image
         agent_image: image
         agent_probeurls: "http://ipinfo.io"
-      contrail_network_controller:
-        enabled: true
-        namespace: kube-system
-        image: yashulyak/contrail-controller:latest
     admin:
       password: password
       username: admin
