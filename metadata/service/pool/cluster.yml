@@ -23,7 +23,7 @@ parameters:
 #          - host: ${_param:cluster_node03_address}
       address: ${_param:cluster_local_address}
       cluster_dns: 10.254.0.10
-      cluster_domain: cluster.local
+      cluster_domain: ${_param:kubernetes_cluster_domain}
       kubelet:
         config: /etc/kubernetes/manifests
         allow_privileged: True

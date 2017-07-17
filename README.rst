@@ -102,6 +102,15 @@ Configure service verbosity
         pool:
           verbosity: 2
 
+Set cluster domain
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          kubernetes_cluster_domain: mycluster.domain
+
 Enable autoscaler for dns addon. Poll period can be skipped.
 
 .. code-block:: yaml

@@ -20,7 +20,7 @@ parameters:
       address: 0.0.0.0
       cluster_dns: 10.254.0.10
       allow_privileged: True
-      cluster_domain: cluster.local
+      cluster_domain: ${param:kubernetes_cluster_domain}
       kubelet:
         config: /etc/kubernetes/manifests
         allow_privileged: True
