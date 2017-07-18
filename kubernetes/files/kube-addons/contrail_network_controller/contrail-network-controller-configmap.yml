@@ -14,7 +14,7 @@ data:
     default-domain = {{ master.network.get('default_domain', 'default-domain') }}
     public-ip-range = {{ master.network.get('public_ip_range', '185.22.97.128/26') }}
     cluster-service = {{ master.network.get('cluster_service', 'kube-system/default') }}
-    api-server = 172.16.10.252
+    api-server = {{ master.network.config.api.host }}
     api-port = {{ master.network.get('port', 8082) }}
     default = {{ master.network.get('default_project', 'default-domain:default-project') }}
     public-network = {{ master.network.get('public_network', 'default-domain:default-project:Public') }}

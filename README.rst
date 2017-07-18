@@ -283,8 +283,6 @@ On Master:
             image: yashulyak/contrail-controller:latest
         network:
           engine: opencontrail
-          host: 10.0.170.70
-          port: 8082
           default_domain: default-domain
           default_project: default-domain:default-project
           public_network: default-domain:default-project:Public
@@ -294,6 +292,9 @@ On Master:
           network_label: name
           service_label: uses
           cluster_service: kube-system/default
+          config:
+            api:
+              host: 10.0.170.70
 On pools:
 
 .. code-block:: yaml
