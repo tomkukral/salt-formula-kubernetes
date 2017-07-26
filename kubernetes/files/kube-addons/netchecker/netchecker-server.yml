@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app: netchecker-server
+        addonmanager.kubernetes.io/mode: Reconcile
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ master.addons.netchecker.port }}"

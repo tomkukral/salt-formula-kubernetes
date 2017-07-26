@@ -4,6 +4,7 @@ kind: DaemonSet
 metadata:
   labels:
     app: netchecker-agent
+    addonmanager.kubernetes.io/mode: Reconcile
   name: netchecker-agent
   namespace: {{ master.addons.netchecker.namespace }}
 spec:

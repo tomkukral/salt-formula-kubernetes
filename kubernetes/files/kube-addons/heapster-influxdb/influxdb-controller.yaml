@@ -3,6 +3,7 @@ kind: ReplicationController
 metadata:
   labels:
     name: influxGrafana
+    addonmanager.kubernetes.io/mode: Reconcile
   name: influxdb-grafana
   namespace: kube-system
 spec:
