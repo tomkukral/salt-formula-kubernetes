@@ -39,5 +39,8 @@ agent:
           pattern: "bird6 .*/etc/calico/.*/bird6.cfg"
         confd:
           pattern: "confd .*/etc/calico/confd"
+    calico:
+      template: kubernetes/files/calico_telegraf.conf
+      sockets: {{ sockets | default(["/var/run/calico/bird.ctl"]) | yaml }}
   {%- endif %}
 {%- endif %}
