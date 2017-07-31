@@ -32,7 +32,7 @@ contexts:
   name: local
 current-context: ${cluster}
 users:
-- name: ${cluster}
+- name: admin-${cluster}
   user:
     client-certificate-data: |
 ${cert}
