@@ -14,7 +14,7 @@ keep in mind `kubernetes_control_address` needs to be accessible from your compu
 
   mkdir -p ~/.kube
   [ -f ~/.kube/config ] && cp -v ~/.kube/config ~/.kube/config-backup
-  ssh cfg01 "sudo ssh ctl01 /etc/kubenetes/kubeconfig.sh" > ~/.kube/config
+  ssh cfg01 "sudo ssh ctl01 /etc/kubernetes/kubeconfig.sh" > ~/.kube/config
   kubectl get no
 
 
