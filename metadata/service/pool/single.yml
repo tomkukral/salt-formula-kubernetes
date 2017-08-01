@@ -13,6 +13,7 @@ parameters:
         name: ${linux:system:name}
       apiserver:
         host: ${_param:master_address}
+        port: 443
         insecure:
           enabled: True
         members:

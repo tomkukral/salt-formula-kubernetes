@@ -19,7 +19,7 @@ spec:
       --logtostderr=true
       --v={{ pool.get('verbosity', 2) }}
       --kubeconfig=/etc/kubernetes/proxy.kubeconfig
-      --master={%- if pool.apiserver.insecure.enabled %}http://{{ pool.apiserver.host }}:8080{%- else %}https://{{ pool.apiserver.host }}{%- endif %}
+      --master={%- if pool.apiserver.insecure.enabled %}http://{{ pool.apiserver.host }}:8080{%- else %}https://{{ pool.apiserver.host }}:{{ pool.apiserver.get('port', '443') }}{%- endif %}
 {%- if pool.network.engine == 'calico' %}
       --proxy-mode=iptables
 {%- endif %}

@@ -20,6 +20,7 @@ parameters:
         allow_privileged: True
       apiserver:
         address: ${_param:single_address}
+        secure_port: 443
         internal_address: ${_param:kubernetes_internal_api_address}
         insecure_address: 127.0.0.1
         insecure_port: 8080

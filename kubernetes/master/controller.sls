@@ -82,7 +82,7 @@
         --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
         --allow-privileged=True
         --basic-auth-file=/srv/kubernetes/basic_auth.csv
-        --bind-address={{ master.apiserver.address }}
+        --bind-address={{ master.apiserver.get('bind_address', master.apiserver.address) }}
         --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
         --etcd-quorum-read=true
         --insecure-bind-address={{ master.apiserver.insecure_address }}
