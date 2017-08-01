@@ -11,6 +11,7 @@
 
 {%- if master.get('enabled', False) or pool.get('enabled', False) %}
 local_plugin:
+  {%- if network is defined and network.get('engine', None) == 'calico' %}
   collectd_calico_felix:
    plugin: python
    template: kubernetes/files/collectd_calico_felix.conf
@@ -21,6 +22,7 @@ local_plugin:
    endpoints:
      ipv4_socket: /var/run/calico/bird.ctl
      ipv6_socket: /var/run/calico/bird6.ctl
+  {%- endif %}
 
   collectd_http_check:
    interval: 30
