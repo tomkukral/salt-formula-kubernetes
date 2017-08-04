@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: contrail-kube-manager
   namespace: {{ master.addons.contrail_network_controller.get('namespace', 'kube-system') }}
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
 data:
   contrail.conf: |
     [DEFAULT]

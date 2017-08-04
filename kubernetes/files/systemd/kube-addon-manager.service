@@ -1,0 +1,15 @@
+[Unit]
+Description=Kubernetes Addon Manager
+Documentation=https://github.com/kubernetes/kubernetes
+After=kube-apiserver.service
+
+[Service]
+SyslogIdentifier=kube-addon-manager
+EnvironmentFile=-/etc/default/%p
+User=root
+ExecStart=/usr/bin/kube-addons.sh
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

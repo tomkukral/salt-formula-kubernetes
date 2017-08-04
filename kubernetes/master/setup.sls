@@ -16,19 +16,41 @@ generate_admin_kube_config:
     - watch:
       - file: /etc/kubernetes/kubeconfig.sh
 
-{%- for addon_name, addon in master.addons.iteritems() %}
-{%- if addon.enabled %}
+/etc/default/kube-addon-manager:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addon-manager/kube-addons.config
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
 
-kubernetes_addons_{{ addon_name }}:
-  cmd.run:
-    - name: "hyperkube kubectl apply -f /etc/kubernetes/addons/{{ addon_name }}"
-    - unless: "hyperkube kubectl get {{ addon.get('creates', 'service') }} kube-{{ addon.get('name', addon_name) }} --namespace={{ addon.get('namespace', 'kube-system') }}"
-    {%- if grains.get('noservices') %}
-    - onlyif: /bin/false
-    {%- endif %}
+/usr/bin/kube-addons.sh:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addon-manager/kube-addons.sh
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
 
-{%- endif %}
-{%- endfor %}
+/etc/systemd/system/kube-addon-manager.service:
+  file.managed:
+    - source: salt://kubernetes/files/systemd/kube-addon-manager.service
+    - user: root
+    - group: root
+    - mode: 644
+    - makedirs: True
+
+kube-addon-manager_service:
+  service.running:
+  - name: kube-addon-manager
+  - enable: True
+  - watch:
+    - file: /etc/default/kube-addon-manager
+    - file: /usr/bin/kube-addons.sh
+    - file: /etc/systemd/system/kube-addon-manager.service
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
 
 {%- if master.label is defined %}
 

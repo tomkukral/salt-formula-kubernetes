@@ -4,6 +4,7 @@ metadata:
   labels:
     k8s-app: heapster
     version: v6
+    addonmanager.kubernetes.io/mode: Reconcile
   name: heapster
   namespace: kube-system
 spec:

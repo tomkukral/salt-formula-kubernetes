@@ -9,6 +9,7 @@ spec:
     metadata:
       labels:
         app: contrail-network-controller
+        addonmanager.kubernetes.io/mode: Reconcile
     spec:
       hostNetwork: true
       tolerations:

@@ -8,6 +8,7 @@ metadata:
     k8s-app: kube-registry
     version: v0
     kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
   selector:
@@ -18,7 +19,6 @@ spec:
       labels:
         k8s-app: kube-registry
         version: v0
-        kubernetes.io/cluster-service: "true"
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
