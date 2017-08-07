@@ -4,7 +4,23 @@ kubernetes:
     network:
       engine: none
     hyperkube:
-      image: hyperkube-amd64:v1.5.0-beta.3-1
+      image: hyperkube-amd64:v1.6.4-3
+      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
+    addons:
+      dns:
+        domain: cluster.local
+        enabled: false
+        replicas: 1
+        server: 10.254.0.10
+        autoscaler:
+          enabled: true
+      virtlet:
+        enabled: true
+        namespace: kube-system
+        image: mirantis/virtlet:v0.7.0
+        hosts:
+        - cmp01
+        - cmp02
   pool:
     enabled: true
     version: v1.2.0
@@ -19,8 +35,6 @@ kubernetes:
         - host: 127.0.0.1
         - host: 127.0.0.1
     address: 0.0.0.0
-    cluster_dns: 10.254.0.10
-    cluster_domain: cluster.local
     kubelet:
       config: /etc/kubernetes/manifests
       allow_privileged: True
@@ -35,5 +49,3 @@ kubernetes:
       config:
         api:
           host: 127.0.0.1
-    hyperkube:
-      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd

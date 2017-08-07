@@ -55,6 +55,7 @@ hyperkube-copy:
     - onlyif: /bin/false
     {%- endif %}
 
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
 /tmp/criproxy:
   file.directory:
     - user: root
@@ -62,7 +63,7 @@ hyperkube-copy:
 
 copy-criproxy-bin:
   cmd.run:
-    - name: docker run --rm -v /tmp/criproxy/:/tmp/criproxy/ --entrypoint cp mirantis/virtlet -vr /criproxy /tmp/criproxy
+    - name: docker run --rm -v /tmp/criproxy/:/tmp/criproxy/ --entrypoint cp {{ common.addons.virtlet.image }} -vr /criproxy /tmp/criproxy
     - require:
       - file: /tmp/criproxy
     {%- if grains.get('noservices') %}
@@ -116,6 +117,8 @@ criproxy_service:
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
   {%- endif %}
+
+{%- endif %}
 
 /etc/systemd/system/kubelet.service:
   file.managed:

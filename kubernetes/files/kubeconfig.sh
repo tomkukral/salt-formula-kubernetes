@@ -1,14 +1,14 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
 #!/bin/bash
 
 # server url
-server="$(cat /etc/kubernetes/kubelet.kubeconfig  | grep server | awk '{ print $2 }')"
+server="$(awk '/server/ { print $2 }' /etc/kubernetes/kubelet.kubeconfig)"
 
 # certificates
-cert="$(cat /etc/kubernetes/ssl/kubelet-client.crt | base64 | sed 's/^/      /g')"
-key="$(cat /etc/kubernetes/ssl/kubelet-client.key | base64 | sed 's/^/      /g')"
-ca="$(cat /etc/kubernetes/ssl/ca-kubernetes.crt | base64 | sed 's/^/      /g')"
-cluster="{{ master.addons.dns.domain }}"
+cert="$(base64 /etc/kubernetes/ssl/kubelet-client.crt | sed 's/^/      /g')"
+key="$(base64 /etc/kubernetes/ssl/kubelet-client.key | sed 's/^/      /g')"
+ca="$(base64 /etc/kubernetes/ssl/ca-kubernetes.crt | sed 's/^/      /g')"
+cluster="{{ common.addons.dns.domain }}"
 
 echo "apiVersion: v1
 clusters:

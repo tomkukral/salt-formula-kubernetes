@@ -1,4 +1,4 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
 apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -35,28 +35,28 @@ spec:
             memory: 100Mi
         env:
         - name: REGISTRY_HTTP_ADDR
-          value: {{ master.addons.registry.bind.get('host', '0.0.0.0'}}:{{ master.addons.registry.bind.get('port', '5000'}}
+          value: {{ common.addons.registry.bind.get('host', '0.0.0.0'}}:{{ common.addons.registry.bind.get('port', '5000'}}
         - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
           value: /var/lib/registry
         ports:
-        - containerPort: {{ master.addons.registry.bind.get('port', '5000') }}
+        - containerPort: {{ common.addons.registry.bind.get('port', '5000') }}
           name: registry
           protocol: TCP
-      {%- if master.addons.registry.volume is defined %}
+      {%- if common.addons.registry.volume is defined %}
         volumeMounts:
         - name: image-store
           mountPath: /var/lib/registry
       volumes:
         - name: image-store
-          {%- if master.addons.registry.volume.get('type', 'emptyDir') %}
+          {%- if common.addons.registry.volume.get('type', 'emptyDir') %}
           emptyDir: {}
-          {%- elif master.addons.registry.volume.type == 'hostPath' %}
+          {%- elif common.addons.registry.volume.type == 'hostPath' %}
           hostPath:
-            path: {{ master.addons.registry.volume.path }}
-          {%- elif master.addons.registry.volume.type == 'glusterfs' %}
+            path: {{ common.addons.registry.volume.path }}
+          {%- elif common.addons.registry.volume.type == 'glusterfs' %}
           glusterfs:
-            endpoints: {{ master.addons.registry.volume.endpoints }}
-            path: {{ master.addons.registry.volume.path }}
-            readOnly: {{ master.addons.registry.volume.read_only }}
+            endpoints: {{ common.addons.registry.volume.endpoints }}
+            path: {{ common.addons.registry.volume.path }}
+            readOnly: {{ common.addons.registry.volume.read_only }}
           {%- endif %}
       {%- endif %}

@@ -1,9 +1,10 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
 apiVersion: extensions/v1beta1
 kind: ReplicaSet
 metadata:
   name: calico-policy-controller
-  namespace: {{ master.addons.calico_policy.namespace }}
+  namespace: {{ common.addons.calico_policy.namespace }}
   labels:
     k8s-app: calico-policy
     kubernetes.io/cluster-service: "true"
@@ -16,7 +17,7 @@ spec:
   template:
     metadata:
       name: calico-policy-controller
-      namespace: {{ master.addons.calico_policy.namespace }}
+      namespace: {{ common.addons.calico_policy.namespace }}
       labels:
         k8s-app: calico-policy
     spec:
@@ -26,7 +27,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: calico-policy-controller
-          image: {{ master.addons.calico_policy.image }}
+          image: {{ common.addons.calico_policy.image }}
           imagePullPolicy: IfNotPresent
           resources:
             limits:

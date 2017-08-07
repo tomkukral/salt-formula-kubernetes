@@ -1,4 +1,5 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
 {%- if master.enabled %}
 
 /etc/kubernetes/kubeconfig.sh:
@@ -85,8 +86,8 @@ kube-addon-manager_service:
 
 {%- endif %}
 
-{%- if master.addons.get('virtlet', {}).get('enabled') %}
-{% for host in master.addons.virtlet.hosts %}
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
+{% for host in common.addons.virtlet.hosts %}
 
 label_virtlet_{{ host }}:
   cmd.run:

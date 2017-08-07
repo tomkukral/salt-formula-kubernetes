@@ -1,4 +1,5 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
 {%- if master.enabled %}
 
 addon-dir-create:
@@ -27,7 +28,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if master.addons.get('virtlet', {}).get('enabled') %}
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
 /etc/kubernetes/addons/virtlet/virtlet-ds.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/virtlet/virtlet-ds.yml
@@ -38,7 +39,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if master.addons.get('calico_policy', {}).get('enabled', False) and master.network.engine == "calico" %}
+{%- if common.addons.get('calico_policy', {}).get('enabled', False) and master.network.engine == "calico" %}
 /etc/kubernetes/addons/calico_policy/calico-policy-controller.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/calico-policy/calico-policy-controller.yml
@@ -50,7 +51,7 @@ addon-dir-create:
 {% endif %}
 
 
-{%- if master.addons.helm.enabled %}
+{%- if common.addons.helm.enabled %}
 /etc/kubernetes/addons/helm/helm-tiller-deploy.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/helm/helm-tiller-deploy.yml
@@ -61,7 +62,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if master.addons.netchecker.enabled %}
+{%- if common.addons.netchecker.enabled %}
 
 {%- for resource in ['svc', 'server', 'agent'] %}
 
@@ -77,8 +78,7 @@ addon-dir-create:
 
 {% endif %}
 
-
-{%- if master.addons.dns.enabled %}
+{%- if common.addons.dns.enabled %}
 
 /etc/kubernetes/addons/dns/kubedns-svc.yaml:
   file.managed:
@@ -96,7 +96,7 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
-{% if master.addons.dns.get('autoscaler', {}).get('enabled', True) %}
+{% if common.addons.dns.get('autoscaler', {}).get('enabled', True) %}
 
 /etc/kubernetes/addons/dns/kubedns-autoscaler.yaml:
   file.managed:
@@ -110,7 +110,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if master.addons.dashboard.enabled %}
+{%- if common.addons.dashboard.enabled %}
 
 /etc/kubernetes/addons/dashboard/dashboard-service.yaml:
   file.managed:
@@ -130,7 +130,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if master.addons.heapster_influxdb.enabled %}
+{%- if common.addons.heapster_influxdb.enabled %}
 
 /etc/kubernetes/addons/heapster-influxdb/heapster-address.yaml:
   file.managed:

@@ -1,4 +1,3 @@
-
 ==================
 Kubernetes Formula
 ==================
@@ -31,7 +30,7 @@ Sample Pillars
       kubernetes:
         common:
           hyperkube:
-            image: gcr.io/google_containers/hyperkube:v1.5.2
+            image: gcr.io/google_containers/hyperkube:v1.6.5
         pool:
           network:
             calicoctl:
@@ -45,7 +44,7 @@ Enable helm-tiller addon
 
     parameters:
       kubernetes:
-        master:
+        common:
           addons:
             helm:
               enabled: true
@@ -56,7 +55,7 @@ Enable calico-policy addon
 
     parameters:
       kubernetes:
-        master:
+        common:
           addons:
             calico_policy:
               enabled: true
@@ -67,15 +66,15 @@ Enable virtlet addon
 
     parameters:
       kubernetes:
-        master:
+        common:
           addons:
             virtlet:
               enabled: true
               namespace: kube-system
+              image: mirantis/virtlet:v0.7.0
               hosts:
               - cmp01
               - cmp02
-              image: mirantis/virtlet:latest
 
 Enable netchecker addon
 
@@ -83,11 +82,12 @@ Enable netchecker addon
 
     parameters:
       kubernetes:
-        master:
-          namespace:
+        common:
+          addons:
             netchecker:
               enabled: true
-          addons:
+        master:
+          namespace:
             netchecker:
               enabled: true
 
@@ -116,7 +116,7 @@ Enable autoscaler for dns addon. Poll period can be skipped.
 .. code-block:: yaml
 
     kubernetes:
-        master:
+        common:
           addons:
             dns:
               domain: cluster.local
@@ -181,13 +181,14 @@ Master definition
 .. code-block:: yaml
 
     kubernetes:
-        master:
+        common:
           addons:
             dns:
               domain: cluster.local
               enabled: true
               replicas: 1
               server: 10.254.0.10
+        master:
           admin:
             password: password
             username: admin
@@ -275,12 +276,13 @@ On Master:
 .. code-block:: yaml
 
     kubernetes:
-      master:
+      common:
         addons:
           contrail_network_controller:
             enabled: true
             namespace: kube-system
             image: yashulyak/contrail-controller:latest
+      master:
         network:
           engine: opencontrail
           default_domain: default-domain
@@ -310,7 +312,7 @@ Dashboard public IP must be configured when Contrail network is used:
 .. code-block:: yaml
 
     kubernetes:
-      master:
+      common:
         addons:
           public_ip: 1.1.1.1
 

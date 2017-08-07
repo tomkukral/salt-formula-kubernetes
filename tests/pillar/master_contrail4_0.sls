@@ -4,9 +4,8 @@ kubernetes:
     network:
       engine: opencontrail
     hyperkube:
-      image: hyperkube-amd64:v1.5.0-beta.3-1
-  master:
-    service_addresses: 127.0.0.1/24
+      image: hyperkube-amd64:v1.6.4-3
+      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
     addons:
       dns:
         domain: cluster.local
@@ -32,6 +31,19 @@ kubernetes:
         server_image: image
         agent_image: image
         agent_probeurls: "http://ipinfo.io"
+      calico_policy:
+        enabled: true
+        namespace: kube-system
+        image: image
+      virtlet:
+        enabled: true
+        namespace: kube-system
+        image: mirantis/virtlet:v0.7.0
+        hosts:
+        - cmp01
+        - cmp02
+  master:
+    service_addresses: 127.0.0.1/24
     admin:
       password: password
       username: admin
@@ -100,5 +112,3 @@ kubernetes:
         enabled: true
       netchecker:
         enabled: true
-    hyperkube:
-      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd

@@ -1,4 +1,4 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
 apiVersion: v1
 kind: Endpoints
 metadata:
@@ -11,7 +11,7 @@ metadata:
     addonmanager.kubernetes.io/mode: Reconcile
 subsets:
   - addresses:
-    - ip: {{ master.addons.heapster_influxdb.public_ip }}
+    - ip: {{ common.addons.heapster_influxdb.public_ip }}
 
     ports:
     - port: 8082

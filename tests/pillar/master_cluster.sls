@@ -4,8 +4,8 @@ kubernetes:
     network:
       engine: none
     hyperkube:
-      image: hyperkube-amd64:v1.5.0-beta.3-1
-  master:
+      image: hyperkube-amd64:v1.6.4-3
+      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
     addons:
       dns:
         domain: cluster.local
@@ -41,7 +41,8 @@ kubernetes:
         hosts:
         - cmp01
         - cmp02
-        image: mirantis/virtlet:latest
+        image: mirantis/virtlet:v0.7.0
+  master:
     admin:
       password: password
       username: admin
@@ -103,5 +104,3 @@ kubernetes:
         enabled: true
       netchecker:
         enabled: true
-    hyperkube:
-      hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd

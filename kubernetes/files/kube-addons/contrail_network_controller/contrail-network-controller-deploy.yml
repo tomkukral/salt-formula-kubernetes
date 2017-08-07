@@ -1,9 +1,9 @@
-{%- from "kubernetes/map.jinja" import master with context -%}
+{%- from "kubernetes/map.jinja" import common with context -%}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: contrail-network-controller
-  namespace: {{ master.addons.contrail_network_controller.get('namespace', 'kube-system') }}
+  namespace: {{ common.addons.contrail_network_controller.get('namespace', 'kube-system') }}
 spec:
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
         node-role.kubernetes.io: master
       containers:
         - name: contrail-kube-manager
-          image: {{ master.addons.contrail_network_controller.get('image', 'docker-prod-virtual.docker.mirantis.net/mirantis/kubernetes/contrail-integration/contrail-network-controller:v1.0.0') }}
+          image: {{ common.addons.contrail_network_controller.get('image', 'yashulyak/contrail-controller:latest') }}
           imagePullPolicy: Always
           args: ["--config-file", "/etc/kube-manager/contrail.conf", "--alsologtostderr"]
           volumeMounts:

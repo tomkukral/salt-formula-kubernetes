@@ -1,10 +1,11 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: virtlet
-  namespace: {{ master.addons.virtlet.namespace }}
+  namespace: {{ common.addons.virtlet.namespace }}
 spec:
   template:
     metadata:
@@ -46,7 +47,7 @@ spec:
       # debugging criproxy
       # At the end it ensures that /var/lib/libvirt/images exists on node.
       - name: prepare-node
-        image: {{ master.addons.virtlet.image }}
+        image: {{ common.addons.virtlet.image }}
         imagePullPolicy: IfNotPresent
         command:
         - /prepare-node.sh
@@ -69,7 +70,7 @@ spec:
 
       containers:
       - name: virtlet
-        image: {{ master.addons.virtlet.image }}
+        image: {{ common.addons.virtlet.image }}
         # In case we inject local virtlet image we want to use it not officially available one
         imagePullPolicy: IfNotPresent
         volumeMounts:
@@ -122,7 +123,7 @@ spec:
         - name: VIRTLET_VM_LOG_LOCATION
           value: "/var/log/vms"
       - name: virtlet-log
-        image: {{ master.addons.virtlet.image }}
+        image: {{ common.addons.virtlet.image }}
         imagePullPolicy: IfNotPresent
         command:
           - /virtlet_log
@@ -217,13 +218,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: virtlet
-  namespace: {{ master.addons.virtlet.namespace }}
+  namespace: {{ common.addons.virtlet.namespace }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: virtlet
-  namespace: {{ master.addons.virtlet.namespace }}
+  namespace: {{ common.addons.virtlet.namespace }}
 rules:
   - apiGroups:
       - ""
@@ -236,4 +237,4 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: virtlet
-  namespace: {{ master.addons.virtlet.namespace }}
+  namespace: {{ common.addons.virtlet.namespace }}

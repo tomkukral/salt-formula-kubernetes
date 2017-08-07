@@ -1,9 +1,9 @@
-{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
 kind: Service
 apiVersion: "v1"
 metadata:
   name: netchecker
-  namespace: {{ master.addons.netchecker.namespace }}
+  namespace: {{ common.addons.netchecker.namespace }}
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
@@ -11,6 +11,6 @@ spec:
     app: netchecker-server
   ports:
     - protocol: "TCP"
-      port: {{ master.addons.netchecker.port }}
-      targetPort: {{ master.addons.netchecker.port }}
+      port: {{ common.addons.netchecker.port }}
+      targetPort: {{ common.addons.netchecker.port }}
   type: NodePort

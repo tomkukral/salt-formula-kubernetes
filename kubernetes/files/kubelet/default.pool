@@ -1,4 +1,5 @@
-{%- from "kubernetes/map.jinja" import pool with context %}
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import pool with context -%}
 
 # test_args has to be kept at the end, so they'll overwrite any prior configuration
 DAEMON_ARGS="\
@@ -6,8 +7,8 @@ DAEMON_ARGS="\
 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
 --pod-manifest-path=/etc/kubernetes/manifests \
 --allow-privileged={{ pool.kubelet.allow_privileged }} \
---cluster_dns={{ pool.cluster_dns }} \
---cluster_domain={{ pool.cluster_domain }} \
+--cluster_dns={{ common.addons.dns.server }} \
+--cluster_domain={{ common.addons.dns.domain }} \
 --cni-bin-dir={{ pool.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
 --v={{ pool.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/node=true \
@@ -16,11 +17,13 @@ DAEMON_ARGS="\
 --network-plugin-dir=/etc/cni/net.d \
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
 --container-runtime=remote \
 --container-runtime-endpoint=/var/run/criproxy.sock \
 --image-service-endpoint=/var/run/criproxy.sock \
+{%- endif %}
 --enable-controller-attach-detach=false \
 {%- for key, value in pool.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
 --{{ key }}="{{ value }}" \
-{% endfor %}
+{%- endfor %}
 "
