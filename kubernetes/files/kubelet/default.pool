@@ -18,11 +18,11 @@ DAEMON_ARGS="\
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
 {%- if common.addons.get('virtlet', {}).get('enabled') %}
---container-runtime=remote \
---container-runtime-endpoint=/var/run/criproxy.sock \
---image-service-endpoint=/var/run/criproxy.sock \
+--container-runtime={{ pool.get('container-runtime', 'remote') }} \
+--container-runtime-endpoint={{ pool.get('container-runtime-endpoint', '/var/run/criproxy.sock') }} \
+--image-service-endpoint={{ pool.get('image-service-endpoint', '/var/run/criproxy.sock') }} \
+--enable-controller-attach-detach={{ pool.get('enable-controller-attach-detach', 'false') }} \
 {%- endif %}
---enable-controller-attach-detach=false \
 {%- for key, value in pool.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
 --{{ key }}="{{ value }}" \
 {%- endfor %}
