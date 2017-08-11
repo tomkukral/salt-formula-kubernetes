@@ -4,6 +4,9 @@ kind: Deployment
 metadata:
   name: netchecker-server
   namespace: {{ common.addons.netchecker.namespace }}
+  labels:
+    app: netchecker-agent
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
   replicas: 1
   template:

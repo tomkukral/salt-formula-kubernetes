@@ -10,17 +10,17 @@ addon-dir-create:
     - mode: 0755
 
 {%- if master.network.engine == "opencontrail" and master.network.get('version', 3.0) < 4.0 %}
-/etc/kubernetes/addons/contrail_network_controller/contrail-network-controller-configmap.yml:
+/etc/kubernetes/addons/contrail-network-controller/contrail-network-controller-configmap.yml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/contrail_network_controller/contrail-network-controller-configmap.yml
+    - source: salt://kubernetes/files/kube-addons/contrail-network-controller/contrail-network-controller-configmap.yml
     - template: jinja
     - group: root
     - dir_mode: 755
     - makedirs: True
 
-/etc/kubernetes/addons/contrail_network_controller/contrail-network-controller-deploy.yml:
+/etc/kubernetes/addons/contrail-network-controller/contrail-network-controller-deploy.yml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/contrail_network_controller/contrail-network-controller-deploy.yml
+    - source: salt://kubernetes/files/kube-addons/contrail-network-controller/contrail-network-controller-deploy.yml
     - template: jinja
     - group: root
     - dir_mode: 755

@@ -2,11 +2,11 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+  name: netchecker-agent
+  namespace: {{ common.addons.netchecker.namespace }}
   labels:
     app: netchecker-agent
     addonmanager.kubernetes.io/mode: Reconcile
-  name: netchecker-agent
-  namespace: {{ common.addons.netchecker.namespace }}
 spec:
   template:
     metadata:

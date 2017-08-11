@@ -1,10 +1,13 @@
 {%- from "kubernetes/map.jinja" import common with context -%}
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: contrail-network-controller
   namespace: {{ common.addons.contrail_network_controller.get('namespace', 'kube-system') }}
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
 spec:
+  replicas: 1
   template:
     metadata:
       labels:
