@@ -86,8 +86,8 @@
         --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
         --etcd-quorum-read=true
         --insecure-bind-address={{ master.apiserver.insecure_address }}
-        --insecure-port={{ master.apiserver.get('insecure_port', '8080') }}
-        --secure-port={{ master.apiserver.get('secure_port', '443') }}
+        --insecure-port={{ master.apiserver.insecure_port }}
+        --secure-port={{ master.apiserver.secure_port }}
         --service-cluster-ip-range={{ master.service_addresses }}
         --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
         --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
