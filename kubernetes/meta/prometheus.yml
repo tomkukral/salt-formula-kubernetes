@@ -11,6 +11,11 @@
 server:
 {%- if network.get('engine', '') == 'calico' and network.get('prometheus', {}).get('enabled', False) %}
   target:
+    kubernetes:
+      enabled: true
+      api_ip: ${_param:kubernetes_control_address}
+      cert_name: prometheus-server.crt
+      key_name: prometheus-server.key
     static:
       calico:
         endpoint:
