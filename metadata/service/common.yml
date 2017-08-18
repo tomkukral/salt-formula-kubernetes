@@ -41,11 +41,17 @@ parameters:
           enabled: False
           namespace: kube-system
           image: yashulyak/contrail-controller:latest
+        coredns:
+          enabled: False
+          namespace: kube-system
+          image: coredns/coredns:latest
+          etcd_image: quay.io/coreos/etcd:v3.1.0
         virtlet:
           enabled: False
           namespace: kube-system
           image: mirantis/virtlet:v0.7.0
       cluster_domain: ${_param:kubernetes_cluster_domain}
+      cluster_name: ${_param:cluster_name}
       network:
         engine: none
         mtu: 1500

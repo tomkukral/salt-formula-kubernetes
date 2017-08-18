@@ -8,7 +8,7 @@ server="$(awk '/server/ { print $2 }' /etc/kubernetes/kubelet.kubeconfig)"
 cert="$(base64 /etc/kubernetes/ssl/kubelet-client.crt | sed 's/^/      /g')"
 key="$(base64 /etc/kubernetes/ssl/kubelet-client.key | sed 's/^/      /g')"
 ca="$(base64 /etc/kubernetes/ssl/ca-kubernetes.crt | sed 's/^/      /g')"
-cluster="{{ common.addons.dns.domain }}"
+cluster="{{ common.cluster_name }}"
 
 echo "apiVersion: v1
 clusters:

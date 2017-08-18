@@ -1,0 +1,22 @@
+{%- from "kubernetes/map.jinja" import common with context %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coredns
+  namespace: {{ common.addons.coredns.namespace }}
+  labels:
+    k8s-app: coredns
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "coredns"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  selector:
+    k8s-app: coredns
+  ports:
+  - name: dns
+    port: 53
+    protocol: UDP
+  - name: dns-tcp
+    port: 53
+    protocol: TCP
