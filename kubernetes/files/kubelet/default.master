@@ -6,7 +6,7 @@ DAEMON_ARGS="\
 --pod-manifest-path=/etc/kubernetes/manifests \
 --allow-privileged={{ master.kubelet.allow_privileged }} \
 --cluster_dns={{ common.addons.dns.server }} \
---cluster_domain={{ common.addons.dns.domain }} \
+--cluster_domain={{ common.addons.dns.domain|replace('_', '-') }} \
 --cni-bin-dir={{ master.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
 --v={{ master.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/master=true \
