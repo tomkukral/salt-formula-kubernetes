@@ -81,7 +81,7 @@ spec:
           initialDelaySeconds: 3
           timeoutSeconds: 5
         args:
-        - --domain={{ common.addons.dns.domain }}.
+        - --domain={{ common.addons.dns.domain|replace('_', '-') }}.
         - --dns-port=10053
         - --config-map=kube-dns
         - -v=2
@@ -141,8 +141,8 @@ spec:
         args:
         - --v=2
         - --logtostderr
-        - --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.{{ common.addons.dns.domain }},5,A
-        - --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.{{ common.addons.dns.domain }},5,A
+        - --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.{{ common.addons.dns.domain|replace('_', '-') }},5,A
+        - --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.{{ common.addons.dns.domain|replace('_', '-') }},5,A
         ports:
         - containerPort: 10054
           name: metrics
