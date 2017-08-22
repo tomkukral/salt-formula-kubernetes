@@ -1,4 +1,5 @@
-{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context %}
+{%- from "kubernetes/map.jinja" import common with context %}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -29,5 +30,19 @@ spec:
           args:
             - "-v=5"
             - "-logtostderr"
-            - "-kubeproxyinit"
+            - "-kubeproxyinit=false"
             - "-endpoint=0.0.0.0:{{ common.addons.netchecker.port }}"
+            - "-etcd-endpoints={% for member in master.etcd.members %}https://{{ member.host }}:4001{% if not loop.last %},{% endif %}{% endfor %}"
+{%- if master.etcd.get('ssl', {}).get('enabled') %}
+            - "-etcd-key=/var/lib/etcd/etcd-client.key"
+            - "-etcd-cert=/var/lib/etcd/etcd-client.pem"
+            - "-etcd-ca=/var/lib/etcd/ca.pem"
+{%- endif %}
+          volumeMounts:
+          - mountPath: /var/lib/etcd/
+            name: etcd-certs
+            readOnly: true
+      volumes:
+      - hostPath:
+          path: /var/lib/etcd
+        name: etcd-certs
