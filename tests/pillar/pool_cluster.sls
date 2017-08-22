@@ -29,8 +29,10 @@ kubernetes:
       name: ${linux:system:name}
     apiserver:
       host: 127.0.0.1
+      secure_port: 443
       insecure:
         enabled: True
+      insecure_port: 8080
       members:
         - host: 127.0.0.1
         - host: 127.0.0.1

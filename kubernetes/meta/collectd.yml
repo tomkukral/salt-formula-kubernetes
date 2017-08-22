@@ -31,7 +31,7 @@ local_plugin:
      apiserver:
        expected_code: 200
        expected_content: ok
-       url: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}/healthz
+       url: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.insecure_port }}/healthz
        metric_name: k8s_service_health
      scheduler:
        expected_code: 200
@@ -101,7 +101,7 @@ remote_plugin:
        verify: false
        client_cert: /etc/kubernetes/ssl/kubelet-client.crt
        client_key: /etc/kubernetes/ssl/kubelet-client.key
-       url: https://{{ pool.apiserver.host }}:{{ pool.apiserver.port|default('443') }}/healthz
+       url: https://{{ pool.apiserver.host }}:{{ pool.apiserver.secure_port }}/healthz
        metric_name: k8s_service_health_vip
   collectd_k8s_get:
    plugin: python
@@ -111,5 +111,5 @@ remote_plugin:
    verify: false
    client_cert: /etc/kubernetes/ssl/kubelet-client.crt
    client_key: /etc/kubernetes/ssl/kubelet-client.key
-   endpoint: https://{{ pool.apiserver.host }}:{{ pool.apiserver.port|default('443') }}
+   endpoint: https://{{ pool.apiserver.host }}:{{ pool.apiserver.secure_port }}
 {%- endif %}

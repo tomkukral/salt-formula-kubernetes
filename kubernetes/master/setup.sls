@@ -64,7 +64,7 @@ kube-addon-manager_service:
     - name: {{ label.key }}
     - value: {{ label.value }}
     - node: {{ label.node }}
-    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
+    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.insecure_port }}
     {%- if grains.get('noservices') %}
     - onlyif: /bin/false
     {%- endif %}
@@ -75,7 +75,7 @@ kube-addon-manager_service:
   k8s.label_absent:
     - name: {{ label.key }}
     - node: {{ label.node }}
-    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.get('insecure_port', '8080') }}
+    - apiserver: http://{{ master.apiserver.insecure_address }}:{{ master.apiserver.insecure_port }}
     {%- if grains.get('noservices') %}
     - onlyif: /bin/false
     {%- endif %}

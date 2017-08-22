@@ -24,7 +24,7 @@ spec:
       --basic-auth-file=/srv/kubernetes/basic_auth.csv
       --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
       --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
-      --secure-port={{ master.apiserver.get('secure_port', '443') }}
+      --secure-port={{ master.apiserver.secure_port }}
       --bind-address={{ master.apiserver.address }}
       --token-auth-file=/srv/kubernetes/known_tokens.csv
       --apiserver-count={{ master.apiserver.get('count', 1) }}
@@ -43,17 +43,17 @@ spec:
       httpGet:
         host: 127.0.0.1
         path: /healthz
-        port: {{ master.apiserver.get('insecure_port', '8080') }}
+        port: {{ master.apiserver.insecure_port }}
         scheme: HTTP
       initialDelaySeconds: 15
       timeoutSeconds: 15
     ports:
-    - containerPort: {{ master.apiserver.get('secure_port', '443') }}
-      hostPort: {{ master.apiserver.get('secure_port', '443') }}
+    - containerPort: {{ master.apiserver.secure_port }}
+      hostPort: {{ master.apiserver.secure_port }}
       name: https
       protocol: TCP
-    - containerPort: {{ master.apiserver.get('insecure_port', '8080') }}
-      hostPort: {{ master.apiserver.get('insecure_port', '8080') }}
+    - containerPort: {{ master.apiserver.insecure_port }}
+      hostPort: {{ master.apiserver.insecure_port }}
       name: local
       protocol: TCP
     resources:
