@@ -49,7 +49,7 @@ parameters:
           enabled: False
         helm:
           enabled: False
-          tiller_image: gcr.io/kubernetes-helm/tiller:v2.3.0
+          tiller_image: gcr.io/kubernetes-helm/tiller:v2.4.2
         calico_policy:
           enabled: False
           image: calico/kube-policy-controller:v0.5.4
