@@ -1,0 +1,36 @@
+{%- from "kubernetes/map.jinja" import common with context -%}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ common.addons.externaldns.namespace }}
+  name: external-dns
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+      - name: external-dns
+        image: {{ common.addons.externaldns.image }}
+        args:
+        - --source=service
+        - --source=ingress
+        - --domain-filter={{ common.addons.externaldns.domain }} # will make ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones
+        - --provider={{ common.addons.externaldns.provider }}
+        #- --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
+        - --registry=txt
+        - --txt-owner-id=my-identifier
+        {% if common.addons.externaldns.provider == "coredns" %}
+        env:
+        - name: ETCD_URLS
+          value: "https://coredns-etcd:2379"
+        {% endif %}

@@ -153,6 +153,16 @@ addon-dir-create:
 
 {% endif %}
 
+{%- if common.addons.get('externaldns', {}).get('enabled') %}
+/etc/kubernetes/addons/externaldns/externaldns-deploy.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/externaldns/externaldns-deploy.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+{% endif %}
+
 {%- if common.addons.dashboard.enabled %}
 
 /etc/kubernetes/addons/dashboard/dashboard-service.yaml:

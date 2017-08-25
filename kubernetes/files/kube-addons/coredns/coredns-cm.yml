@@ -11,11 +11,20 @@ metadata:
 data:
   Corefile: |
     .:53 {
+{% if master.federation.enabled %}
         etcd {{ master.federation.name }} {
           stubzones
           path /skydns
           endpoint http://coredns-etcd:2379
         }
+{% endif %}
+{% if common.addons.externaldns.enabled %}
+        etcd {{ common.addons.externaldns.domain }} {
+          stubzones
+          path /skydns
+          endpoint http://coredns-etcd:2379
+        }
+{% endif %}
         errors
         log stdout
         health

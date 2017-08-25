@@ -110,6 +110,22 @@ Enable Kubenetes Federation control plane
               - secondcluster.mydomain
               - thirdcluster.mydomain
 
+Enable external DNS addon with CoreDNS provider
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          addons:
+            externaldns:
+              coredns:
+                enabled: True
+              externaldns:
+                enabled: True
+                domain: company.mydomain
+                provider: coredns
+
 Configure service verbosity
 
 .. code-block:: yaml

@@ -46,6 +46,12 @@ parameters:
           namespace: kube-system
           image: coredns/coredns:latest
           etcd_image: quay.io/coreos/etcd:v3.1.0
+        externaldns:
+          enabled: True
+          namespace: kube-system
+          image: mirantis/external-dns:latest
+          domain: ${_param:kubernetes_cluster_domain}
+          provider: coredns
         virtlet:
           enabled: False
           namespace: kube-system
