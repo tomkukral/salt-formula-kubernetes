@@ -8,7 +8,7 @@ Requires=docker.service
 ExecStartPre=-/usr/bin/docker rm -f calico-node
 ExecStart=/usr/bin/docker run --net=host --privileged \
  --name=calico-node \
- -e HOSTNAME={{ master.host.name }} \
+ -e NODENAME={{ master.host.name }} \
  -e IP={{ master.apiserver.address }} \
  -e IP6={{ master.get('ipv6_address', '') }} \
 {%- if master.network.calico_network_backend is defined %}
