@@ -12,6 +12,6 @@ DAEMON_ARGS="\
 --v={{ master.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/master=true \
 {%- for key, value in master.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
---{{ key }}="{{ value }}" \
+--{{ key }}={{ value }} \
 {%- endfor %}
 "

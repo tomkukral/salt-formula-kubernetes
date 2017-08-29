@@ -25,6 +25,6 @@ DAEMON_ARGS="\
 --enable-controller-attach-detach={{ pool.get('enable-controller-attach-detach', 'false') }} \
 {%- endif %}
 {%- for key, value in pool.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
---{{ key }}="{{ value }}" \
+--{{ key }}={{ value }} \
 {%- endfor %}
 "
