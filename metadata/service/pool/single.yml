@@ -18,8 +18,8 @@ parameters:
           enabled: True
         insecure_port: 8080
         members:
-          - host: ${_param:master_address}
-      address: 0.0.0.0
+        - host: ${_param:master_address}
+      address: ${_param:single_address}
       cluster_dns: 10.254.0.10
       allow_privileged: True
       cluster_domain: ${_param:kubernetes_cluster_domain}
@@ -35,5 +35,5 @@ parameters:
         hash: 77169cdadb80a5e33e9d9fe093ed0d99
         etcd:
           members:
-            - host: ${_param:master_address}
-              port: 4001
+          - host: ${_param:master_address}
+            port: 4001
