@@ -18,6 +18,12 @@ DAEMON_ARGS="\
 --network-plugin-dir=/etc/cni/net.d \
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
+{%- if common.get('cloudprovider', {}).get('enabled') %}
+        --cloud-provider={{ common.cloudprovider.provider }} \
+{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+        --cloud-config=/etc/kubernetes/cloud-config.conf \
+{%- endif %}
+{%- endif %}
 {%- if common.addons.get('virtlet', {}).get('enabled') %}
 --container-runtime={{ pool.get('container-runtime', 'remote') }} \
 --container-runtime-endpoint={{ pool.get('container-runtime-endpoint', '/var/run/criproxy.sock') }} \

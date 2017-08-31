@@ -11,6 +11,12 @@ DAEMON_ARGS="\
 --hostname-override={{ master.host.name }} \
 --v={{ master.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/master=true \
+{%- if common.get('cloudprovider', {}).get('enabled') %}
+        --cloud-provider={{ common.cloudprovider.provider }} \
+{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+        --cloud-config=/etc/kubernetes/cloud-config.conf \
+{%- endif %}
+{%- endif %}
 {%- for key, value in master.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
 --{{ key }}={{ value }} \
 {%- endfor %}

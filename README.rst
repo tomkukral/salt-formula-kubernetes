@@ -126,6 +126,26 @@ Enable external DNS addon with CoreDNS provider
                 domain: company.mydomain
                 provider: coredns
 
+Enable OpenStack cloud provider
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          cloudprovider:
+            enabled: True
+            type: openstack
+            params:
+              auth_url: https://openstack.mydomain:5000/v3
+              username: nova
+              password: nova
+              region: RegionOne
+              tenant_id: 4bce4162d8744c599e350099cfa22a0a
+              domain_name: default
+              subnet_id: 72407854-aca6-4cf1-b873-e9affb09484b
+              lb_version: v2
+
 Configure service verbosity
 
 .. code-block:: yaml

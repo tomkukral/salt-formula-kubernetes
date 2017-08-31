@@ -103,10 +103,16 @@
         --etcd-certfile /var/lib/etcd/etcd-client.crt
         --etcd-keyfile /var/lib/etcd/etcd-client.key
 {%- endif %}
-{%- if master.apiserver.node_port_range is defined %} 
+{%- if master.apiserver.node_port_range is defined %}
         --service-node-port-range {{ master.apiserver.node_port_range }}
 {%- endif %}
-{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %} 
+{%- if common.get('cloudprovider', {}).get('enabled') %}
+        --cloud-provider={{ common.cloudprovider.provider }}
+{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+        --cloud-config=/etc/kubernetes/cloud-config.conf
+{%- endif %}
+{%- endif %}
+{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %}
         --{{ key }}={{ value }}
 {%- endfor %}"
 
@@ -137,6 +143,12 @@
         --leader-elect=true
         --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
         --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
+{%- if common.get('cloudprovider', {}).get('enabled') %}
+        --cloud-provider={{ common.cloudprovider.provider }}
+{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+        --cloud-config=/etc/kubernetes/cloud-config.conf
+{%- endif %}
+{%- endif %}
         --v={{ master.get('verbosity', 2) }}
 {%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
         --{{ key }}={{ value }}
