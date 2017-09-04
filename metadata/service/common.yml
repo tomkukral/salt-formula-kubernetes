@@ -56,6 +56,12 @@ parameters:
           enabled: False
           namespace: kube-system
           image: mirantis/virtlet:v0.7.0
+      cloudprovider:
+        enabled: False
+        provider: openstack
+        params:
+          region: RegionOne
+          domain_name: default
       cluster_domain: ${_param:kubernetes_cluster_domain}
       cluster_name: ${_param:cluster_name}
       network:

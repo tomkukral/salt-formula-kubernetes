@@ -131,6 +131,17 @@ criproxy_service:
 /etc/kubernetes/config:
   file.absent
 
+{%- if common.get('cloudprovider', {}).get('enabled') and common.get('cloudprovider', {}).get('provider') == "openstack" %}
+/etc/kubernetes/cloud-config.conf:
+  file.managed:
+  - source: salt://kubernetes/files/cloudprovider/cloud-config.conf
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 600
+
+{% endif %}
+
 {%- if not pillar.kubernetes.pool is defined %}
 
 /etc/default/kubelet:
