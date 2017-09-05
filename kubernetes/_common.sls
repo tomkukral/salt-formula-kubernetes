@@ -131,7 +131,7 @@ criproxy_service:
 /etc/kubernetes/config:
   file.absent
 
-{%- if common.get('cloudprovider', {}).get('enabled') and common.get('cloudprovider', {}).get('provider') == "openstack" %}
+{%- if common.get('cloudprovider', {}).get('enabled') and common.get('cloudprovider', {}).get('provider') == 'openstack' %}
 /etc/kubernetes/cloud-config.conf:
   file.managed:
   - source: salt://kubernetes/files/cloudprovider/cloud-config.conf

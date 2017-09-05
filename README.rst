@@ -135,7 +135,7 @@ Enable OpenStack cloud provider
         common:
           cloudprovider:
             enabled: True
-            type: openstack
+            provider: openstack
             params:
               auth_url: https://openstack.mydomain:5000/v3
               username: nova

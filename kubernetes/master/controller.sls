@@ -108,7 +108,7 @@
 {%- endif %}
 {%- if common.get('cloudprovider', {}).get('enabled') %}
         --cloud-provider={{ common.cloudprovider.provider }}
-{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+{%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
         --cloud-config=/etc/kubernetes/cloud-config.conf
 {%- endif %}
 {%- endif %}
@@ -145,7 +145,7 @@
         --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
 {%- if common.get('cloudprovider', {}).get('enabled') %}
         --cloud-provider={{ common.cloudprovider.provider }}
-{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
+{%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
         --cloud-config=/etc/kubernetes/cloud-config.conf
 {%- endif %}
 {%- endif %}

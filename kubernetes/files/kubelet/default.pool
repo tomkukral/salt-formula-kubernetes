@@ -19,9 +19,9 @@ DAEMON_ARGS="\
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
 {%- if common.get('cloudprovider', {}).get('enabled') %}
-        --cloud-provider={{ common.cloudprovider.provider }} \
-{%- if common.get('cloudprovider', {}).get('provider') == "openstack" %}
-        --cloud-config=/etc/kubernetes/cloud-config.conf \
+--cloud-provider={{ common.cloudprovider.provider }} \
+{%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
+--cloud-config=/etc/kubernetes/cloud-config.conf \
 {%- endif %}
 {%- endif %}
 {%- if common.addons.get('virtlet', {}).get('enabled') %}
