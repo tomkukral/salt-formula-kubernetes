@@ -571,6 +571,26 @@ Kubernetes with GlusterFS for storage
             port: 24007
          ...
 
+Kubernetes Storage Class
+------------------------
+
+AWS EBS storageclass integration. It also requires to create IAM policy and profiles for instances and tag all resources by KubernetesCluster in EC2.
+
+.. code-block:: yaml
+
+    kubernetes:
+      common:
+        addons:
+          storageclass:
+            aws_slow:
+              name: slow
+              enabled: True
+              default: True
+              provisioner: aws-ebs
+              type: gp2
+              iopspergb: "10"
+              zones: xxx
+
 Kubernetes namespaces
 ---------------------
 
