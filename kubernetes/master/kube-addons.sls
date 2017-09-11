@@ -51,7 +51,7 @@ addon-dir-create:
 {% endif %}
 
 
-{%- if common.addons.helm.enabled %}
+{%- if common.addons.get('helm', {'enabled': False}).enabled %}
 /etc/kubernetes/addons/helm/helm-tiller-deploy.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/helm/helm-tiller-deploy.yml
@@ -65,6 +65,7 @@ addon-dir-create:
 {%- if common.addons.storageclass is defined %}
 
 {%- for storageclass_name, storageclass in common.addons.get('storageclass', {}).iteritems() %}
+{%- set storageclass_name = storageclass.get('name', storageclass_name) %}
 
 /etc/kubernetes/addons/storageclass/{{ storageclass_name }}.yaml:
   file.managed:
@@ -81,7 +82,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if common.addons.netchecker.enabled %}
+{%- if common.addons.get('netchecker', {'enabled': False}).enabled %}
 
 {%- for resource in ['svc', 'server', 'agent'] %}
 
@@ -97,7 +98,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if common.addons.dns.enabled %}
+{%- if common.addons.get('dns', {'enabled': False}).enabled %}
 
 /etc/kubernetes/addons/dns/kubedns-svc.yaml:
   file.managed:
@@ -180,9 +181,10 @@ addon-dir-create:
     - group: root
     - dir_mode: 755
     - makedirs: True
+
 {% endif %}
 
-{%- if common.addons.dashboard.enabled %}
+{%- if common.addons.get('dashboard', {'enabled': False}).enabled %}
 
 /etc/kubernetes/addons/dashboard/dashboard-service.yaml:
   file.managed:
@@ -202,7 +204,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if common.addons.heapster_influxdb.enabled %}
+{%- if common.addons.get('heapster_influxdb', {'enabled': False}).enabled %}
 
 /etc/kubernetes/addons/heapster-influxdb/heapster-address.yaml:
   file.managed:

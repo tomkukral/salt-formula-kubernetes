@@ -1,0 +1,25 @@
+{%- from "kubernetes/map.jinja" import common with context %}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ storageclass_name }}
+  {%- if storageclass.default is defined %}
+  annotations:
+  {%- if storageclass.default %}
+    storageclass.beta.kubernetes.io/is-default-class: "true"
+  {%- endif %}
+  {%- endif %}
+spec:
+  {%- if storageclass.spec.capacity is mapping %}
+  capacity:
+    storage: {{ storageclass.spec.capacity.storage }}
+  {%- endif %}
+  accessModes:
+    {%- for mode in storageclass.spec.get('access_modes', ['ReadWriteOnce']) %}
+    - {{ mode }}
+    {%- endfor %}
+  persistentVolumeReclaimPolicy: {{ storageclass.spec.get('reclaim_policy', 'Recycle') }}
+  storageClassName: {{ storageclass.spec.name }}
+  nfs:
+    path: {{ storageclass.spec.nfs.path }}
+    server: {{ storageclass.spec.nfs.server }}
