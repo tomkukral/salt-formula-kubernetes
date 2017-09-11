@@ -246,6 +246,36 @@ kubernetes_namespace_delete_{{ name }}:
 
 {%- endfor %}
 
+{%- if master.get('unschedulable', 'false') %}
+kubernetes_node_ready_{{ master.host.name}}:
+  cmd.run:
+    - name: bash -c 'while ! kubectl get nodes {{ master.host.name }}; do sleep 5; done'
+    - timeout: 180
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+kubernetes_taint_master_{{ master.host.name }}:
+  cmd.run:
+    - name: kubectl taint --overwrite nodes {{ master.host.name }} node-role.kubernetes.io/master=:NoSchedule
+    - require:
+      - cmd: kubernetes_node_ready_{{ master.host.name}}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+kubernetes_label_master_{{ master.host.name }}:
+  cmd.run:
+    - name: kubectl label --overwrite nodes {{ master.host.name }} node-role.kubernetes.io=master
+    - require:
+      - cmd: kubernetes_node_ready_{{ master.host.name}}
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+
+
+{%- endif %}
+
 {%- if master.registry.secret is defined %}
 
 {%- for name,registry in master.registry.secret.iteritems() %}

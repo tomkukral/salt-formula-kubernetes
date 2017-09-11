@@ -12,14 +12,7 @@ DAEMON_ARGS="\
 --cni-bin-dir={{ pool.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
 --hostname-override={{ pool.host.name }} \
 --v={{ pool.get('verbosity', 2) }} \
-{%- if pillar.kubernetes.master is defined %}
---node-labels=node-role.kubernetes.io/master=true \
-{%-   if master.get('unschedulable', 'false') %}
---register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
-{%    endif %}
-{%- else %}
 --node-labels=node-role.kubernetes.io/node=true \
-{%- endif %}
 {%- if pool.network.engine in ['calico', 'opencontrail'] %}
 --network-plugin=cni \
 --network-plugin-dir=/etc/cni/net.d \
