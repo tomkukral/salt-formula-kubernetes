@@ -11,6 +11,9 @@ DAEMON_ARGS="\
 --hostname-override={{ master.host.name }} \
 --v={{ master.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/master=true \
+{%- if master.get('unschedulable', 'false') %}
+--register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
+{%- endif %}
 {%- if common.get('cloudprovider', {}).get('enabled') %}
 --cloud-provider={{ common.cloudprovider.provider }} \
 {%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
