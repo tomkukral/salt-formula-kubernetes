@@ -24,6 +24,7 @@ parameters:
       allow_privileged: True
       cluster_domain: ${_param:kubernetes_cluster_domain}
       kubelet:
+        address: ${_param:cluster_local_address}
         config: /etc/kubernetes/manifests
         allow_privileged: True
         frequency: 5s

@@ -65,6 +65,7 @@ kubernetes:
       - host: 10.0.175.100
         name: node040
     kubelet:
+      address: 10.0.175.100
       allow_privileged: true
     network:
       engine: calico
