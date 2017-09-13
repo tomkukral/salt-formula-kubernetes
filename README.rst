@@ -583,13 +583,22 @@ AWS EBS storageclass integration. It also requires to create IAM policy and prof
         addons:
           storageclass:
             aws_slow:
-              name: slow
               enabled: True
               default: True
               provisioner: aws-ebs
+              name: slow
               type: gp2
               iopspergb: "10"
               zones: xxx
+            nfs_shared:
+              name: elasti01
+              enabled: True
+              provisioner: nfs
+              spec:
+                name: elastic_data
+                nfs:
+                  server: 10.0.0.1
+                  path: /exported_path
 
 Kubernetes namespaces
 ---------------------

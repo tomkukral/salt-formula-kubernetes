@@ -35,6 +35,8 @@ provisioner:
           - linux_repo_opencontrail
           - linux
           - kubernetes
+          - kubernetes_extra
+    kubernetes_extra.sls: {}
     linux.sls:
       linux:
         system:
@@ -84,5 +86,11 @@ suites:
     provisioner:
       pillars-from-files:
         kubernetes.sls: tests/pillar/pool_contrail4_0.sls
+
+  - name: common_storageclass
+    provisioner:
+      pillars-from-files:
+        kubernetes.sls: tests/pillar/master_cluster.sls
+        kubernetes_extra.sls: tests/pillar/common_storageclass.sls
 
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

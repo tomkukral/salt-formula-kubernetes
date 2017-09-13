@@ -28,6 +28,7 @@ env:
   - PLATFORM=trevorj/salty-whales:xenial SUITE=master_contrail4_0
   - PLATFORM=trevorj/salty-whales:trusty SUITE=pool_contrail4_0
   - PLATFORM=trevorj/salty-whales:xenial SUITE=pool_contrail4_0
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=common_storageclass
 
 before_script:
   - set -o pipefail
