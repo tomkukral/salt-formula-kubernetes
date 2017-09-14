@@ -6,7 +6,7 @@ extract_kubernetes_client:
   archive.extracted:
     - name: /tmp/kubernetes-client
     - source: {{ master.federation.source }}
-    {%- if {{ master.federation.get('hash') }} %}
+    {%- if master.federation.get('hash') %}
     - source_hash: sha256={{ master.federation.hash }}
     {%- endif %}
     - tar_options: xzf
@@ -56,10 +56,11 @@ federation_kubeconfig_replace_server:
 
 kubefed_init:
   cmd.run:
-  - name: kubefed init {{ master.federation.name }} --host-cluster-context=local --kubeconfig=/etc/kubernetes/federation/federation.kubeconfig --federation-system-namespace={{ master.federation.namespace }} --api-server-service-type={{ master.federation.service_type }} --etcd-persistent-storage=false  --dns-provider={{ master.federation.dns_provider }} --dns-provider-config=/etc/kubernetes/federation/dns.conf --dns-zone-name={{ master.federation.name }} --image={{ common.hyperkube.image }}
+  - name: kubefed init {{ master.federation.name }} --host-cluster-context=local --kubeconfig=/etc/kubernetes/federation/federation.kubeconfig --federation-system-namespace={{ master.federation.namespace }} --api-server-service-type={{ master.federation.service_type }} --api-server-advertise-address={{ master.apiserver.vip_address }} --etcd-persistent-storage=false  --dns-provider={{ master.federation.dns_provider }} --dns-provider-config=/etc/kubernetes/federation/dns.conf --dns-zone-name={{ master.federation.name }} --image={{ common.hyperkube.image }}
   - require:
     - file: /usr/bin/kubefed
     - file: /etc/kubernetes/federation/federation.kubeconfig
+  - timeout: 120
   - unless: kubectl get namespace {{ master.federation.namespace }}
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
@@ -92,31 +93,32 @@ kubefed_join_host_cluster:
 # Assumes the following:
 # * Pillar data master.federation.childclusters is populated
 # * kubeconfig data for each cluster exists in /etc/kubernetes/federation/federation.kubeconfig
-{%- if master.federation.get('childclusters') }
+{%- if master.federation.get('childclusters') %}
 {%- for childcluster in master.federation.childclusters %}
 
-federation_verify_kubeconfig_{{ childcluster }}:
+federation_set_insecure_{{ childcluster }}:
   cmd.run:
-  - name: kubectl config get-contexts -o name | grep {{ childcluster }}
+  - name: kubectl config set-cluster {{ childcluster }} --insecure-skip-tls-verify=true
   - env:
     - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig
   - require:
     - cmd: kubefed_init
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
+  {%- else %}
+  - unless: kubectl --context {{ childcluster }} config view --minify | egrep "insecure-skip-tls-verify. true"
   {%- endif %}
-
+   
 federation_join_cluster_{{ childcluster }}:
   cmd.run:
-  - name: kubefed join {{ childcluster }} --host-cluster-context=local --context={{ master.federation.name }}
+  - name: kubefed join {{ childcluster }} --host-cluster-context={{ common.cluster_name }} --context={{ master.federation.name }}
   - env:
-    - KUBECONFIG: /etc/kubernetes/federation.kubeconfig
+    - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig:/etc/kubernetes/federation/federation.kubeconfig
   - require:
-    - cmd: verify_kubeconfig_{{ childcluster }}
-  - unless: kubectl get clusters | grep {{ childcluster }}
+    - cmd: federation_set_insecure_{{ childcluster }}
+  - unless: kubectl --context {{ master.federation.name }} get clusters | grep {{ childcluster }}
 
 {%- endfor %}
 {%- endif %}
 
 {%- endif %}
-
