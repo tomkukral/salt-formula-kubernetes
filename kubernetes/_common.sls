@@ -118,6 +118,16 @@ criproxy_service:
   - onlyif: /bin/false
   {%- endif %}
 
+{%- else %}
+
+/etc/criproxy:
+  file.absent
+
+criproxy_service:
+  service.dead:
+  - name: criproxy
+  - enable: False
+
 {%- endif %}
 
 /etc/systemd/system/kubelet.service:
