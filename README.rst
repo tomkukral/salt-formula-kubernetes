@@ -71,7 +71,7 @@ Enable virtlet addon
             virtlet:
               enabled: true
               namespace: kube-system
-              image: mirantis/virtlet:v0.7.0
+              image: mirantis/virtlet:v0.8.0
               hosts:
               - cmp01
               - cmp02
