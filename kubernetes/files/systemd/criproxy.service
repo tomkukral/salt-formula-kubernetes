@@ -3,8 +3,7 @@ Description=CRI Proxy
 
 [Service]
 ExecStart=/usr/bin/criproxy -alsologtostderr \
-          -connect docker,virtlet:/var/run/virtlet.sock \
-          -kubeletcfg /etc/criproxy/kubelet.conf \
+          -connect /var/run/dockershim.sock,virtlet:/var/run/virtlet.sock \
           -listen /var/run/criproxy.sock
 Restart=always
 StartLimitInterval=0

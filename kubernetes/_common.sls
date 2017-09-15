@@ -83,19 +83,32 @@ copy-criproxy-bin:
     - onlyif: /bin/false
     {%- endif %}
 
+/usr/bin/dockershim:
+  file.symlink:
+    - target: /usr/bin/criproxy
+    - require:
+      - file: /usr/bin/criproxy
+
 /etc/criproxy:
   file.directory:
     - user: root
     - group: root
     - mode: 0750
 
-/etc/criproxy/kubelet.conf:
+/etc/criproxy/node.conf:
   file.managed:
-    - source: salt://kubernetes/files/virtlet/kubelet.conf
+    - user: root
+    - group: root
+    - mode: 0640
+    - contents: ''
+
+/etc/systemd/system/dockershim.service:
+  file.managed:
+    - source: salt://kubernetes/files/systemd/dockershim.service
     - template: jinja
     - user: root
     - group: root
-    - mode: 640
+    - mode: 755
 
 /etc/systemd/system/criproxy.service:
   file.managed:
@@ -105,14 +118,24 @@ copy-criproxy-bin:
     - group: root
     - mode: 755
 
+dockershim_service:
+  service.running:
+  - name: dockershim
+  - enable: True
+  - watch:
+    - file: /etc/systemd/system/dockershim.service
+    - file: /usr/bin/dockershim
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
+
 criproxy_service:
   service.running:
   - name: criproxy
   - enable: True
   - watch:
     - file: /etc/systemd/system/criproxy.service
-    - file: /etc/criproxy/kubelet.conf
-    - file: /etc/criproxy
+    - file: /etc/criproxy/node.conf
     - file: /usr/bin/criproxy
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
@@ -122,6 +145,11 @@ criproxy_service:
 
 /etc/criproxy:
   file.absent
+
+dockershim_service:
+  service.dead:
+  - name: dockershim
+  - enable: False
 
 criproxy_service:
   service.dead:

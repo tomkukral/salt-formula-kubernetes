@@ -1,0 +1,24 @@
+[Unit]
+Description=dockershim for criproxy
+
+[Service]
+EnvironmentFile=-/etc/default/kubelet
+ExecStart=/usr/bin/dockershim \
+    $KUBE_LOGTOSTDERR \
+    $KUBE_LOG_LEVEL \
+    $KUBE_ALLOW_PRIV \
+        $KUBELET_ADDRESS \
+        $KUBELET_PORT \
+        $KUBELET_HOSTNAME \
+        $KUBELET_API_SERVER \
+        $DOCKER_ENDPOINT \
+        $CADVISOR_PORT \
+        $DAEMON_ARGS
+
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+RequiredBy=criproxy.service
+
