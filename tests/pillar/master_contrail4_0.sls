@@ -66,6 +66,7 @@ kubernetes:
       - host: 127.0.0.1
         name: node040
     kubelet:
+      address: 10.0.175.100
       allow_privileged: true
     network:
       engine: opencontrail

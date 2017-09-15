@@ -40,6 +40,7 @@ kubernetes:
         - host: 127.0.0.1
     address: 0.0.0.0
     kubelet:
+      address: 127.0.0.1
       config: /etc/kubernetes/manifests
       allow_privileged: True
       frequency: 5s
