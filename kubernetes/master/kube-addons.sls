@@ -182,6 +182,16 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
+{%- if common.addons.externaldns.get('provider') == 'designate' %}
+/etc/kubernetes/addons/externaldns/externaldns-designate-secret.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/externaldns/externaldns-designate-secret.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+{% endif %}
+
 {% endif %}
 
 {%- if common.addons.get('dashboard', {'enabled': False}).enabled %}

@@ -29,8 +29,13 @@ spec:
         #- --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
         - --registry=txt
         - --txt-owner-id=my-identifier
-        {% if common.addons.externaldns.provider == "coredns" %}
+        - --publish-internal-services
+        {%- if common.addons.externaldns.provider == "coredns" %}
         env:
         - name: ETCD_URLS
           value: "https://coredns-etcd:2379"
-        {% endif %}
+        {%- elif common.addons.externaldns.provider == "designate" %}
+        envFrom:
+        - secretRef:
+            name: designate-os-secret
+        {%- endif %}

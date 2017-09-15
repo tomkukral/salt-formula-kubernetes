@@ -126,6 +126,28 @@ Enable external DNS addon with CoreDNS provider
                 domain: company.mydomain
                 provider: coredns
 
+Enable external DNS addon with Designate provider
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          addons:
+            externaldns:
+              externaldns:
+                enabled: True
+                domain: company.mydomain
+                provider: designate
+                designate_os_options:
+                  OS_AUTH_URL: https://keystone_auth_endpoint:5000
+                  OS_PROJECT_DOMAIN_NAME: default
+                  OS_USER_DOMAIN_NAME: default
+                  OS_PROJECT_NAME: admin
+                  OS_USERNAME: admin
+                  OS_PASSWORD: password
+                  OS_REGION_NAME: RegionOne
+
 Enable OpenStack cloud provider
 
 .. code-block:: yaml
