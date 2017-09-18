@@ -111,7 +111,7 @@ federation_set_insecure_{{ childcluster }}:
    
 federation_join_cluster_{{ childcluster }}:
   cmd.run:
-  - name: kubefed join {{ childcluster }} --host-cluster-context={{ common.cluster_name }} --context={{ master.federation.name }}
+  - name: kubefed join {{ childcluster }} --host-cluster-context=local --context={{ master.federation.name }}
   - env:
     - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig:/etc/kubernetes/federation/federation.kubeconfig
   - require:
