@@ -1,0 +1,38 @@
+{%- from "kubernetes/map.jinja" import common with context -%}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ common.addons.coredns.namespace }}
+  labels:
+    app: coredns-etcd-operator
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: coredns-etcd-operator
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      name: coredns-etcd-operator
+  template:
+    metadata:
+      labels:
+        name: coredns-etcd-operator
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+      - name: coredns-etcd-operator
+        image: {{ common.addons.coredns.etcd.operator_image }}
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      restartPolicy: Always

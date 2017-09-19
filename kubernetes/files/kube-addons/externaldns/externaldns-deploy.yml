@@ -33,7 +33,7 @@ spec:
         {%- if common.addons.externaldns.provider == "coredns" %}
         env:
         - name: ETCD_URLS
-          value: "https://coredns-etcd:2379"
+          value: "http://coredns-etcd-cluster-client:2379"
         {%- elif common.addons.externaldns.provider == "designate" %}
         envFrom:
         - secretRef:

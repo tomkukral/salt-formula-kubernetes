@@ -129,6 +129,21 @@ addon-dir-create:
 {% endif %}
 
 {%- if common.addons.coredns.enabled or master.federation.enabled %}
+/etc/kubernetes/addons/coredns/coredns-etcd-operator-deployment.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/coredns/coredns-etcd-operator-deployment.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+/etc/kubernetes/addons/coredns/coredns-etcd-cluster.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/coredns/coredns-etcd-cluster.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
 
 /etc/kubernetes/addons/coredns/coredns-cm.yml:
   file.managed:
@@ -149,22 +164,6 @@ addon-dir-create:
 /etc/kubernetes/addons/coredns/coredns-svc.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/coredns/coredns-svc.yml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/coredns/etcd-svc.yml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/coredns/etcd-svc.yml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/coredns/etcd-deploy.yml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/coredns/etcd-deploy.yml
     - template: jinja
     - group: root
     - dir_mode: 755
