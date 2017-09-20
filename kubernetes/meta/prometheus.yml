@@ -13,7 +13,7 @@ server:
   target:
     kubernetes:
       enabled: true
-      api_ip: ${_param:kubernetes_control_address}
+      api_ip: {{ pool.apiserver.host }}
       cert_name: prometheus-server.crt
       key_name: prometheus-server.key
     static:
