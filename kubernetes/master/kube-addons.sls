@@ -199,6 +199,16 @@ addon-dir-create:
     - makedirs: True
 {% endif %}
 
+{%- if common.addons.get('externaldns', {}).get('provider') == 'google' %}
+/etc/kubernetes/addons/externaldns/externaldns-google-secret.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/externaldns/externaldns-google-secret.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+{% endif %}
+
 {% endif %}
 
 {%- if common.addons.get('dashboard', {'enabled': False}).enabled %}

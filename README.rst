@@ -118,13 +118,12 @@ Enable external DNS addon with CoreDNS provider
       kubernetes:
         common:
           addons:
+            coredns:
+              enabled: True
             externaldns:
-              coredns:
-                enabled: True
-              externaldns:
-                enabled: True
-                domain: company.mydomain
-                provider: coredns
+              enabled: True
+              domain: company.mydomain
+              provider: coredns
 
 Enable external DNS addon with Designate provider
 
@@ -135,18 +134,17 @@ Enable external DNS addon with Designate provider
         common:
           addons:
             externaldns:
-              externaldns:
-                enabled: True
-                domain: company.mydomain
-                provider: designate
-                designate_os_options:
-                  OS_AUTH_URL: https://keystone_auth_endpoint:5000
-                  OS_PROJECT_DOMAIN_NAME: default
-                  OS_USER_DOMAIN_NAME: default
-                  OS_PROJECT_NAME: admin
-                  OS_USERNAME: admin
-                  OS_PASSWORD: password
-                  OS_REGION_NAME: RegionOne
+              enabled: True
+              domain: company.mydomain
+              provider: designate
+              designate_os_options:
+                OS_AUTH_URL: https://keystone_auth_endpoint:5000
+                OS_PROJECT_DOMAIN_NAME: default
+                OS_USER_DOMAIN_NAME: default
+                OS_PROJECT_NAME: admin
+                OS_USERNAME: admin
+                OS_PASSWORD: password
+                OS_REGION_NAME: RegionOne
 
 Enable external DNS addon with AWS provider
 
@@ -157,13 +155,29 @@ Enable external DNS addon with AWS provider
         common:
           addons:
             externaldns:
-              externaldns:
-                enabled: True
-                domain: company.mydomain
-                provider: aws
-                aws_options:
-                  AWS_ACCESS_KEY_ID: XXXXXXXXXXXXXXXXXXXX
-                  AWS_SECRET_ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              enabled: True
+              domain: company.mydomain
+              provider: aws
+              aws_options:
+                AWS_ACCESS_KEY_ID: XXXXXXXXXXXXXXXXXXXX
+                AWS_SECRET_ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Enable external DNS addon with Google CloudDNS provider
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          addons:
+            externaldns:
+              enabled: True
+              domain: company.mydomain
+              provider: google
+              google_options:
+                key: ''
+                project: default-123
+key should be exported from google console and processed as `cat key.json | tr -d '\n'`
 
 Enable OpenStack cloud provider
 
