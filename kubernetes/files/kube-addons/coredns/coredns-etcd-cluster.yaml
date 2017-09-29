@@ -3,6 +3,7 @@
 apiVersion: etcd.database.coreos.com/v1beta2
 kind: EtcdCluster
 metadata:
+  namespace: {{ common.addons.coredns.namespace }}
   name: coredns-etcd-cluster
   labels:
     app: coredns-etcd-operator
