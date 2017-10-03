@@ -69,4 +69,3 @@ spec:
         secret:
           secretName: google-secret
       {%- endif %}
->>>>>>> Add Google CloudDNS support to external-dns
