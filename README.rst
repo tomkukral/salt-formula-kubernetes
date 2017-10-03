@@ -148,6 +148,23 @@ Enable external DNS addon with Designate provider
                   OS_PASSWORD: password
                   OS_REGION_NAME: RegionOne
 
+Enable external DNS addon with AWS provider
+
+.. code-block:: yaml
+
+    parameters:
+      kubernetes:
+        common:
+          addons:
+            externaldns:
+              externaldns:
+                enabled: True
+                domain: company.mydomain
+                provider: aws
+                aws_options:
+                  AWS_ACCESS_KEY_ID: XXXXXXXXXXXXXXXXXXXX
+                  AWS_SECRET_ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
 Enable OpenStack cloud provider
 
 .. code-block:: yaml

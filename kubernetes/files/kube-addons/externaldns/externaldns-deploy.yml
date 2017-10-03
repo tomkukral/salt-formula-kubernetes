@@ -3,11 +3,13 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: {{ common.addons.externaldns.namespace }}
   name: external-dns
+  namespace: {{ common.addons.externaldns.namespace }}
   labels:
+    k8s-app: externaldns
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
+  replicas: 1
   strategy:
     type: Recreate
   template:
@@ -21,6 +23,7 @@ spec:
       containers:
       - name: external-dns
         image: {{ common.addons.externaldns.image }}
+        imagePullPolicy: Always
         args:
         - --source=service
         - --source=ingress
@@ -38,4 +41,12 @@ spec:
         envFrom:
         - secretRef:
             name: designate-os-secret
+        {%- elif common.addons.externaldns.provider == "aws" %}
+        envFrom:
+        - secretRef:
+            name: aws-secret
         {%- endif %}
+        livenessProbe:
+          httpGet:
+            port: 7979
+            path: /healthz
