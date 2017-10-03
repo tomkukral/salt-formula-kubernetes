@@ -29,6 +29,9 @@ spec:
         - --source=ingress
         - --domain-filter={{ common.addons.externaldns.domain }} # will make ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones
         - --provider={{ common.addons.externaldns.provider }}
+        {%- if common.addons.externaldns.provider == "google" %}
+        - --google-project={{ common.addons.externaldns.google_options.project }}
+        {%- endif %}
         #- --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
         - --registry=txt
         - --txt-owner-id=my-identifier
@@ -45,8 +48,25 @@ spec:
         envFrom:
         - secretRef:
             name: aws-secret
+        {%- elif common.addons.externaldns.provider == "google" %}
+        volumeMounts:
+        - name: key
+          mountPath: "/etc/google"
+          readOnly: true
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/etc/google/key"
         {%- endif %}
         livenessProbe:
           httpGet:
             port: 7979
             path: /healthz
+        ports:
+          - containerPort: 7979
+      {%- if common.addons.externaldns.provider == "google" %}
+      volumes:
+      - name: key
+        secret:
+          secretName: google-secret
+      {%- endif %}
+>>>>>>> Add Google CloudDNS support to external-dns
