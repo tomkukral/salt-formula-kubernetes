@@ -100,7 +100,7 @@ federation_set_insecure_{{ childcluster }}:
   cmd.run:
   - name: kubectl config set-cluster {{ childcluster }} --insecure-skip-tls-verify=true
   - env:
-    - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig
+    - KUBECONFIG: /etc/kubernetes/federation/federation.kubeconfig
   - require:
     - cmd: kubefed_init
   {%- if grains.get('noservices') %}
@@ -108,12 +108,12 @@ federation_set_insecure_{{ childcluster }}:
   {%- else %}
   - unless: kubectl --context {{ childcluster }} config view --minify | egrep "insecure-skip-tls-verify. true"
   {%- endif %}
-   
+
 federation_join_cluster_{{ childcluster }}:
   cmd.run:
   - name: kubefed join {{ childcluster }} --host-cluster-context=local --context={{ master.federation.name }}
   - env:
-    - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig:/etc/kubernetes/federation/federation.kubeconfig
+    - KUBECONFIG: /etc/kubernetes/federation/federation.kubeconfig
   - require:
     - cmd: federation_set_insecure_{{ childcluster }}
   - unless: kubectl --context {{ master.federation.name }} get cluster {{ childcluster }}
