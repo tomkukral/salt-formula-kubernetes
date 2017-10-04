@@ -73,7 +73,7 @@ federation_kubeconfig_set_context:
     - KUBECONFIG: /etc/kubernetes/federation/federation.kubeconfig
   - require:
     - cmd: kubefed_init
-  - unless: kubectl config current-context | grep {{ master.federation.name }}
+  - unless: kubectl config current-context | grep -w {{ master.federation.name }}
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
   {%- endif %}
@@ -85,7 +85,7 @@ kubefed_join_host_cluster:
     - KUBECONFIG: /etc/kubernetes/federation/federation.kubeconfig
   - require:
     - cmd: kubefed_init
-  - unless: kubectl --context={{ master.federation.name }} get clusters | grep {{ common.cluster_name }}
+  - unless: kubectl --context={{ master.federation.name }} get cluster {{ common.cluster_name }}
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
   {%- endif %}
@@ -116,7 +116,7 @@ federation_join_cluster_{{ childcluster }}:
     - KUBECONFIG: /etc/kubernetes/federation/childclusters.kubeconfig:/etc/kubernetes/federation/federation.kubeconfig
   - require:
     - cmd: federation_set_insecure_{{ childcluster }}
-  - unless: kubectl --context {{ master.federation.name }} get clusters | grep {{ childcluster }}
+  - unless: kubectl --context {{ master.federation.name }} get cluster {{ childcluster }}
 
 {%- endfor %}
 {%- endif %}
