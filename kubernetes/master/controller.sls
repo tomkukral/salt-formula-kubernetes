@@ -94,6 +94,7 @@
         --token-auth-file=/srv/kubernetes/known_tokens.csv
         --apiserver-count={{ master.apiserver.get('count', 1) }}
         --v={{ master.get('verbosity', 2) }}
+        --advertise-address={{ master.apiserver.address }}
         --etcd-servers=
 {%- for member in master.etcd.members -%}
           http{% if master.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.get('port', 4001) }}{% if not loop.last %},{% endif %}
