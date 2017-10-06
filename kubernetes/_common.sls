@@ -89,6 +89,28 @@ copy-criproxy-bin:
     - require:
       - file: /usr/bin/criproxy
 
+{%- if not pillar.kubernetes.pool is defined %}
+
+/etc/default/dockershim:
+  file.managed:
+  - source: salt://kubernetes/files/dockershim/default.master
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+
+{%- else %}
+
+/etc/default/dockershim:
+  file.managed:
+  - source: salt://kubernetes/files/dockershim/default.pool
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+
+{%- endif %}
+
 /etc/criproxy:
   file.directory:
     - user: root
@@ -123,7 +145,7 @@ dockershim_service:
   - name: dockershim
   - enable: True
   - watch:
-    - file: /etc/systemd/system/dockershim.service
+    - file: /etc/default/dockershim
     - file: /usr/bin/dockershim
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
