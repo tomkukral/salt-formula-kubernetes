@@ -1,8 +1,15 @@
 [Unit]
 Description=dockershim for criproxy
+Documentation=https://github.com/kubernetes/kubernetes/tree/master/pkg/kubelet/dockershim
+After=network.target
+After=docker.service
+Requires=docker.service
 
 [Service]
-EnvironmentFile=-/etc/default/kubelet
+SyslogIdentifier=dockershim
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/default/%p
+User=root
 ExecStart=/usr/bin/dockershim \
     $KUBE_LOGTOSTDERR \
     $KUBE_LOG_LEVEL \
@@ -14,11 +21,7 @@ ExecStart=/usr/bin/dockershim \
         $DOCKER_ENDPOINT \
         $CADVISOR_PORT \
         $DAEMON_ARGS
-
-Restart=always
-StartLimitInterval=0
-RestartSec=10
+Restart=on-failure
 
 [Install]
-RequiredBy=criproxy.service
-
+WantedBy=kubelet.service

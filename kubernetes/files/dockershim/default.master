@@ -1,0 +1,27 @@
+{%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
+
+# test_args has to be kept at the end, so they'll overwrite any prior configuration
+DAEMON_ARGS="\
+--pod-manifest-path=/etc/kubernetes/manifests \
+--address={{ master.kubelet.address }} \
+--allow-privileged={{ master.kubelet.allow_privileged }} \
+--cluster_dns={{ common.addons.dns.server }} \
+--cluster_domain={{ common.addons.dns.domain|replace('_', '-') }} \
+--cni-bin-dir={{ master.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
+--hostname-override={{ master.host.name }} \
+--v={{ master.get('verbosity', 2) }} \
+--node-labels=node-role.kubernetes.io/master=true \
+{%- if master.get('unschedulable', 'false') %}
+--register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
+{%- endif %}
+{%- if common.get('cloudprovider', {}).get('enabled') %}
+--cloud-provider={{ common.cloudprovider.provider }} \
+{%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
+--cloud-config=/etc/kubernetes/cloud-config.conf \
+{%- endif %}
+{%- endif %}
+{%- for key, value in master.get('kubelet', {}).get('daemon_opts', {}).iteritems() %}
+--{{ key }}={{ value }} \
+{%- endfor %}
+"
