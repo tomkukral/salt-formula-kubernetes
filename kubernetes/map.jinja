@@ -17,10 +17,58 @@
     'Debian': {
         'pkgs': [],
         'services': ['kube-apiserver','kube-scheduler','kube-controller-manager'],
+        'auth': {
+            'token': {
+                'enabled': true,
+                'file': '/srv/kubernetes/known_tokens.csv',
+            },
+            'ssl': {
+                'enabled': true,
+            },
+            'basic': {
+                'enabled': true,
+                'file': '/srv/kubernetes/basic_auth.csv',
+            },
+            'http': {
+                'enabled': false,
+                'header': {
+                    'user': 'X-Remote-User',
+                    'group': 'X-Remote-Group',
+                    'extra': 'X-Remote-Extra-',
+                },
+            },
+            'anonymous': {
+                'enabled': false,
+            },
+        },
     },
     'RedHat': {
         'pkgs': [],
         'services': ['kube-apiserver','kube-scheduler','kube-controller-manager'],
+        'auth': {
+            'token': {
+                'enabled': true,
+                'file': '/srv/kubernetes/known_tokens.csv',
+            },
+            'ssl': {
+                'enabled': true,
+            },
+            'basic': {
+                'enabled': true,
+                'file': '/srv/kubernetes/basic_auth.csv',
+            },
+            'http': {
+                'enabled': false,
+                'header': {
+                    'user': 'X-Remote-User',
+                    'group': 'X-Remote-Group',
+                    'extra': 'X-Remote-Extra-',
+                },
+            },
+            'anonymous': {
+                'enabled': false,
+            },
+        },
     },
 }, merge=salt['pillar.get']('kubernetes:master')) %}
 

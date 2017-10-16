@@ -2,23 +2,37 @@
 {%- from "kubernetes/map.jinja" import common with context %}
 {%- if master.enabled %}
 
-/srv/kubernetes/known_tokens.csv:
+{%- if master.auth.get('token', {}).enabled|default(True) %}
+kubernetes_known_tokens:
   file.managed:
+  - name: {{ master.auth.token.file|default("/srv/kubernetes/known_tokens.csv") }}
   - source: salt://kubernetes/files/known_tokens.csv
   - template: jinja
   - user: root
   - group: root
   - mode: 644
   - makedirs: true
+  {%- if not master.get('container', 'true') %}
+  - watch_in:
+    - service: master_services
+  {%- endif %}
+{%- endif %}
 
-/srv/kubernetes/basic_auth.csv:
+{%- if master.auth.get('basic', {}).enabled|default(True) %}
+kubernetes_basic_auth:
   file.managed:
+  - name: {{ master.auth.basic.file|default("/srv/kubernetes/basic_auth.csv") }}
   - source: salt://kubernetes/files/basic_auth.csv
   - template: jinja
   - user: root
   - group: root
   - mode: 644
   - makedirs: true
+  {%- if not master.get('container', 'true') %}
+  - watch_in:
+    - service: master_services
+  {%- endif %}
+{%- endif %}
 
 {%- if master.get('container', 'true') %}
 
@@ -81,9 +95,22 @@
         DAEMON_ARGS="
         --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,DefaultStorageClass
         --allow-privileged=True
-        --basic-auth-file=/srv/kubernetes/basic_auth.csv
+        {%- if master.auth.get('basic', {}).enabled|default(True) %}
+        --basic-auth-file={{ master.auth.basic.file|default("/srv/kubernetes/basic_auth.csv") }}
+        {%- endif %}
         --bind-address={{ master.apiserver.get('bind_address', master.apiserver.address) }}
-        --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
+        {%- if master.auth.get('ssl', {}).enabled|default(True) %}
+        --client-ca-file={{ master.auth.get('ssl', {}).ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
+        {%- endif %}
+        {%- if master.auth.get('proxy', {}).enabled|default(False) %}
+        --requestheader-username-headers={{ master.auth.proxy.header.user }}
+        --requestheader-group-headers={{ master.auth.proxy.header.group }}
+        --requestheader-extra-headers-prefix={{ master.auth.proxy.header.extra }}
+        --requestheader-client-ca-file={{ master.auth.proxy.ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
+        {%- endif %}
+        {%- if master.auth.get('anonymous', False) %}
+        --anonymous-auth=true
+        {%- endif %}
         --etcd-quorum-read=true
         --insecure-bind-address={{ master.apiserver.insecure_address }}
         --insecure-port={{ master.apiserver.insecure_port }}
@@ -91,7 +118,9 @@
         --service-cluster-ip-range={{ master.service_addresses }}
         --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
         --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
-        --token-auth-file=/srv/kubernetes/known_tokens.csv
+        {%- if master.auth.get('token', {}).enabled|default(True) %}
+        --token-auth-file={{ master.auth.token.file|default("/srv/kubernetes/known_tokens.csv") }}
+        {%- endif %}
         --apiserver-count={{ master.apiserver.get('count', 1) }}
         --v={{ master.get('verbosity', 2) }}
         --advertise-address={{ master.apiserver.address }}

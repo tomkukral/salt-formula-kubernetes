@@ -20,13 +20,28 @@ spec:
       --etcd-servers={% for member in master.etcd.members %}http://{{ member.host }}:4001{% if not loop.last %},{% endif %}{% endfor %}
       --admission-control=NamespaceLifecycle,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
       --service-cluster-ip-range={{ master.service_addresses }}
-      --client-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
-      --basic-auth-file=/srv/kubernetes/basic_auth.csv
+      {%- if master.auth.get('ssl', {}).enabled|default(True) %}
+      --client-ca-file={{ master.auth.get('ssl', {}).ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
+      {%- endif %}
+      {%- if master.auth.get('proxy', {}).enabled|default(False) %}
+      --requestheader-username-headers={{ master.auth.proxy.header.user }}
+      --requestheader-group-headers={{ master.auth.proxy.header.group }}
+      --requestheader-extra-headers-prefix={{ master.auth.proxy.header.extra }}
+      --requestheader-client-ca-file={{ master.auth.proxy.ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
+      {%- endif %}
+      {%- if master.auth.get('anonymous', False) %}
+      --anonymous-auth=true
+      {%- endif %}
+      {%- if master.auth.get('basic', {}).enabled|default(True) %}
+      --basic-auth-file={{ master.auth.basic.file|default("/srv/kubernetes/basic_auth.csv") }}
+      {%- endif %}
       --tls-cert-file=/etc/kubernetes/ssl/kubernetes-server.crt
       --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
       --secure-port={{ master.apiserver.secure_port }}
       --bind-address={{ master.apiserver.address }}
-      --token-auth-file=/srv/kubernetes/known_tokens.csv
+      {%- if master.auth.get('token', {}).enabled|default(True) %}
+      --token-auth-file={{ master.auth.token.file|default("/srv/kubernetes/known_tokens.csv") }}
+      {%- endif %}
       --apiserver-count={{ master.apiserver.get('count', 1) }}
       --etcd-quorum-read=true
       --v={{ master.get('verbosity', 2) }}

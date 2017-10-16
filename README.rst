@@ -378,6 +378,36 @@ Master definition
           version: v1.2.4
 
 
+Enable basic, token and http authentication, disable ssl auth, create some
+static users:
+
+.. code-block:: yaml
+
+    kubernetes:
+      master:
+        auth:
+          basic:
+            enabled: true
+            user:
+              jdoe:
+                password: dummy
+                groups:
+                  - system:admin
+          http:
+            enabled: true
+            header:
+              user: X-Remote-User
+              group: X-Remote-Group
+          ssl:
+            enabled: false
+          token:
+            enabled: true
+            user:
+              jdoe:
+                token: dummytoken
+                groups:
+                  - system:admin
+
 Kubernetes with OpenContrail network plugin
 ------------------------------------------------
 
