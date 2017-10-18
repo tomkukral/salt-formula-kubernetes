@@ -46,6 +46,9 @@ spec:
       --etcd-quorum-read=true
       --v={{ master.get('verbosity', 2) }}
       --allow-privileged=True
+      {%- if master.auth.get('mode') %}
+      --authorization-mode={{ master.auth.mode }}
+      {%- endif %}
 {%- if master.apiserver.node_port_range is defined %}
       --service-node-port-range {{ master.apiserver.node_port_range }}
 {%- endif %}

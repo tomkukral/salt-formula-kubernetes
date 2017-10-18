@@ -95,6 +95,9 @@ kubernetes_basic_auth:
         DAEMON_ARGS="
         --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,DefaultStorageClass
         --allow-privileged=True
+        {%- if master.auth.get('mode') %}
+        --authorization-mode={{ master.auth.mode }}
+        {%- endif %}
         {%- if master.auth.get('basic', {}).enabled|default(True) %}
         --basic-auth-file={{ master.auth.basic.file|default("/srv/kubernetes/basic_auth.csv") }}
         {%- endif %}
