@@ -1073,6 +1073,79 @@ Custom params:
           value: one
         image_pull_secretes: password
 
+Role-based access control
+=========================
+
+To enable RBAC, you need to set following option on your apiserver:
+
+.. code-block:: yaml
+
+    kubernetes:
+      master:
+        auth:
+          mode: RBAC
+
+Then you can use ``kubernetes.control.role`` state to orchestrate role and
+rolebindings. Following example shows how to create brand new role and binding
+for service account:
+
+.. code-block:: yaml
+
+    control:
+      role:
+        etcd-operator:
+          kind: ClusterRole
+          rules:
+            - apiGroups:
+                - etcd.coreos.com
+              resources:
+                - clusters
+              verbs:
+                - "*"
+            - apiGroups:
+                - extensions
+              resources:
+                - thirdpartyresources
+              verbs:
+                - create
+            - apiGroups:
+                - storage.k8s.io
+              resources:
+                - storageclasses
+              verbs:
+                - create
+            - apiGroups:
+                - ""
+              resources:
+                - replicasets
+              verbs:
+                - "*"
+          binding:
+            etcd-operator:
+              kind: ClusterRoleBinding
+              namespace: test # <-- if no namespace, then it's clusterrolebinding
+              subject:
+                etcd-operator:
+                  kind: ServiceAccount
+
+Simplest possible use-case, add user test edit permissions on it's test
+namespace:
+
+.. code-block:: yaml
+
+    kubernetes:
+      control:
+        role:
+          edit:
+            kind: ClusterRole
+            # No rules defined, so only binding will be created assuming role
+            # already exists
+            binding:
+              test:
+                namespace: test
+                subject:
+                  test:
+                    kind: User
 
 More Information
 ================

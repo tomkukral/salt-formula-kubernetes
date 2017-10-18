@@ -1,0 +1,21 @@
+kind: {{ binding_kind }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: {{ binding_name }}
+  {%- if binding.get('namespace') %}
+  namespace: {{ binding.namespace }}
+  {%- endif %}
+subjects:
+  {%- for subject_name, subject in binding.subject.iteritems() %}
+  - kind: {{ subject.kind }}
+    name: {{ subject.name|default(subject_name) }}
+    apiGroup: rbac.authorization.k8s.io
+  {%- endfor %}
+roleRef:
+  kind: {{ role_kind }}
+  name: {{ role_name }}
+  apiGroup: rbac.authorization.k8s.io
+
+{#-
+vim: syntax=jinja
+-#}

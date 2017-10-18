@@ -1,6 +1,5 @@
 {% from "kubernetes/map.jinja" import control with context %}
 include:
-  - kubernetes.control.cluster
   {%- if control.job is defined %}
   - kubernetes.control.job
   {%- endif %}
@@ -9,6 +8,9 @@ include:
   {%- endif %}
   {%- if control.configmap is defined %}
   - kubernetes.control.configmap
+  {%- endif %}
+  {%- if control.role is defined %}
+  - kubernetes.control.role
   {%- endif %}
 
 /srv/kubernetes:
