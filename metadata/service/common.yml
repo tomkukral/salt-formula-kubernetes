@@ -12,7 +12,7 @@ parameters:
           replicas: 1
           autoscaler:
             enabled: true
-          domain: ${_param:kubernetes_cluster_domain}
+          domain: cluster.local
           server: 10.254.0.10
           dnsmasq:
             cache-size: 1000
