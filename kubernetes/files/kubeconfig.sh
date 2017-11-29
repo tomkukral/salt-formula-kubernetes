@@ -5,16 +5,15 @@
 server="$(awk '/server/ { print $2 }' /etc/kubernetes/kubelet.kubeconfig)"
 
 # certificates
-cert="$(base64 /etc/kubernetes/ssl/kubelet-client.crt | sed 's/^/      /g')"
-key="$(base64 /etc/kubernetes/ssl/kubelet-client.key | sed 's/^/      /g')"
-ca="$(base64 /etc/kubernetes/ssl/ca-kubernetes.crt | sed 's/^/      /g')"
+cert="$(base64 --wrap=0 /etc/kubernetes/ssl/kubelet-client.crt)"
+key="$(base64 --wrap=0 /etc/kubernetes/ssl/kubelet-client.key)"
+ca="$(base64 --wrap=0 /etc/kubernetes/ssl/ca-kubernetes.crt )"
 cluster="{{ common.cluster_name }}"
 
 echo "apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: |
-${ca}
+    certificate-authority-data: ${ca}
     server: ${server}
   name: ${cluster}
 - cluster:
@@ -34,9 +33,7 @@ current-context: ${cluster}
 users:
 - name: admin-${cluster}
   user:
-    client-certificate-data: |
-${cert}
-    client-key-data: |
-${key}
+    client-certificate-data: ${cert}
+    client-key-data: ${key}
 kind: Config
 preferences: {}"
