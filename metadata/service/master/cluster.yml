@@ -19,6 +19,7 @@ parameters:
       kubelet:
         address: ${_param:cluster_local_address}
         allow_privileged: True
+        fail_on_swap: True
       apiserver:
         address: ${_param:cluster_local_address}
         bind_address: 0.0.0.0

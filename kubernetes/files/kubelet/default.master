@@ -1,5 +1,6 @@
 {%- from "kubernetes/map.jinja" import common with context -%}
 {%- from "kubernetes/map.jinja" import master with context -%}
+{%- from "kubernetes/map.jinja" import version %}
 
 # test_args has to be kept at the end, so they'll overwrite any prior configuration
 DAEMON_ARGS="\
@@ -12,6 +13,9 @@ DAEMON_ARGS="\
 --hostname-override={{ master.host.name }} \
 --v={{ master.get('verbosity', 2) }} \
 --node-labels=node-role.kubernetes.io/master=true \
+{%- if version|float >= 1.8 %}
+--fail-swap-on={{ master.kubelet.fail_on_swap }} \
+{%- endif %}
 {%- if master.get('unschedulable', 'false') %}
 --register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
 {%- endif %}
