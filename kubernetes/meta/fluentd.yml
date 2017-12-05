@@ -1,0 +1,148 @@
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+{%- from "kubernetes/map.jinja" import pool, master %}
+{%- if pool.get('enabled', False) %}
+{% set network = pool.get('network', []) %}
+{%- else %}
+{%- if master.get('enabled', False) %}
+{% set network = master.get('network', []) %}
+{% endif %}
+{% endif %}
+
+{%- set positiondb = pillar.fluentd.agent.dir.positiondb %}
+agent:
+  plugin:
+    fluent-plugin-kubernetes_metadata_filter:
+      gem: ['fluent-plugin-kubernetes_metadata_filter']
+  config:
+    label:
+      docker:
+        filter:
+          add_drop_tag:
+            tag: 'temp.docker.container.**'
+            type: record_transformer
+            enable_ruby: true
+            record:
+              - name: drop_event
+                value: ${ record.fetch('attrs', {}).fetch('io.kubernetes.pod.name', '') }
+      kubernetes:
+        input:
+          container:
+            type: tail
+            tag: temp.kubernetes.container.*
+            path: /var/log/containers/*.log
+            path_key: log_path
+            pos_file: {{ positiondb }}/kubernetes.pos
+            parser:
+              type: json
+              time_format: '%Y-%m-%dT%H:%M:%S.%NZ'
+              keep_time_key: false
+          {%- if network is defined and network.get('engine', None) == 'calico' %}
+          bird:
+            type: tail
+            tag: kubernetes.calico.bird
+            path: /var/log/calico/bird/current, /var/log/calico/bird6/current
+            path_key: log_path
+            pos_file: {{ positiondb }}/kubernetes.calico.bird.pos
+            parser:
+              type: regexp
+              time_format: '%Y-%m-%d_%H:%M:%S.%N'
+              time_key: Timestamp
+              keep_time_key: false
+              format: '/^(?<Timestamp>[^ ]+) (?<programname>[^ ]+): (?<Payload>.*)$/'
+          confd:
+            type: tail
+            tag: kubernetes.calico.confd
+            path: /var/log/calico/confd/current
+            path_key: log_path
+            pos_file: {{ positiondb }}/kubernetes.calico.confd.pos
+            parser:
+              type: regexp
+              time_format: '%Y-%m-%dT%H:%M:%SZ'
+              time_key: Timestamp
+              keep_time_key: false
+              format: '/^(?<Timestamp>[^ ]+) (?<Hostname>[^ ]+) (?<programname>[^ ]+)\[\d+?\]: (?<orig_severity_label>[^ ]+) (?<Payload>.*)$/'
+          felix:
+            type: tail
+            tag: kubernetes.calico.felix
+            path: /var/log/calico/felix/current
+            path_key: log_path
+            pos_file: {{ positiondb }}/kubernetes.calico.felix.pos
+            parser:
+              type: regexp
+              time_format: '%Y-%m-%d %H:%M:%S.%L'
+              time_key: Timestamp
+              keep_time_key: false
+              format: '/^(?<Timestamp>[^ ]+ [^ ]+) \[(?<orig_severity_label>[^ ]+)\]\[\d+?\] (?<Payload>.*)$/'
+          {%- endif %}
+        filter:
+          add_kubernetes_meta:
+            tag: 'temp.kubernetes.container.**'
+            type: kubernetes_metadata
+            kubernetes_url: https://{{ pool.apiserver.host }}:{{ pool.apiserver.secure_port }}
+            client_cert: /etc/kubernetes/ssl/kubelet-client.crt
+            client_key: /etc/kubernetes/ssl/kubelet-client.key
+            ca_file: /etc/kubernetes/ssl/ca-kubernetes.crt
+            verify_ssl: True
+          enrich_container:
+            require:
+              - add_kubernetes_meta
+            tag: 'temp.kubernetes.container.**'
+            type: record_transformer
+            enable_ruby: true
+            record:
+              - name: severity_label
+                value: INFO
+              - name: Severity
+                value: 6
+              - name: programname
+                value: ${ record['kubernetes']['container_name'] }
+          {%- if network is defined and network.get('engine', None) == 'calico' %}
+          enrich_bird:
+            tag: 'kubernetes.calico.bird'
+            type: record_transformer
+            enable_ruby: true
+            record:
+              - name: severity_label
+                value: INFO
+              - name: Severity
+                value: 6
+              - name: programname
+                value: calico-${ record["programname"] }
+          enrich_confd:
+            tag: 'kubernetes.calico.confd'
+            type: record_transformer
+            enable_ruby: true
+            remove_keys: orig_severity_label
+            record:
+              - name: severity_label
+                value: ${ {'DEBUG'=>'DEBUG','INFO'=>'INFO','WARNING'=>'WARNING','ERROR'=>'ERROR','FATAL'=>'CRITICAL','PANIC'=>'ALERT'}[record['orig_severity_label']] }
+              - name: Severity
+                value: ${ {'DEBUG'=>7,'INFO'=>6,'WARNING'=>4,'ERROR'=>3,'FATAL'=>2,'PANIC'=>1}[record['orig_severity_label']].to_i }
+              - name: programname
+                value: calico-${ record["programname"] }
+          enrich_felix:
+            tag: 'kubernetes.calico.felix'
+            type: record_transformer
+            enable_ruby: true
+            remove_keys: orig_severity_label
+            record:
+              - name: severity_label
+                value: ${ {'DEBUG'=>'DEBUG','INFO'=>'INFO','WARNING'=>'WARNING','ERROR'=>'ERROR','FATAL'=>'CRITICAL','PANIC'=>'ALERT'}[record['orig_severity_label']] }
+              - name: Severity
+                value: ${ {'DEBUG'=>7,'INFO'=>6,'WARNING'=>4,'ERROR'=>3,'FATAL'=>2,'PANIC'=>1}[record['orig_severity_label']].to_i }
+              - name: programname
+                value: calico-felix
+          {%- endif %}
+        match:
+          cast_service_tag:
+            tag: 'temp.kubernetes.container.**'
+            type: rewrite_tag_filter
+            rule:
+              - name: log_path
+                regexp: '^.*\/(.*)\.log$'
+                result: kubernetes.container.$1
+          push_to_default:
+            tag: 'kubernetes.**'
+            type: relabel
+            label: default_output
+{%- endif %}

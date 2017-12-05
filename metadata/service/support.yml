@@ -1,6 +1,8 @@
 parameters:
   kubernetes:
     _support:
+      fluentd:
+        enabled: true
       prometheus:
         enabled: true
       telegraf:
