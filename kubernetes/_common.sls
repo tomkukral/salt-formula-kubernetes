@@ -56,38 +56,18 @@ hyperkube-copy:
     {%- endif %}
 
 {%- if common.addons.get('virtlet', {}).get('enabled') %}
-/tmp/criproxy:
-  file.directory:
-    - user: root
-    - group: root
-
-copy-criproxy-bin:
-  cmd.run:
-    - name: docker run --rm -v /tmp/criproxy/:/tmp/criproxy/ --entrypoint cp {{ common.addons.virtlet.image }} -vr /criproxy /tmp/criproxy
-    - require:
-      - file: /tmp/criproxy
-    {%- if grains.get('noservices') %}
-    - onlyif: /bin/false
-    {%- endif %}
 
 /usr/bin/criproxy:
   file.managed:
-    - source: /tmp/criproxy/criproxy
+    - source: https://github.com/mirantis/criproxy/releases/download/{{ common.addons.virtlet.get('criproxy_version', 'v0.9.2') }}/criproxy
     - mode: 750
     - makedirs: true
     - user: root
     - group: root
-    - require:
-      - cmd: copy-criproxy-bin
+    - source_hash: {{ common.addons.virtlet.get('criproxy_source', 'md5=c52d3c4e457144c6523570c847a442b2') }}
     {%- if grains.get('noservices') %}
     - onlyif: /bin/false
     {%- endif %}
-
-/usr/bin/dockershim:
-  file.symlink:
-    - target: /usr/bin/criproxy
-    - require:
-      - file: /usr/bin/criproxy
 
 {%- if not pillar.kubernetes.pool is defined %}
 
@@ -146,7 +126,7 @@ dockershim_service:
   - enable: True
   - watch:
     - file: /etc/default/dockershim
-    - file: /usr/bin/dockershim
+    - file: /usr/bin/hyperkube
   {%- if grains.get('noservices') %}
   - onlyif: /bin/false
   {%- endif %}

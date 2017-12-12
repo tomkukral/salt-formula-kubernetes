@@ -4,14 +4,12 @@
 
 # test_args has to be kept at the end, so they'll overwrite any prior configuration
 DAEMON_ARGS="\
---require-kubeconfig \
 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
 --pod-manifest-path=/etc/kubernetes/manifests \
 --address={{ pool.kubelet.address }} \
 --allow-privileged={{ pool.kubelet.allow_privileged }} \
 --cluster_dns={{ common.addons.dns.server }} \
 --cluster_domain={{ common.addons.dns.domain|replace('_', '-') }} \
---cni-bin-dir={{ pool.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
 --hostname-override={{ pool.host.name }} \
 --v={{ pool.get('verbosity', 2) }} \
 {%- if pillar.kubernetes.master is defined %}
@@ -24,6 +22,8 @@ DAEMON_ARGS="\
 {%- endif %}
 {%- if pool.network.engine in ['calico', 'opencontrail'] %}
 --network-plugin=cni \
+--cni-bin-dir={{ pool.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
+{%- else %}
 --network-plugin-dir=/etc/cni/net.d \
 {%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
