@@ -56,19 +56,19 @@ spec:
         volumeMounts:
         - name: k8s-flexvolume-plugins-dir
           mountPath: /kubelet-volume-plugins
-        - name: criproxybin
-          mountPath: /opt/criproxy/bin
         - name: run
           mountPath: /run
         - name: dockersock
           mountPath: /var/run/docker.sock
-        - name: criproxyconf
-          mountPath: /etc/criproxy
         - name: log
           mountPath: /hostlog
         # for ensuring that /var/lib/libvirt/images exists on node
         - name: var-lib
           mountPath: /host-var-lib
+        - name: criproxybin
+          mountPath: /opt/criproxy/bin
+        - name: criproxyconf
+          mountPath: /etc/criproxy
         securityContext:
           privileged: true
 
@@ -136,7 +136,7 @@ spec:
           name: kubernetes
         - mountPath: /etc/cni
           name: cniconf
-        - mountPath: /opt/cni/bin
+        - mountPath: /opt/cni/bin.orig
           name: cnibin
         - mountPath: /var/run/libvirt
           name: libvirt-sockets

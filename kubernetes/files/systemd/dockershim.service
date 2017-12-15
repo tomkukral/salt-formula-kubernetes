@@ -10,7 +10,8 @@ SyslogIdentifier=dockershim
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/default/%p
 User=root
-ExecStart=/usr/bin/dockershim \
+ExecStart=/usr/bin/hyperkube \
+    kubelet \
     $KUBE_LOGTOSTDERR \
     $KUBE_LOG_LEVEL \
     $KUBE_ALLOW_PRIV \
@@ -25,3 +26,4 @@ Restart=on-failure
 
 [Install]
 WantedBy=kubelet.service
+RequiredBy=criproxy.service

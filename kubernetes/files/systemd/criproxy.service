@@ -1,3 +1,7 @@
+{%- from "kubernetes/map.jinja" import pool with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
+{%- from "kubernetes/map.jinja" import version %}
+
 [Unit]
 Description=CRI Proxy
 After=dockershim.service
@@ -7,8 +11,18 @@ Requires=dockershim.service
 SyslogIdentifier=criproxy
 User=root
 ExecStart=/usr/bin/criproxy -alsologtostderr \
-          -connect /var/run/dockershim.sock,virtlet:/var/run/virtlet.sock \
-          -listen /var/run/criproxy.sock
+          -connect /var/run/dockershim.sock,virtlet.cloud:/run/virtlet.sock \
+          -listen /var/run/criproxy.sock \
+          -v 3 \
+          -alsologtostderr \
+          -apiVersion {{ version }} \
+{%- if pool.get('enabled', False) %}
+          -streamUrl http://{{ pool.kubelet.address }}:11250
+{%- else %}
+{%- if master.get('enabled', False) %}
+           -streamUrl http://{{ master.kubelet.address }}:11250
+{% endif %}
+{% endif %}
 Restart=on-failure
 
 [Install]
