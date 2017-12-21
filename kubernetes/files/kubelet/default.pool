@@ -12,11 +12,11 @@ DAEMON_ARGS="\
 --cluster_domain={{ common.addons.dns.domain|replace('_', '-') }} \
 --hostname-override={{ pool.host.name }} \
 --v={{ pool.get('verbosity', 2) }} \
-{%- if pillar.kubernetes.master is defined %}
---node-labels=node-role.kubernetes.io/master=true \
 {%- if version|float >= 1.8 %}
 --fail-swap-on={{ pool.kubelet.fail_on_swap }} \
 {%- endif %}
+{%- if pillar.kubernetes.master is defined %}
+--node-labels=node-role.kubernetes.io/master=true \
 {%-   if pillar.kubernetes.get('master', {}).get('unschedulable', 'false') %}
 --register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
 {%-    endif -%}
