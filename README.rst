@@ -1083,7 +1083,7 @@ To enable RBAC, you need to set following option on your apiserver:
     kubernetes:
       master:
         auth:
-          mode: RBAC
+          mode: Node,RBAC
 
 Then you can use ``kubernetes.control.role`` state to orchestrate role and
 rolebindings. Following example shows how to create brand new role and binding

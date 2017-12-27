@@ -37,4 +37,4 @@ spec:
           - --poll-period-seconds={{ common.addons.dns.autoscaler.get('poll-period-seconds') }}
           {%- endif %}
           - --v=2
-
+      serviceAccountName: kube-dns-autoscaler

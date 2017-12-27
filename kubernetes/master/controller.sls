@@ -176,6 +176,7 @@ kubernetes_basic_auth:
         --leader-elect=true
         --root-ca-file=/etc/kubernetes/ssl/ca-{{ master.ca }}.crt
         --service-account-private-key-file=/etc/kubernetes/ssl/kubernetes-server.key
+        --use-service-account-credentials
 {%- if common.get('cloudprovider', {}).get('enabled') %}
         --cloud-provider={{ common.cloudprovider.provider }}
 {%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
