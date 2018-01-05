@@ -18,24 +18,25 @@ install:
   - bundle install
 
 env:
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master_cluster
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master_cluster
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool_cluster
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool_cluster
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master_contrail
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master_contrail
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master_contrail4_0
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master_contrail4_0
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool_contrail4_0
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool_contrail4_0
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=common_storageclass
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-cluster
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-cluster
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool-cluster
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool-cluster
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-contrail
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-contrail
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-contrail4-0
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-contrail4-0
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool-contrail4-0
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool-contrail4-0
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=common-storageclass
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   webhooks:
