@@ -181,7 +181,7 @@ server:
       {% endraw %}
     KubernetesProcessDown:
       if: >-
-        procstat_running{process_name=~"hypercube-.*"} == 0
+        procstat_running{process_name=~"hyperkube-.*"} == 0
       {% raw %}
       labels:
         severity: warning
