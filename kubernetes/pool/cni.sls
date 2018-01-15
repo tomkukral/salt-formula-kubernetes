@@ -18,7 +18,7 @@ copy-network-cni:
     - onlyif: /bin/false
     {%- endif %}
 
-{%- for filename in ['cnitool', 'flannel', 'tuning', 'bridge', 'ipvlan', 'loopback', 'macvlan', 'ptp', 'dhcp', 'host-local', 'noop'] %}
+{%- for filename in ['flannel', 'tuning', 'bridge', 'ipvlan', 'loopback', 'macvlan', 'ptp', 'dhcp', 'host-local'] %}
 /opt/cni/bin/{{ filename }}:
   file.managed:
     - source: /tmp/cni/bin/{{ filename }}
