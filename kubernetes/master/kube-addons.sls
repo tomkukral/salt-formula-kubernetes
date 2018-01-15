@@ -116,6 +116,14 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
+/etc/kubernetes/addons/dns/kubedns-sa.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-sa.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
 {% if common.addons.dns.get('autoscaler', {}).get('enabled', True) %}
 
 /etc/kubernetes/addons/dns/kubedns-autoscaler.yaml:
@@ -125,6 +133,18 @@ addon-dir-create:
     - group: root
     - dir_mode: 755
     - makedirs: True
+
+{%- if 'RBAC' in master.auth.get('mode', "") %}
+
+/etc/kubernetes/addons/dns/kubedns-autoscaler-rbac.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-autoscaler-rbac.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{% endif %}
 
 {% endif %}
 
