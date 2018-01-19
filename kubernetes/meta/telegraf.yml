@@ -25,10 +25,10 @@ agent:
   {%- if pool.get('enabled', False) %}
         hypercube-kubelet:
           pattern: "hyperkube.*kubelet"
-        hypercube-proxy:
-          pattern: "hyperkube.*proxy"
   {%- endif %}
   {%- if network is defined and network.get('engine', None) == 'calico' %}
+        hypercube-proxy:
+          pattern: "hyperkube.*proxy"
         calico-docker:
           pattern: "docker run .*projectcalico/calico/node"
         calico-felix:
