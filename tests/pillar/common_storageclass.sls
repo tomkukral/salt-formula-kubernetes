@@ -70,3 +70,5 @@ kubernetes:
             nfs:
               server: 10.0.0.1
               path: /exported_path/inlfux01
+    monitoring:
+      backend: prometheus

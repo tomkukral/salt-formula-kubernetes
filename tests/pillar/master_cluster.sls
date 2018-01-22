@@ -43,6 +43,8 @@ kubernetes:
         - cmp01
         - cmp02
         image: mirantis/virtlet:v0.8.0
+    monitoring:
+      backend: prometheus
   master:
     admin:
       password: password

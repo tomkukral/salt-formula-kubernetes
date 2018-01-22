@@ -47,6 +47,8 @@ kubernetes:
         enabled: true
         namespace: kube-system
         image: yashulyak/contrail-controller:latest
+    monitoring:
+      backend: prometheus
   master:
     admin:
       password: password

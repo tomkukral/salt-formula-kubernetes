@@ -43,6 +43,8 @@ kubernetes:
         hosts:
         - cmp01
         - cmp02
+    monitoring:
+      backend: prometheus
   master:
     service_addresses: 127.0.0.1/24
     admin:

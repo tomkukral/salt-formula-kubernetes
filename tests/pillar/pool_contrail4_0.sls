@@ -22,6 +22,8 @@ kubernetes:
         hosts:
         - cmp01
         - cmp02
+    monitoring:
+      backend: prometheus
   pool:
     enabled: true
     version: v1.2.0

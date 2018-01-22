@@ -136,6 +136,22 @@ addon-dir-create:
 
 {% endif %}
 
+{%- if common.monitoring.get('backend', "") == 'prometheus' %}
+
+{%- if 'RBAC' in master.auth.get('mode', "") %}
+
+/etc/kubernetes/addons/prometheus/prometheus-roles.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/prometheus/prometheus-roles.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{%- endif %}
+
+{%- endif %}
+
 {%- if common.addons.get('dns', {'enabled': False}).enabled %}
 
 /etc/kubernetes/addons/dns/kubedns-svc.yaml:
