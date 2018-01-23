@@ -291,53 +291,39 @@ addon-dir-create:
 
 {%- if common.addons.get('heapster_influxdb', {'enabled': False}).enabled %}
 
-/etc/kubernetes/addons/heapster-influxdb/heapster-address.yaml:
+{%- set heapster_resources = ['address', 'controller', 'endpoint', 'service'] %}
+
+{%- if 'RBAC' in master.auth.get('mode', "") %}
+
+{%- set heapster_resources = heapster_resources + ['account', 'role'] %}
+
+{%- endif %}
+
+{%- for resource in heapster_resources %}
+
+/etc/kubernetes/addons/heapster-influxdb/heapster-{{ resource }}.yaml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/heapster-address.yaml
+    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/heapster-{{ resource }}.yaml
     - template: jinja
     - group: root
     - dir_mode: 755
     - makedirs: True
 
-/etc/kubernetes/addons/heapster-influxdb/heapster-controller.yaml:
+{%- endfor %}
+
+{%- set influxdb_resources = ['controller', 'service'] %}
+
+{%- for resource in influxdb_resources %}
+
+/etc/kubernetes/addons/heapster-influxdb/influxdb-{{ resource }}.yaml:
   file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/heapster-controller.yaml
+    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/influxdb-{{ resource }}.yaml
     - template: jinja
     - group: root
     - dir_mode: 755
     - makedirs: True
 
-/etc/kubernetes/addons/heapster-influxdb/heapster-endpoint.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/heapster-endpoint.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/heapster-influxdb/heapster-service.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/heapster-service.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/heapster-influxdb/influxdb-controller.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/influxdb-controller.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
-
-/etc/kubernetes/addons/heapster-influxdb/influxdb-service.yaml:
-  file.managed:
-    - source: salt://kubernetes/files/kube-addons/heapster-influxdb/influxdb-service.yaml
-    - template: jinja
-    - group: root
-    - dir_mode: 755
-    - makedirs: True
+{%- endfor %}
 
 {% endif %}
 
