@@ -60,6 +60,26 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
+{%- if 'RBAC' in master.auth.get('mode', "") %}
+
+/etc/kubernetes/addons/helm/helm-role.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/helm/helm-role.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+/etc/kubernetes/addons/helm/helm-serviceaccount.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/helm/helm-serviceaccount.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
+{%- endif %}
+
 {% endif %}
 
 {%- if common.addons.storageclass is defined %}

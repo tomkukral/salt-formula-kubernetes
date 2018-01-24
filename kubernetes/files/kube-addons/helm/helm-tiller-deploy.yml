@@ -1,4 +1,5 @@
 {%- from "kubernetes/map.jinja" import common with context -%}
+{%- from "kubernetes/map.jinja" import master with context -%}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -21,6 +22,9 @@ spec:
         app: helm
         name: tiller
     spec:
+      {%- if 'RBAC' in master.auth.get('mode', "") %}
+      serviceAccountName: tiller
+      {%- endif %}
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
