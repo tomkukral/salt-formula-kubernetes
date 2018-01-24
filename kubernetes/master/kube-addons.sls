@@ -9,6 +9,16 @@ addon-dir-create:
     - group: root
     - mode: 0755
 
+{%- if master.network.engine == "flannel" %}
+/etc/kubernetes/addons/flannel/flannel.yml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/flannel/flannel.yml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+{% endif %}
+
 {%- if master.network.engine == "opencontrail" and master.network.get('version', 3.0) < 4.0 %}
 /etc/kubernetes/addons/contrail-network-controller/contrail-network-controller-configmap.yml:
   file.managed:
