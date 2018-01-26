@@ -69,9 +69,9 @@ kubernetes:
       allow_privileged: true
     network:
       engine: calico
-      hash: fb5e30ebe6154911a66ec3fb5f1195b2
+      hash: 9D8F997FEE542420B15986FEA0EDF253
       private_ip_range: 10.150.0.0/16
-      version: v0.19.0
+      version: v1.6.3
       etcd:
         members:
         - host: 127.0.0.1
