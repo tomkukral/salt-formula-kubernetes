@@ -21,9 +21,21 @@
     - dir_mode: 755
     - template: jinja
 
+/tmp/calico/master/:
+  file.directory:
+      - user: root
+      - group: root
+      - makedirs: True
+
+download_calicoctl:
+  cmd.run:
+     - name: wget -P /tmp/calico/master/ {{ master.network.get('source', 'https://github.com/projectcalico/calico-containers/releases/download/') }}{{ master.network.version }}/calicoctl
+     - require:
+       - file: /tmp/calico/master/
+
 /usr/bin/calicoctl:
   file.managed:
-     - source: {{ master.network.get('source', 'https://github.com/projectcalico/calico-containers/releases/download/') }}{{ master.network.version }}/calicoctl
+     - source: /tmp/calico/master/calicoctl
      - source_hash: md5={{ master.network.hash }}
      - mode: 751
      - user: root
