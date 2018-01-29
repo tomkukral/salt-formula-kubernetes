@@ -84,7 +84,15 @@ addon-dir-create:
 
 {%- if common.addons.get('netchecker', {'enabled': False}).enabled %}
 
-{%- for resource in ['svc', 'server', 'agent'] %}
+{%- set netchecker_resources = ['svc', 'server', 'agent'] %}
+
+{%- if 'RBAC' in master.auth.get('mode', "") %}
+
+{%- set netchecker_resources = netchecker_resources + ['roles'] %}
+
+{%- endif %}
+
+{%- for resource in netchecker_resources %}
 
 /etc/kubernetes/addons/netchecker/netchecker-{{ resource }}.yml:
   file.managed:
