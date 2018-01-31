@@ -184,6 +184,10 @@ kubernetes_basic_auth:
 {%- endif %}
 {%- endif %}
         --v={{ master.get('verbosity', 2) }}
+{%- if master.network.engine == 'flannel' %}
+        --allocate-node-cidrs=true
+        --cluster-cidr={{ master.network.private_ip_range }}
+{%- endif %}
 {%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
         --{{ key }}={{ value }}
 {% endfor %}"
