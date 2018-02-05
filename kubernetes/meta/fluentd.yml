@@ -12,7 +12,7 @@
 agent:
   plugin:
     fluent-plugin-kubernetes_metadata_filter:
-      gem: ['fluent-plugin-kubernetes_metadata_filter']
+      deb: ['td-agent-additional-plugins']
   config:
     label:
       docker:
