@@ -198,6 +198,14 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
+/etc/kubernetes/addons/dns/kubedns-clusterrole.yaml:
+  file.managed:
+    - source: salt://kubernetes/files/kube-addons/dns/kubedns-clusterrole.yaml
+    - template: jinja
+    - group: root
+    - dir_mode: 755
+    - makedirs: True
+
 {% endif %}
 
 {% endif %}
