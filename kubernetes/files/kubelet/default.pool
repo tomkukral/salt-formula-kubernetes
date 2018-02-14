@@ -14,6 +14,9 @@ DAEMON_ARGS="\
 --v={{ pool.get('verbosity', 2) }} \
 {%- if version|float >= 1.8 %}
 --fail-swap-on={{ pool.kubelet.fail_on_swap }} \
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
+--feature-gates=MountPropagation=true \
+{%- endif %}
 {%- endif %}
 {%- if pillar.kubernetes.master is defined %}
 --node-labels=node-role.kubernetes.io/master=true \

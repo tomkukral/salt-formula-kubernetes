@@ -1,5 +1,6 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- from "kubernetes/map.jinja" import common with context %}
+{%- from "kubernetes/map.jinja" import version %}
 {%- if master.enabled %}
 
 {%- if master.auth.get('token', {}).enabled|default(True) %}
@@ -143,6 +144,11 @@ kubernetes_basic_auth:
         --cloud-provider={{ common.cloudprovider.provider }}
 {%- if common.get('cloudprovider', {}).get('provider') == 'openstack' %}
         --cloud-config=/etc/kubernetes/cloud-config.conf
+{%- endif %}
+{%- endif %}
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
+{%- if version|float >= 1.8 %}
+        --feature-gates=MountPropagation=true
 {%- endif %}
 {%- endif %}
 {%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).items() %}

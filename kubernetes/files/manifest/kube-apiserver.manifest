@@ -1,5 +1,7 @@
 {%- from "kubernetes/map.jinja" import master with context %}
 {%- from "kubernetes/map.jinja" import common with context %}
+{%- from "kubernetes/map.jinja" import version %}
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -46,6 +48,11 @@ spec:
       --etcd-quorum-read=true
       --v={{ master.get('verbosity', 2) }}
       --allow-privileged=True
+      {%- if common.addons.get('virtlet', {}).get('enabled') %}
+      {%- if version|float >= 1.8 %}
+        --feature-gates=MountPropagation=true
+      {%- endif %}
+      {%- endif %}
       {%- if master.auth.get('mode') %}
       --authorization-mode={{ master.auth.mode }}
       {%- endif %}

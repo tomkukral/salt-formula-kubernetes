@@ -15,6 +15,9 @@ DAEMON_ARGS="\
 --node-labels=node-role.kubernetes.io/master=true \
 {%- if version|float >= 1.8 %}
 --fail-swap-on={{ master.kubelet.fail_on_swap }} \
+{%- if common.addons.get('virtlet', {}).get('enabled') %}
+--feature-gates=MountPropagation=true \
+{%- endif %}
 {%- endif %}
 {%- if master.get('unschedulable', 'false') %}
 --register-with-taints=node-role.kubernetes.io/master=:NoSchedule \
