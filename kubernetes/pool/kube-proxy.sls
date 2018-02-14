@@ -37,7 +37,7 @@
     - user: root
     - group: root
     - mode: 644
-    - contents: DAEMON_ARGS=" --logtostderr=true --v={{ pool.get('verbosity', 2) }} --kubeconfig=/etc/kubernetes/proxy.kubeconfig {%- if pool.network.engine == 'calico' %} --proxy-mode=iptables{% endif %}{%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).iteritems() %} --{{ key }}={{ value }}{%- endfor %}"
+    - contents: DAEMON_ARGS=" --logtostderr=true --v={{ pool.get('verbosity', 2) }} --kubeconfig=/etc/kubernetes/proxy.kubeconfig {%- if pool.network.engine == 'calico' %} --proxy-mode=iptables{% endif %}{%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).items() %} --{{ key }}={{ value }}{%- endfor %}"
 
 pool_services:
   service.running:

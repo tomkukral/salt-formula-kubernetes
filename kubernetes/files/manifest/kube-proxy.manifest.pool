@@ -24,7 +24,7 @@ pool.apiserver.host }}:{{ pool.apiserver.insecure_port }}{%- else %}https://{{ p
 {%- if pool.network.engine == 'calico' %}
       --proxy-mode=iptables
 {%- endif %}
-{%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).iteritems() %}
+{%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).items() %}
       --{{ key }}={{ value }}
 {%- endfor %}
       1>>/var/log/kube-proxy.log 2>&1

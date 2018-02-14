@@ -94,7 +94,7 @@ addon-dir-create:
 
 {%- if common.addons.storageclass is defined %}
 
-{%- for storageclass_name, storageclass in common.addons.get('storageclass', {}).iteritems() %}
+{%- for storageclass_name, storageclass in common.addons.get('storageclass', {}).items() %}
 {%- set storageclass_name = storageclass.get('name', storageclass_name) %}
 
 /etc/kubernetes/addons/storageclass/{{ storageclass_name }}.yaml:

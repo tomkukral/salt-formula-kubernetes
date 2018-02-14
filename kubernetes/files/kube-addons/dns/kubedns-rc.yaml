@@ -111,7 +111,7 @@ spec:
           failureThreshold: 5
         args:
 {%- if common.addons.dns.get('dnsmasq', {}) %}
-{%- for option_name, option_value in common.addons.dns.dnsmasq.iteritems() %}
+{%- for option_name, option_value in common.addons.dns.dnsmasq.items() %}
         - --{{ option_name }}{% if option_value %}={{ option_value }}{% endif %}
 {%- endfor %}
 {%- endif %}

@@ -145,7 +145,7 @@ kubernetes_basic_auth:
         --cloud-config=/etc/kubernetes/cloud-config.conf
 {%- endif %}
 {%- endif %}
-{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %}
+{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).items() %}
         --{{ key }}={{ value }}
 {%- endfor %}"
 
@@ -188,7 +188,7 @@ kubernetes_basic_auth:
         --allocate-node-cidrs=true
         --cluster-cidr={{ master.network.private_ip_range }}
 {%- endif %}
-{%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).iteritems() %}
+{%- for key, value in master.get('controller_manager', {}).get('daemon_opts', {}).items() %}
         --{{ key }}={{ value }}
 {% endfor %}"
 
@@ -202,7 +202,7 @@ kubernetes_basic_auth:
         --kubeconfig /etc/kubernetes/scheduler.kubeconfig
         --leader-elect=true
         --v={{ master.get('verbosity', 2) }}
-{%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).iteritems() %}
+{%- for key, value in master.get('scheduler', {}).get('daemon_opts', {}).items() %}
         --{{ key }}={{ value }}
 {% endfor %}"
 
@@ -260,7 +260,7 @@ master_services:
 {%- endif %}
 
 
-{%- for name,namespace in master.namespace.iteritems() %}
+{%- for name,namespace in master.namespace.items() %}
 
 {%- if namespace.enabled %}
 
@@ -286,7 +286,7 @@ kubernetes_namespace_delete_{{ name }}:
 
 {%- if master.registry.secret is defined %}
 
-{%- for name,registry in master.registry.secret.iteritems() %}
+{%- for name,registry in master.registry.secret.items() %}
 
 {%- if registry.enabled %}
 
