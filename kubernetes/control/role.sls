@@ -2,7 +2,7 @@
 include:
   - kubernetes.control
 
-{%- for role_name, role in control.role.iteritems() %}
+{%- for role_name, role in control.role.items() %}
   {%- set role_name = role.name|default(role_name) %}
 
   {%- if role.get('namespace') or role.get('kind') == 'Role' %}
@@ -27,7 +27,7 @@ include:
       role: {{ role|yaml }}
     {%- endif %}
 
-    {%- for binding_name, binding in role.get('binding', {}).iteritems() %}
+    {%- for binding_name, binding in role.get('binding', {}).items() %}
       {%- set binding_name = binding.name|default(binding_name) %}
       {%- if binding.get('namespace') or binding.get('kind') == 'RoleBinding' %}
         {%- set binding_kind = 'RoleBinding' %}

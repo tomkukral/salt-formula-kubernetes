@@ -52,7 +52,7 @@ spec:
 {%- if master.apiserver.node_port_range is defined %}
       --service-node-port-range {{ master.apiserver.node_port_range }}
 {%- endif %}
-{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).iteritems() %}
+{%- for key, value in master.get('apiserver', {}).get('daemon_opts', {}).items() %}
       --{{ key }}={{ value }}
 {% endfor %}
       1>>/var/log/kube-apiserver.log 2>&1
