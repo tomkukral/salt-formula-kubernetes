@@ -18,17 +18,22 @@ install:
   - bundle install
 
 env:
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-cluster
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-cluster
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool-cluster
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool-cluster
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-contrail
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-contrail
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=master-contrail4-0
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=master-contrail4-0
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=pool-contrail4-0
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=pool-contrail4-0
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=common-storageclass
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=master-cluster
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=master-cluster
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=pool-cluster
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=pool-cluster
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=master-contrail
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=master-contrail
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=master-contrail4-0
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=master-contrail4-0
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=pool-contrail4-0
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=pool-contrail4-0
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=common-storageclass
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=master-cluster
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=pool-cluster
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=master-contrail
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=master-contrail4-0
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=pool-contrail4-0
 
 before_script:
   - set -o pipefail
