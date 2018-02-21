@@ -61,8 +61,17 @@ spec:
         # for ensuring that /var/lib/libvirt/images exists on node
         - name: var-lib
           mountPath: /host-var-lib
+        - name: dev
+          mountPath: /dev
         securityContext:
           privileged: true
+        env:
+        - name: VIRTLET_DISABLE_KVM
+          valueFrom:
+            configMapKeyRef:
+              name: virtlet-config
+              key: disable_kvm
+              optional: true
 
       containers:
       - name: libvirt
