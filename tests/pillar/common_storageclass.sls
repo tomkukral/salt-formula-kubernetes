@@ -16,17 +16,17 @@ kubernetes:
         enabled: true
     network:
       engine: calico
-      hash: fb5e30ebe6154911a66ec3fb5f1195b2
-      private_ip_range: 10.150.0.0/16
-      version: v0.19.0
-      etcd:
-        members:
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
+      calico:
+        calicoctl_image: calico/ctl
+        cni_image: calico/cni
+        etcd:
+          members:
+          - host: 127.0.0.1
+            port: 4001
+          - host: 127.0.0.1
+            port: 4001
+          - host: 127.0.0.1
+            port: 4001
     service_addresses: 10.254.0.0/16
     storage:
       engine: glusterfs

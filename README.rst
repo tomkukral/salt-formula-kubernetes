@@ -33,10 +33,9 @@ Sample Pillars
             image: gcr.io/google_containers/hyperkube:v1.6.5
         pool:
           network:
-            calicoctl:
-              image: calico/ctl
-            cni:
-              image: calico/cni
+            calico:
+              calicoctl_image: calico/ctl
+              cni_image: calico/cni
 
 Enable helm-tiller addon
 
@@ -320,10 +319,6 @@ Master definition
             allow_privileged: true
           network:
             engine: calico
-            mtu: 1500
-            hash: fb5e30ebe6154911a66ec3fb5f1195b2
-            private_ip_range: 10.150.0.0/16
-            version: v0.19.0
           service_addresses: 10.254.0.0/16
           storage:
             engine: glusterfs
@@ -369,9 +364,6 @@ Master definition
             host: 10.0.175.100
           network:
             engine: calico
-            mtu: 1500
-            hash: fb5e30ebe6154911a66ec3fb5f1195b2
-            version: v0.19.0
           token:
             kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
             kubelet: 7bN5hJ9JD4fKjnFTkUKsvVNfuyEddw3r
@@ -535,16 +527,17 @@ On Master:
       master:
         network:
           engine: calico
-          mtu: 1500
+          calico:
+            mtu: 1500
     # If you don't register master as node:
-          etcd:
-            members:
-              - host: 10.0.175.101
-                port: 4001
-              - host: 10.0.175.102
-                port: 4001
-              - host: 10.0.175.103
-                port: 4001
+            etcd:
+              members:
+                - host: 10.0.175.101
+                  port: 4001
+                - host: 10.0.175.102
+                  port: 4001
+                - host: 10.0.175.103
+                  port: 4001
 
 On pools:
 
@@ -554,15 +547,16 @@ On pools:
       pool:
         network:
           engine: calico
-          mtu: 1500
-          etcd:
-            members:
-              - host: 10.0.175.101
-                port: 4001
-              - host: 10.0.175.102
-                port: 4001
-              - host: 10.0.175.103
-                port: 4001
+          calico:
+            mtu: 1500
+            etcd:
+              members:
+                - host: 10.0.175.101
+                  port: 4001
+                - host: 10.0.175.102
+                  port: 4001
+                - host: 10.0.175.103
+                  port: 4001
 
 Running with secured etcd:
 
@@ -572,16 +566,17 @@ Running with secured etcd:
       pool:
         network:
           engine: calico
-          mtu: 1500
-          etcd:
-            ssl:
-              enabled: true
+          calico:
+            etcd:
+              ssl:
+                enabled: true
       master:
         network:
           engine: calico
-          etcd:
-            ssl:
-              enabled: true
+          calico:
+            etcd:
+              ssl:
+                enabled: true
 
 Running with calico-policy controller:
 
@@ -591,7 +586,6 @@ Running with calico-policy controller:
       pool:
         network:
           engine: calico
-          mtu: 1500
           addons:
             calico_policy:
               enabled: true
@@ -599,7 +593,6 @@ Running with calico-policy controller:
       master:
         network:
           engine: calico
-          mtu: 1500
           addons:
             calico_policy:
               enabled: true
@@ -613,12 +606,14 @@ Enable Prometheus metrics in Felix
     kubernetes:
       pool:
         network:
-          prometheus:
-            enabled: true
+          calico:
+            prometheus:
+              enabled: true
       master:
         network:
-          prometheus:
-            enabled: true
+          calico:
+            prometheus:
+              enabled: true
 
 Post deployment configuration
 

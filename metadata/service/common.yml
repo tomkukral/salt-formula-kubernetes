@@ -71,4 +71,3 @@ parameters:
       cluster_name: ${_param:cluster_name}
       network:
         engine: none
-        mtu: 1500

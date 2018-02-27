@@ -51,21 +51,15 @@ kubernetes:
       kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
     ca: kubernetes
     network:
-      calicoctl:
-        image: calico/ctl
-      cni:
-        image: calico/cni
       engine: calico
-      hash: c15ae251b633109e63bf128c2fbbc34a
-      ipam:
-        hash: 6e6d7fac0567a8d90a334dcbfd019a99
-        version: v1.3.1
-      version: v0.20.0
-      etcd:
-        members:
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
-        - host: 127.0.0.1
-          port: 4001
+      calico:
+        calicoctl_image: calico/ctl
+        cni_image: calico/cni
+        etcd:
+          members:
+          - host: 127.0.0.1
+            port: 4001
+          - host: 127.0.0.1
+            port: 4001
+          - host: 127.0.0.1
+            port: 4001

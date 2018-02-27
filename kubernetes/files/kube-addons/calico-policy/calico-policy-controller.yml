@@ -38,7 +38,7 @@ spec:
               memory: 64M
           env:
             - name: ETCD_ENDPOINTS
-              value: "{% for member in master.network.etcd.members %}http{% if master.network.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}"
+              value: "{% for member in master.network.calico.etcd.members %}http{% if master.network.calico.etcd.get('ssl', {}).get('enabled') %}s{% endif %}://{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}"
             - name: ETCD_CA_CERT_FILE
               value: "/var/lib/etcd/ca.pem"
             - name: ETCD_CERT_FILE

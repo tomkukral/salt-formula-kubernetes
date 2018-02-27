@@ -19,6 +19,7 @@ parameters:
       kubelet:
         address: ${_param:cluster_local_address}
         allow_privileged: True
+        fail_on_swap: True
       apiserver:
         address: ${_param:single_address}
         bind_address: 0.0.0.0
@@ -78,10 +79,11 @@ parameters:
         kube-system:
           enabled: True
       network:
-        etcd:
-          members:
-            - host: ${_param:single_address}
-              port: 4001
+        calico:
+          etcd:
+            members:
+              - host: ${_param:single_address}
+                port: 4001
       federation:
         enabled: False
         name: federation

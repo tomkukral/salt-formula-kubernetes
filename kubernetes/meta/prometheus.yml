@@ -15,16 +15,16 @@ server:
       api_ip: {{ pool.apiserver.host }}
       cert_name: prometheus-server.crt
       key_name: prometheus-server.key
-{%- if network.get('engine', '') == 'calico' and network.get('prometheus', {}).get('enabled', False) %}
+{%- if network.get('engine', '') == 'calico' and network.calico.get('prometheus', {}).get('enabled', False) %}
     static:
       calico:
         endpoint:
 {%- if pool.get('enabled', False) %}
-          - address: {{ network.prometheus.get('address', pool.address) }}
+          - address: {{ network.calico.prometheus.get('address', pool.address) }}
 {%- else %}
-          - address: {{ network.prometheus.get('address', master.address) }}
+          - address: {{ network.calico.prometheus.get('address', master.address) }}
 {%- endif %}
-            port: {{ network.prometheus.get('port', 9091) }}
+            port: {{ network.calico.prometheus.get('port', 9091) }}
 {%- endif %}
   recording:
     cluster_namespace_controller_pod_container:spec_memory_limit_bytes:
