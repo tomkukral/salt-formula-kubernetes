@@ -2,9 +2,9 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: netchecker-server
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
+  name: netchecker-server
 rules:
   - apiGroups:
       - apiextensions.k8s.io
@@ -37,14 +37,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: netchecker
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
+  name: netchecker
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: netchecker-server
 subjects:
-  - apiGroup: rbac.authorization.k8s.io
-    kind: Group
-    name: "system:serviceaccounts"
+  - kind: ServiceAccount
+    name: netchecker
+    namespace: netchecker
