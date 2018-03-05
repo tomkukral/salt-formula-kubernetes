@@ -72,25 +72,26 @@ kubernetes:
       allow_privileged: true
     network:
       engine: opencontrail
-      version: 4.0
-      private_ip_range: 10.150.0.0/16
-      config:
-        api:
+      contrail:
+        version: 4.0
+        private_ip_range: 10.150.0.0/16
+        config:
+          api:
+            host: 127.0.0.1
+        message_queue:
           host: 127.0.0.1
-      message_queue:
-        host: 127.0.0.1
-      identity:
-        password: password
-      database:
-        members:
-        - host: 127.0.0.1
-        - host: 127.0.0.1
-        - host: 127.0.0.1
-      collector:
-        members:
-        - host: 127.0.0.1
-        - host: 127.0.0.1
-        - host: 127.0.0.1
+        identity:
+          password: password
+        database:
+          members:
+          - host: 127.0.0.1
+          - host: 127.0.0.1
+          - host: 127.0.0.1
+        collector:
+          members:
+          - host: 127.0.0.1
+          - host: 127.0.0.1
+          - host: 127.0.0.1
     storage:
       engine: glusterfs
       members:

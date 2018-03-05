@@ -51,7 +51,8 @@ kubernetes:
     ca: kubernetes
     network:
       engine: opencontrail
-      version: 4.0
-      config:
-        api:
-          host: 127.0.0.1
+      contrail:
+        version: 4.0
+        config:
+          api:
+            host: 127.0.0.1

@@ -19,7 +19,7 @@ addon-dir-create:
     - makedirs: True
 {% endif %}
 
-{%- if master.network.engine == "opencontrail" and master.network.get('version', 3.0) < 4.0 %}
+{%- if master.network.engine == "opencontrail" and master.network.contrail.get('version', 3.0) < 4.0 %}
 /etc/kubernetes/addons/contrail-network-controller/contrail-network-controller-configmap.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/contrail-network-controller/contrail-network-controller-configmap.yml
@@ -36,7 +36,7 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
-{%- elif master.network.engine == "opencontrail" and master.network.get('version', 3.0) > 3.0 %}
+{%- elif master.network.engine == "opencontrail" and master.network.contrail.get('version', 3.0) > 3.0 %}
 
 /etc/kubernetes/addons/contrail/contrail.yaml:
   file.managed:

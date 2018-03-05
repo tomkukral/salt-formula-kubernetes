@@ -417,18 +417,19 @@ On Master:
       master:
         network:
           engine: opencontrail
-          default_domain: default-domain
-          default_project: default-domain:default-project
-          public_network: default-domain:default-project:Public
-          public_ip_range: 185.22.97.128/26
-          private_ip_range: 10.150.0.0/16
-          service_cluster_ip_range: 10.254.0.0/16
-          network_label: name
-          service_label: uses
-          cluster_service: kube-system/default
-          config:
-            api:
-              host: 10.0.170.70
+          contrail:
+            default_domain: default-domain
+            default_project: default-domain:default-project
+            public_network: default-domain:default-project:Public
+            public_ip_range: 185.22.97.128/26
+            private_ip_range: 10.150.0.0/16
+            service_cluster_ip_range: 10.254.0.0/16
+            network_label: name
+            service_label: uses
+            cluster_service: kube-system/default
+            config:
+              api:
+                host: 10.0.170.70
 On pools:
 
 .. code-block:: yaml
