@@ -21,7 +21,7 @@ spec:
       --kubeconfig=/etc/kubernetes/proxy.kubeconfig
       --master={%- if pool.apiserver.insecure.enabled %}http://{{
 pool.apiserver.host }}:{{ pool.apiserver.insecure_port }}{%- else %}https://{{ pool.apiserver.host }}:{{ pool.apiserver.secure_port }}{%- endif %}
-{%- if pool.network.engine == 'calico' %}
+{%- if 'calico' in pool.network.cnis %}
       --proxy-mode=iptables
 {%- endif %}
 {%- for key, value in pool.get('proxy', {}).get('daemon_opts', {}).items() %}

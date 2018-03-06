@@ -15,7 +15,8 @@ kubernetes:
       kube-system:
         enabled: true
     network:
-      engine: calico
+      cnis:
+      - calico
       calico:
         calicoctl_image: calico/ctl
         cni_image: calico/cni
@@ -41,8 +42,6 @@ kubernetes:
     registry:
         host: tcpcloud
   common:
-    network:
-      engine: none
     addons:
       storageclass:
         nfs_elastic_1:

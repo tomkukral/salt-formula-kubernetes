@@ -69,5 +69,3 @@ parameters:
           domain_name: default
       cluster_domain: ${_param:kubernetes_cluster_domain}
       cluster_name: ${_param:cluster_name}
-      network:
-        engine: none

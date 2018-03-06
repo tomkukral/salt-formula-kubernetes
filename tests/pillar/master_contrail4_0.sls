@@ -3,7 +3,8 @@ kubernetes:
     cluster_domain: cluster.local
     cluster_name: cluster
     network:
-      engine: opencontrail
+      cnis:
+      - opencontrail
     hyperkube:
       image: hyperkube-amd64:v1.6.4-3
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
@@ -71,7 +72,8 @@ kubernetes:
       address: 10.0.175.100
       allow_privileged: true
     network:
-      engine: opencontrail
+      cnis:
+      - opencontrail
       contrail:
         version: 4.0
         private_ip_range: 10.150.0.0/16

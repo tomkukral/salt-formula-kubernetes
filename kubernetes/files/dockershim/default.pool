@@ -21,12 +21,8 @@ DAEMON_ARGS="\
 {%- else %}
 --node-labels=node-role.kubernetes.io/node=true \
 {%- endif %}
-{%- if pool.network.engine in ['calico', 'opencontrail', 'flannel'] %}
 --network-plugin=cni \
 --cni-bin-dir={{ pool.apiserver.get('cni_bin_dir', '/opt/cni/bin') }} \
-{%- else %}
---network-plugin-dir=/etc/cni/net.d \
-{%- endif %}
 --file-check-frequency={{ pool.kubelet.frequency }} \
 {%- if common.get('cloudprovider', {}).get('enabled') %}
 --cloud-provider={{ common.cloudprovider.provider }} \

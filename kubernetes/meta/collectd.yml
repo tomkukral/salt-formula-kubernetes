@@ -11,7 +11,7 @@
 
 {%- if master.get('enabled', False) or pool.get('enabled', False) %}
 local_plugin:
-  {%- if network is defined and network.get('engine', None) == 'calico' %}
+  {%- if network.cnis is defined and 'calico' in network.cnis %}
   collectd_calico_felix:
    plugin: python
    template: kubernetes/files/collectd_calico_felix.conf
@@ -73,7 +73,7 @@ local_plugin:
       k8s-proxy:
         match: hyperkube.*proxy
 {%- endif %}
-{%- if network is defined and network.get('engine', None) == 'calico' %}
+{%- if network.cnis is defined and 'calico' in network.cnis %}
       calico-docker:
         match: docker run .*projectcalico/calico/node
       calico-felix:

@@ -17,7 +17,7 @@ spec:
         runtime: virtlet
     spec:
       hostNetwork: true
-      {%- if master.network.engine != "opencontrail" %}
+      {%- if "opencontrail" not in master.network.cnis %}
       dnsPolicy: ClusterFirstWithHostNet
       {%- endif %}
       # hostPID is true to (1) enable VMs to survive virtlet container restart
@@ -148,7 +148,7 @@ spec:
           {%- endif %}
         - name: vms-log
           mountPath: /var/log/vms
-        {%- if master.network.engine == "opencontrail" %}
+        {%- if "opencontrail" in master.network.cnis %}
         - name: contrail-log
           mountPath: /var/log/contrail
         - name: contrail-data
@@ -277,7 +277,7 @@ spec:
       - configMap:
           name: virtlet-image-translations
         name: image-name-translations
-      {%- if master.network.engine == "opencontrail" %}
+      {%- if "opencontrail" in master.network.cnis %}
       - hostPath:
           path: /var/log/contrail
         name: contrail-log

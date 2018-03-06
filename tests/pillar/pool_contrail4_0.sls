@@ -2,8 +2,6 @@ kubernetes:
   common:
     cluster_domain: cluster.local
     cluster_name: cluster
-    network:
-      engine: none
     hyperkube:
       image: hyperkube-amd64:v1.6.4-3
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
@@ -50,7 +48,8 @@ kubernetes:
       kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
     ca: kubernetes
     network:
-      engine: opencontrail
+      cnis:
+      - opencontrail
       contrail:
         version: 4.0
         config:

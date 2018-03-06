@@ -2,8 +2,6 @@ kubernetes:
   common:
     cluster_domain: cluster.local
     cluster_name: cluster
-    network:
-      engine: none
     hyperkube:
       image: hyperkube-amd64:v1.6.4-3
       hash: hnsj0XqABgrSww7Nqo7UVTSZLJUt2XRd
@@ -70,7 +68,8 @@ kubernetes:
       address: 10.0.175.100
       allow_privileged: true
     network:
-      engine: calico
+      cnis:
+      - calico
       calico:
         calicoctl_image: calico/ctl
         cni_image: calico/cni

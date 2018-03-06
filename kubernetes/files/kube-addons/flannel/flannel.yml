@@ -63,7 +63,7 @@ metadata:
 data:
   net-conf.json: |
     {
-      "Network": "{{ master.network.private_ip_range }}",
+      "Network": "{{ master.network.flannel.private_ip_range }}",
       "Backend": {
         "Type": "vxlan"
       }

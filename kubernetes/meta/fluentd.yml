@@ -36,7 +36,7 @@ agent:
               type: json
               time_format: '%Y-%m-%dT%H:%M:%S.%NZ'
               keep_time_key: false
-          {%- if network is defined and network.get('engine', None) == 'calico' %}
+          {%- if network.cnis is defined and 'calico' in network.cnis %}
           bird:
             type: tail
             tag: kubernetes.calico.bird
@@ -96,7 +96,7 @@ agent:
                 value: 6
               - name: programname
                 value: ${ record['kubernetes']['container_name'] }
-          {%- if network is defined and network.get('engine', None) == 'calico' %}
+          {%- if network.cnis is defined and 'calico' in network.cnis %}
           enrich_bird:
             tag: 'kubernetes.calico.bird'
             type: record_transformer

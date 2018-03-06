@@ -2,13 +2,13 @@
 include:
 - kubernetes.master.service
 - kubernetes.master.kube-addons
-{%- if master.network.engine == "flannel" %}
+{%- if "flannel" in master.network.cnis %}
 - kubernetes.master.flannel
 {%- endif %}
-{%- if master.network.engine == "opencontrail" %}
+{%- if "opencontrail" in master.network.cnis %}
 - kubernetes.master.opencontrail
 {%- endif %}
-{%- if master.network.engine == "calico" %}
+{%- if "calico" in master.network.cnis %}
 {%- if not pillar.kubernetes.pool is defined %}
 - kubernetes.master.calico
 {%- endif %}

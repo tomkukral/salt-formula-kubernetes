@@ -10,7 +10,7 @@ dashboard:
     datasource: prometheus
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_cluster_prometheus.json
-{%- if network is defined and network.get('engine') == 'calico' %}
+{%- if network.cnis is defined and 'calico' in network.cnis %}
   calico-prometheus:
     datasource: prometheus
     format: json
@@ -20,7 +20,7 @@ dashboard:
     datasource: influxdb
     format: json
     template: kubernetes/files/grafana_dashboards/kubernetes_influxdb.json
-{%- if network is defined and network.get('engine') == 'calico' %}
+{%- if network.cnis is defined and 'calico' in network.cnis %}
   calico:
     datasource: influxdb
     format: json

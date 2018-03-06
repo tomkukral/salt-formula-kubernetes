@@ -318,7 +318,8 @@ Master definition
           kubelet:
             allow_privileged: true
           network:
-            engine: calico
+            cnis:
+            - calico
           service_addresses: 10.254.0.0/16
           storage:
             engine: glusterfs
@@ -363,7 +364,8 @@ Master definition
               - host: 10.0.175.100
             host: 10.0.175.100
           network:
-            engine: calico
+            cnis:
+            - calico
           token:
             kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
             kubelet: 7bN5hJ9JD4fKjnFTkUKsvVNfuyEddw3r
@@ -416,7 +418,8 @@ On Master:
             image: yashulyak/contrail-controller:latest
       master:
         network:
-          engine: opencontrail
+          cnis:
+          - opencontrail
           contrail:
             default_domain: default-domain
             default_project: default-domain:default-project
@@ -437,7 +440,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          engine: opencontrail
+          cnis:
+          - opencontrail
 
 
 Dashboard public IP must be configured when Contrail network is used:
@@ -483,19 +487,8 @@ On Master:
     kubernetes:
       master:
         network:
-          engine: flannel
-    # If you don't register master as node:
-          etcd:
-            members:
-              - host: 10.0.175.101
-                port: 4001
-              - host: 10.0.175.102
-                port: 4001
-              - host: 10.0.175.103
-                port: 4001
-      common:
-        network:
-          engine: flannel
+          cnis:
+          - flannel
 
 On pools:
 
@@ -504,18 +497,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          engine: flannel
-          etcd:
-            members:
-              - host: 10.0.175.101
-                port: 4001
-              - host: 10.0.175.102
-                port: 4001
-              - host: 10.0.175.103
-                port: 4001
-      common:
-        network:
-          engine: flannel
+          cnis:
+          - flannel
 
 Kubernetes with Calico
 -----------------------
@@ -527,7 +510,8 @@ On Master:
     kubernetes:
       master:
         network:
-          engine: calico
+          cnis:
+          - calico
           calico:
             mtu: 1500
     # If you don't register master as node:
@@ -547,7 +531,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          engine: calico
+          cnis:
+          - calico
           calico:
             mtu: 1500
             etcd:
@@ -566,14 +551,16 @@ Running with secured etcd:
     kubernetes:
       pool:
         network:
-          engine: calico
+          cnis:
+          - calico
           calico:
             etcd:
               ssl:
                 enabled: true
       master:
         network:
-          engine: calico
+          cnis:
+          - calico
           calico:
             etcd:
               ssl:
@@ -586,14 +573,16 @@ Running with calico-policy controller:
     kubernetes:
       pool:
         network:
-          engine: calico
+          cnis:
+          - calico
           addons:
             calico_policy:
               enabled: true
 
       master:
         network:
-          engine: calico
+          cnis:
+          - calico
           addons:
             calico_policy:
               enabled: true

@@ -15,7 +15,7 @@ server:
       api_ip: {{ pool.apiserver.host }}
       cert_name: prometheus-server.crt
       key_name: prometheus-server.key
-{%- if network.get('engine', '') == 'calico' and network.calico.get('prometheus', {}).get('enabled', False) %}
+{%- if network.cnis is defined and 'calico' in network.cnis and network.calico.get('prometheus', {}).get('enabled', False) %}
     static:
       calico:
         endpoint:
@@ -190,7 +190,7 @@ server:
         summary: 'Kubernetes service {{ $labels.process_name }} is down'
         description: 'Kubernetes service {{ $labels.process_name }} is down on node {{ $labels.host }}'
       {% endraw %}
-{%- if network.get('engine', '') == 'calico' %}
+{%- if network.cnis is defined and 'calico' in network.cnis %}
     CalicoProcessDown:
       if: >-
         procstat_running{process_name=~"calico-felix|bird|bird6|confd"} == 0

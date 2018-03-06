@@ -9,7 +9,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
-{%- if master.network.engine != 'opencontrail' %}
+{%- if 'opencontrail' not in master.network.cnis %}
   selector:
     k8s-app: kubernetes-dashboard
   type: NodePort
