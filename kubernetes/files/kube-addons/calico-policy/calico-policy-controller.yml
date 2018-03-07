@@ -20,6 +20,10 @@ spec:
       namespace: {{ common.addons.calico_policy.namespace }}
       labels:
         k8s-app: calico-policy
+      annotations:
+{%- if common.addons.calico_policy.cni is defined %}
+        cni: {{ common.addons.calico_policy.cni }}
+{%- endif %}
     spec:
       hostNetwork: true
       tolerations:

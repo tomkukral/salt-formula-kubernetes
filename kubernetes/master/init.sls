@@ -13,6 +13,11 @@ include:
 - kubernetes.master.calico
 {%- endif %}
 {%- endif %}
+{%- if "genie" in master.network.cnis %}
+{%- if not pillar.kubernetes.pool is defined %}
+- kubernetes.master.genie
+{%- endif %}
+{%- endif %}
 {%- if master.storage.get('engine', 'none') == 'glusterfs' %}
 - kubernetes.master.glusterfs
 {%- endif %}

@@ -11,4 +11,7 @@ include:
 {%- if "flannel" in pool.network.cnis %}
 - kubernetes.pool.flannel
 {%- endif %}
+{%- if "genie" in pool.network.cnis %}
+- kubernetes.pool.genie
+{%- endif %}
 - kubernetes.pool.kube-proxy

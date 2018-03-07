@@ -3,7 +3,7 @@
 
 {%- if not pillar.kubernetes.pool is defined %}
 
-/etc/cni/net.d/11-flannel.conflist:
+/etc/cni/net.d/12-flannel.conflist:
   file.managed:
     - source: salt://kubernetes/files/flannel/flannel.conflist
     - user: root

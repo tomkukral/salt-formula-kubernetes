@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         k8s-app: kube-dns-autoscaler
+      annotations:
+{%- if common.addons.dns.cni is defined %}
+        cni: {{ common.addons.dns.cni }}
+{%- endif %}
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master

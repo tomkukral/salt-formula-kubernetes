@@ -45,6 +45,9 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+{%- if common.addons.dns.cni is defined %}
+        cni: {{ common.addons.dns.cni }}
+{%- endif %}
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
