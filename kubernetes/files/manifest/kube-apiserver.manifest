@@ -31,9 +31,7 @@ spec:
       --requestheader-extra-headers-prefix={{ master.auth.proxy.header.extra }}
       --requestheader-client-ca-file={{ master.auth.proxy.ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
       {%- endif %}
-      {%- if master.auth.get('anonymous', False) %}
-      --anonymous-auth=true
-      {%- endif %}
+      --anonymous-auth={{ master.auth.get('anonymous', {}).enabled|default(False) }}
       {%- if master.auth.get('basic', {}).enabled|default(True) %}
       --basic-auth-file={{ master.auth.basic.file|default("/srv/kubernetes/basic_auth.csv") }}
       {%- endif %}

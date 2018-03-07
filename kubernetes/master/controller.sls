@@ -112,9 +112,7 @@ kubernetes_basic_auth:
         --requestheader-extra-headers-prefix={{ master.auth.proxy.header.extra }}
         --requestheader-client-ca-file={{ master.auth.proxy.ca_file|default("/etc/kubernetes/ssl/ca-"+master.ca+".crt") }}
         {%- endif %}
-        {%- if master.auth.get('anonymous', False) %}
-        --anonymous-auth=true
-        {%- endif %}
+        --anonymous-auth={{ master.auth.get('anonymous', {}).enabled|default(False) }}
         --etcd-quorum-read=true
         --insecure-bind-address={{ master.apiserver.insecure_address }}
         --insecure-port={{ master.apiserver.insecure_port }}
