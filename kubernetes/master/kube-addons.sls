@@ -132,7 +132,7 @@ addon-dir-create:
 
 {%- if common.addons.get('netchecker', {'enabled': False}).enabled %}
 
-{%- set netchecker_resources = ['svc', 'server', 'agent'] %}
+{%- set netchecker_resources = ['svc', 'server', 'agent', 'serviceaccount'] %}
 
 {%- if 'RBAC' in master.auth.get('mode', "") %}
 

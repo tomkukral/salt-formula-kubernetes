@@ -22,6 +22,7 @@ spec:
         cni: {{ common.addons.netchecker.cni }}
 {%- endif %}
     spec:
+      serviceAccountName: netchecker
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
