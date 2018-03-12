@@ -188,7 +188,7 @@ kubernetes_basic_auth:
 {%- endif %}
 {%- endif %}
         --v={{ master.get('verbosity', 2) }}
-{%- if 'flannel' in master.network.cnis %}
+{%- if master.network.get('flannel', {}).get('enabled', False) %}
         --allocate-node-cidrs=true
         --cluster-cidr={{ master.network.flannel.private_ip_range }}
 {%- endif %}

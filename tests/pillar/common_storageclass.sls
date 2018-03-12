@@ -15,9 +15,8 @@ kubernetes:
       kube-system:
         enabled: true
     network:
-      cnis:
-      - calico
       calico:
+        enabled: true
         calicoctl_image: calico/ctl
         cni_image: calico/cni
         etcd:

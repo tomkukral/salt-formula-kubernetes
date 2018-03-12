@@ -2,10 +2,10 @@
 {%- from "kubernetes/map.jinja" import pool with context %}
 
 {%- if pool.get('enabled', False) %}
-{% set network = pool.get('network', []) %}
+{% set network = pool.get('network', {}) %}
 {%- else %}
 {%- if master.get('enabled', False) %}
-{% set network = master.get('network', []) %}
+{% set network = master.get('network', {}) %}
 {% endif %}
 {% endif %}
 
@@ -26,7 +26,7 @@ agent:
         hyperkube-kubelet:
           pattern: "hyperkube.*kubelet"
   {%- endif %}
-  {%- if network.cnis is defined and 'calico' in network.cnis %}
+  {%- if network is defined and network.get('calico', {}).get('enabled', False) %}
         hyperkube-proxy:
           pattern: "hyperkube.*proxy"
         calico-docker:

@@ -49,9 +49,8 @@ kubernetes:
       kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
     ca: kubernetes
     network:
-      cnis:
-      - calico
       calico:
+        enabled: true
         calicoctl_image: calico/ctl
         cni_image: calico/cni
         etcd:

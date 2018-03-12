@@ -318,8 +318,8 @@ Master definition
           kubelet:
             allow_privileged: true
           network:
-            cnis:
-            - calico
+            calico:
+              enabled: true
           service_addresses: 10.254.0.0/16
           storage:
             engine: glusterfs
@@ -364,8 +364,8 @@ Master definition
               - host: 10.0.175.100
             host: 10.0.175.100
           network:
-            cnis:
-            - calico
+            calico:
+              enabled: true
           token:
             kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
             kubelet: 7bN5hJ9JD4fKjnFTkUKsvVNfuyEddw3r
@@ -418,9 +418,8 @@ On Master:
             image: yashulyak/contrail-controller:latest
       master:
         network:
-          cnis:
-          - opencontrail
-          contrail:
+          opencontrail:
+            enabled: true
             default_domain: default-domain
             default_project: default-domain:default-project
             public_network: default-domain:default-project:Public
@@ -440,8 +439,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          cnis:
-          - opencontrail
+          opencontrail:
+            enabled: true
 
 
 Dashboard public IP must be configured when Contrail network is used:
@@ -487,8 +486,8 @@ On Master:
     kubernetes:
       master:
         network:
-          cnis:
-          - flannel
+          flannel:
+            enabled: true
 
 On pools:
 
@@ -497,8 +496,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          cnis:
-          - flannel
+          flannel:
+            enabled: true
 
 Kubernetes with Calico
 -----------------------
@@ -510,9 +509,8 @@ On Master:
     kubernetes:
       master:
         network:
-          cnis:
-          - calico
           calico:
+            enabled: true
             mtu: 1500
     # If you don't register master as node:
             etcd:
@@ -531,9 +529,8 @@ On pools:
     kubernetes:
       pool:
         network:
-          cnis:
-          - calico
           calico:
+            enabled: true
             mtu: 1500
             etcd:
               members:
@@ -551,17 +548,15 @@ Running with secured etcd:
     kubernetes:
       pool:
         network:
-          cnis:
-          - calico
           calico:
+            enabled: true
             etcd:
               ssl:
                 enabled: true
       master:
         network:
-          cnis:
-          - calico
           calico:
+            enabled: true
             etcd:
               ssl:
                 enabled: true
@@ -573,16 +568,16 @@ Running with calico-policy controller:
     kubernetes:
       pool:
         network:
-          cnis:
-          - calico
+          calico:
+            enabled: true
           addons:
             calico_policy:
               enabled: true
 
       master:
         network:
-          cnis:
-          - calico
+          calico:
+            enabled: true
           addons:
             calico_policy:
               enabled: true

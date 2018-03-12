@@ -68,9 +68,8 @@ kubernetes:
       address: 10.0.175.100
       allow_privileged: true
     network:
-      cnis:
-      - calico
       calico:
+        enabled: true
         calicoctl_image: calico/ctl
         cni_image: calico/cni
         etcd:

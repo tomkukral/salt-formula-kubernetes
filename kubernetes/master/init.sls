@@ -2,18 +2,18 @@
 include:
 - kubernetes.master.service
 - kubernetes.master.kube-addons
-{%- if "flannel" in master.network.cnis %}
+{%- if master.network.get('flannel', {}).get('enabled', False) %}
 - kubernetes.master.flannel
 {%- endif %}
-{%- if "opencontrail" in master.network.cnis %}
+{%- if master.network.get('opencontrail', {}).get('enabled', False) %}
 - kubernetes.master.opencontrail
 {%- endif %}
-{%- if "calico" in master.network.cnis %}
+{%- if master.network.get('calico', {}).get('enabled', False) %}
 {%- if not pillar.kubernetes.pool is defined %}
 - kubernetes.master.calico
 {%- endif %}
 {%- endif %}
-{%- if "genie" in master.network.cnis %}
+{%- if master.network.get('genie', {}).get('enabled', False) %}
 {%- if not pillar.kubernetes.pool is defined %}
 - kubernetes.master.genie
 {%- endif %}

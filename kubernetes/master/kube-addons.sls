@@ -9,7 +9,7 @@ addon-dir-create:
     - group: root
     - mode: 0755
 
-{%- if "flannel" in master.network.cnis %}
+{%- if master.network.get('flannel', {}).get('enabled', False) %}
 /etc/kubernetes/addons/flannel/flannel.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/flannel/flannel.yml
@@ -19,7 +19,7 @@ addon-dir-create:
     - makedirs: True
 {% endif %}
 
-{%- if "opencontrail" in master.network.cnis and master.network.contrail.get('version', 3.0) < 4.0 %}
+{%- if master.network.get('opencontrail', {}).get('enabled', False) and master.network.opencontrail.get('version', 3.0) < 4.0 %}
 /etc/kubernetes/addons/contrail-network-controller/contrail-network-controller-configmap.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/contrail-network-controller/contrail-network-controller-configmap.yml
@@ -36,7 +36,7 @@ addon-dir-create:
     - dir_mode: 755
     - makedirs: True
 
-{%- elif "opencontrail" in master.network.cnis and master.network.contrail.get('version', 3.0) > 3.0 %}
+{%- elif master.network.get('opencontrail', {}).get('enabled', False) and master.network.opencontrail.get('version', 3.0) > 3.0 %}
 
 /etc/kubernetes/addons/contrail/contrail.yaml:
   file.managed:
@@ -67,7 +67,7 @@ addon-dir-create:
 
 {% endif %}
 
-{%- if common.addons.get('calico_policy', {}).get('enabled', False) and "calico" in master.network.cnis %}
+{%- if common.addons.get('calico_policy', {}).get('enabled', False) and master.network.get('calico', {}).get('enabled', False) %}
 /etc/kubernetes/addons/calico_policy/calico-policy-controller.yml:
   file.managed:
     - source: salt://kubernetes/files/kube-addons/calico-policy/calico-policy-controller.yml

@@ -48,9 +48,8 @@ kubernetes:
       kube_proxy: DFvQ8GelB7afH3wClC9romaMPhquyyEe
     ca: kubernetes
     network:
-      cnis:
-      - opencontrail
-      contrail:
+      opencontrail:
+        enabled: true
         version: 4.0
         config:
           api:

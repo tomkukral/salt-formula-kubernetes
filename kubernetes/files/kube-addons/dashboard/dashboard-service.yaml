@@ -12,7 +12,7 @@ metadata:
 spec:
   selector:
     k8s-app: kubernetes-dashboard
-{%- if (common.addons.dashboard.cni is defined and common.addons.dashboard.cni != 'opencontrail') or 'opencontrail' not in master.network.cnis %}
+{%- if (common.addons.dashboard.cni is defined and common.addons.dashboard.cni != 'opencontrail') or master.network.get('opencontrail', {}).get('enabled', False) %}
   type: NodePort
 {%- endif %}
   ports:

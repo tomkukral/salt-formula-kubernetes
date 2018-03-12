@@ -1,17 +1,17 @@
 {%- from "kubernetes/map.jinja" import pool with context %}
 include:
 - kubernetes.pool.cni
-{%- if "calico" in pool.network.cnis %}
+{%- if pool.network.get('calico', {}).get('enabled', False) %}
 - kubernetes.pool.calico
 {%- endif %}
-{%- if "opencontrail" in pool.network.cnis %}
+{%- if pool.network.get('opencontrail', {}).get('enabled', False) %}
 - kubernetes.pool.opencontrail
 {%- endif %}
 - kubernetes.pool.service
-{%- if "flannel" in pool.network.cnis %}
+{%- if pool.network.get('flannel', {}).get('enabled', False) %}
 - kubernetes.pool.flannel
 {%- endif %}
-{%- if "genie" in pool.network.cnis %}
+{%- if pool.network.get('genie', {}).get('enabled', False) %}
 - kubernetes.pool.genie
 {%- endif %}
 - kubernetes.pool.kube-proxy
