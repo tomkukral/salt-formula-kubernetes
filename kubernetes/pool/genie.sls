@@ -10,7 +10,7 @@
     - makedirs: true
     - dir_mode: 755
     - template: jinja
-    - default:
+    - defaults:
         hostname: {{ pool.host.name }}{% if pool.host.get('domain') %}.{{ pool.host.domain }}{%- endif %}
 
 /tmp/genie/:

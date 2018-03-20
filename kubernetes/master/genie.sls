@@ -12,7 +12,7 @@
     - makedirs: true
     - dir_mode: 755
     - template: jinja
-    - default:
+    - defaults:
         hostname: {{ master.host.name }}{% if master.host.get('domain') %}.{{ master.host.domain }}{%- endif %}
 
 /tmp/genie/:
