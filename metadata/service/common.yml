@@ -58,9 +58,9 @@ parameters:
         virtlet:
           enabled: False
           namespace: kube-system
-          image: mirantis/virtlet:v0.9.2
-          criproxy_version: v0.9.2
-          criproxy_source: md5=c52d3c4e457144c6523570c847a442b2
+          image: mirantis/virtlet:v0.9.4
+          criproxy_version: v0.10.0
+          criproxy_source: md5=52717b1f70f15558ef4bdb0e4d4948da
       cloudprovider:
         enabled: False
         provider: openstack
