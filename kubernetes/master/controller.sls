@@ -94,7 +94,7 @@ kubernetes_basic_auth:
     - mode: 644
     - contents: >-
         DAEMON_ARGS="
-        --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,DefaultStorageClass
+        --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,DefaultStorageClass,MutatingAdmissionWebhook,ValidatingAdmissionWebhook
         --allow-privileged=True
         {%- if master.auth.get('mode') %}
         --authorization-mode={{ master.auth.mode }}
